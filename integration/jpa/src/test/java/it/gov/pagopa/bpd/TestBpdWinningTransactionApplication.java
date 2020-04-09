@@ -1,4 +1,4 @@
-package it.gov.pagopa.bpd.winning_transaction.connector;
+package it.gov.pagopa.bpd;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
