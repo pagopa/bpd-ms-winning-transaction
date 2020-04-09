@@ -26,7 +26,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
     public List<WinningTransaction> getWinningTransactions(String hpan, Long awardPeriodId) {
         return winningTransactionDAO
                 .findByHpanAndAwardPeriodIdAndAwardedTransaction(
-                        hpan, awardPeriodId,true);
+                        hpan, awardPeriodId, true);
     }
 
 }

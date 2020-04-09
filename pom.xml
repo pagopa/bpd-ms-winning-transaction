@@ -69,9 +69,10 @@
         </dependencies>
     </dependencyManagement>
 
-<modules>  <module>app</module>
-    <module>core</module>
-    <module>integration</module>
-    <module>api</module>
-  </modules>
+    <modules>
+        <module>app</module>
+        <module>core</module>
+        <module>integration</module>
+        <module>api</module>
+    </modules>
 </project>
