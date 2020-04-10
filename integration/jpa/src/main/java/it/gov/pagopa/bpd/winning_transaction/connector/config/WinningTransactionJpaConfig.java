@@ -14,5 +14,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         repositoryBaseClass = JPAConnectorImpl.class,
         basePackages = {"it.gov.pagopa.bpd"}
 )
-public class JpaConfig extends JPAConnectorConfig {
+public class WinningTransactionJpaConfig extends JPAConnectorConfig {
 }

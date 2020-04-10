@@ -2,12 +2,16 @@ package it.gov.pagopa.bpd.winning_transaction.command;
 
 import it.gov.pagopa.bpd.winning_transaction.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
+import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransactionId;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import java.util.List;
 
 @Service
+@Slf4j
 public class WinningTransactionServiceImpl implements WinningTransactionService {
 
     private final WinningTransactionDAO winningTransactionDAO;
@@ -19,11 +23,30 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
     @Override
     public WinningTransaction create(WinningTransaction winningTransaction) {
-        return winningTransactionDAO.save(winningTransaction);
+        if (log.isDebugEnabled()) {
+            log.debug("#### WinningTransactionServiceImpl - create ####");
+            log.debug(winningTransaction.toString());
+        }
+        if (!winningTransactionDAO.existsById(
+                new WinningTransactionId(
+                        winningTransaction.getIdTrxAcquirer(),
+                        winningTransaction.getAcquirerCode(),
+                        winningTransaction.getTrxDate()))) {
+            return winningTransactionDAO.save(winningTransaction);
+        }
+        throw new EntityExistsException("WinningTransaction with id:" +
+                winningTransaction.getIdTrxAcquirer() + "," +
+                winningTransaction.getAcquirerCode() + "," +
+                winningTransaction.getTrxDate() +" already exists");
     }
 
     @Override
     public List<WinningTransaction> getWinningTransactions(String hpan, Long awardPeriodId) {
+        if (log.isDebugEnabled()) {
+            log.debug("#### WinningTransactionServiceImpl - getWinningTransactions ####");
+            log.debug("hpan: " + hpan);
+            log.debug("awardPeriodId: " + awardPeriodId);
+        }
         return winningTransactionDAO
                 .findByHpanAndAwardPeriodIdAndAwardedTransaction(
                         hpan, awardPeriodId, true);
