@@ -9,6 +9,8 @@ import java.time.ZonedDateTime;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = {"trxDate", "idTrxAcquirer", "acquirerCode"},
         callSuper = false)
 public class WinningTransactionResource {
