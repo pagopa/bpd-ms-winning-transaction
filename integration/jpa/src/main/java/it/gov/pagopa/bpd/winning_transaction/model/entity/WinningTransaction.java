@@ -1,9 +1,9 @@
 package it.gov.pagopa.bpd.winning_transaction.model.entity;
 
 import it.gov.pagopa.bpd.common.model.entity.BaseEntity;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Data
-@NoArgsConstructor
+@Builder
 @EqualsAndHashCode(of = {"idTrxAcquirer", "acquirerCode", "trxDate"}, callSuper = false)
 @IdClass(WinningTransactionId.class)
 @Table(name = "bpd_winning_transaction", schema = "bpd_test")
@@ -73,3 +73,4 @@ public class WinningTransaction extends BaseEntity implements Serializable {
     Integer merchantId;
 
 }
+

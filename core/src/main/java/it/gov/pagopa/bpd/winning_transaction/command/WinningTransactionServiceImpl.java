@@ -27,11 +27,11 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("#### WinningTransactionServiceImpl - create ####");
             log.debug(winningTransaction.toString());
         }
-        if (!winningTransactionDAO.existsById(
-                new WinningTransactionId(
-                        winningTransaction.getIdTrxAcquirer(),
-                        winningTransaction.getAcquirerCode(),
-                        winningTransaction.getTrxDate()))) {
+        if (!winningTransactionDAO.existsById(WinningTransactionId.builder()
+                .idTrxAcquirer(winningTransaction.getIdTrxAcquirer())
+                .acquirerCode(winningTransaction.getAcquirerCode())
+                .trxDate(winningTransaction.getTrxDate())
+                .build())) {
             return winningTransactionDAO.save(winningTransaction);
         }
         throw new EntityExistsException("WinningTransaction with id:" +
