@@ -1,6 +1,8 @@
 package it.gov.pagopa.bpd.winning_transaction.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -24,7 +26,8 @@ public enum OperationType {
         return description;
     }
 
-    public static OperationType getFromCode(String code) {
+    @JsonCreator
+    public static OperationType getFromCode( @JsonProperty("code") String code) {
         for (OperationType operationType : OperationType.values()) {
             if (operationType.getCode().equals(code)) {
                 return operationType;

@@ -1,6 +1,8 @@
-package it.gov.pagopa.bpd.winning_transaction.command;
+package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.WinningTransactionDAO;
+import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
+import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionServiceImpl;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransactionId;
 import org.junit.Before;
@@ -18,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.persistence.EntityExistsException;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

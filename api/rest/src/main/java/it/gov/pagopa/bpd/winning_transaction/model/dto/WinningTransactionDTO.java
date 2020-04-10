@@ -1,9 +1,6 @@
 package it.gov.pagopa.bpd.winning_transaction.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -13,14 +10,14 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = {"idTrxAcquirer", "acquirerCode", "trxDate"}, callSuper = false)
 public class WinningTransactionDTO {
 
     @NotNull
     Integer idTrxAcquirer;
 
+    @NotNull
     @NotBlank
     @Size(max = 20)
     String acquirerCode;

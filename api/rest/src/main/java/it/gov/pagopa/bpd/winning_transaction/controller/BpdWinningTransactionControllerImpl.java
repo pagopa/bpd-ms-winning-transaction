@@ -2,7 +2,7 @@ package it.gov.pagopa.bpd.winning_transaction.controller;
 
 import eu.sia.meda.core.controller.StatelessController;
 import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourceAssembler;
-import it.gov.pagopa.bpd.winning_transaction.command.WinningTransactionService;
+import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import it.gov.pagopa.bpd.winning_transaction.factory.ModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;

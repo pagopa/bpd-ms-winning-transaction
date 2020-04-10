@@ -1,4 +1,4 @@
-package it.gov.pagopa.bpd.winning_transaction.command;
+package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
 

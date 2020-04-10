@@ -1,9 +1,8 @@
 package it.gov.pagopa.bpd.winning_transaction.model.entity;
 
 import it.gov.pagopa.bpd.common.model.entity.BaseEntity;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,6 +11,8 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @EqualsAndHashCode(of = {"idTrxAcquirer", "acquirerCode", "trxDate"}, callSuper = false)
 @IdClass(WinningTransactionId.class)
@@ -28,6 +29,7 @@ public class WinningTransaction extends BaseEntity implements Serializable {
 
     @Id
     @Column(name = "trx_timestamp_t")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     ZonedDateTime trxDate;
 
     @Column(name="hpan_s")

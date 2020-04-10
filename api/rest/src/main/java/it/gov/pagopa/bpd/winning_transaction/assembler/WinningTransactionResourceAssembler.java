@@ -13,7 +13,7 @@ public class WinningTransactionResourceAssembler {
         WinningTransactionResource resource = null;
 
         if (model != null) {
-            resource = new WinningTransactionResource();
+            resource = WinningTransactionResource.builder().build();
             BeanUtils.copyProperties(model, resource, "operationType");
             resource.setOperationType(OperationType.getFromCode(model.getOperationType()));
         }
