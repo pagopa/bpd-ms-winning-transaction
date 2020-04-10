@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -26,7 +26,7 @@ public class WinningTransactionDTO {
 
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    ZonedDateTime trxDate;
+    OffsetDateTime trxDate;
 
     @Size(max = 64)
     String hpan;

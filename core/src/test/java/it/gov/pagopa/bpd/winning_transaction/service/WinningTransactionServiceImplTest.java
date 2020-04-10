@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.persistence.EntityExistsException;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,18 +38,18 @@ public class WinningTransactionServiceImplTest {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
-    private final ZonedDateTime zonedDateTime = ZonedDateTime.parse("2020-04-09T16:22:45.304Z");
+    private final OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
     private final WinningTransaction newTransaction =
             WinningTransaction.builder().acquirerCode("0").acquirerId(0).amount(BigDecimal.valueOf(1313.3))
                     .amountCurrency("833").awardedTransaction(true).awardPeriodId(0L).circuitType("00")
                     .correlationId(0).hpan("hpan").idTrxAcquirer(0).idTrxIssuer(0).mcc("00")
                     .mccDescription("test").merchantId(0).operationType("00").score(BigDecimal.valueOf(1313.3))
-                    .trxDate(zonedDateTime).build();
+                    .trxDate(offsetDateTime).build();
     private final WinningTransactionId newTransactionId =
             WinningTransactionId.builder()
                     .idTrxAcquirer(0)
                     .acquirerCode("0")
-                    .trxDate(zonedDateTime)
+                    .trxDate(offsetDateTime)
                     .build();
 
     @Before

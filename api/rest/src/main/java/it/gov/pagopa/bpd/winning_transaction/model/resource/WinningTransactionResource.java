@@ -5,14 +5,14 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"trxDate", "idTrxAcquirer", "acquirerCode"},
-        callSuper = false)
+@EqualsAndHashCode(of = {"trxDate", "idTrxAcquirer", "acquirerCode"}, callSuper = false)
 public class WinningTransactionResource {
 
     private String hashPan;
@@ -20,7 +20,7 @@ public class WinningTransactionResource {
     private String idTrxIssuer;
     private BigDecimal score;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private ZonedDateTime trxDate;
+    private OffsetDateTime trxDate;
     private String mcc;
     private OperationType operationType;
     private String correlationId;

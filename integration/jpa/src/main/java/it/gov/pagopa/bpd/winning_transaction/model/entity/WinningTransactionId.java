@@ -3,7 +3,7 @@ package it.gov.pagopa.bpd.winning_transaction.model.entity;
 import lombok.*;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +14,6 @@ public class WinningTransactionId implements Serializable {
 
     Integer idTrxAcquirer;
     String acquirerCode;
-    ZonedDateTime trxDate;
+    OffsetDateTime trxDate;
 
 }

@@ -8,7 +8,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.function.Function;
 
 public class WinningTransactionDAOTest extends
@@ -18,7 +18,7 @@ public class WinningTransactionDAOTest extends
     private static class WinningTransactionCriteria implements CriteriaQuery<WinningTransaction> {
         Integer idTrxAcquirer;
         String acquirerCode;
-        ZonedDateTime trxDate;
+        OffsetDateTime trxDate;
     }
 
 
@@ -72,8 +72,8 @@ public class WinningTransactionDAOTest extends
     protected Function<Integer, WinningTransactionId> idBuilderFn() {
         return (bias) -> {
             WinningTransactionId winningTransactionId = new WinningTransactionId();
-            ZonedDateTime zonedDateTime = ZonedDateTime.parse("2020-04-09T16:22:45.304Z");
-            winningTransactionId.setTrxDate(zonedDateTime);
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
+            winningTransactionId.setTrxDate(offsetDateTime);
             winningTransactionId.setIdTrxAcquirer(bias);
             winningTransactionId.setAcquirerCode(bias.toString());
             return winningTransactionId;

@@ -7,7 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Data
@@ -30,7 +30,7 @@ public class WinningTransaction extends BaseEntity implements Serializable {
     @Id
     @Column(name = "trx_timestamp_t")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    ZonedDateTime trxDate;
+    OffsetDateTime trxDate;
 
     @Column(name="hpan_s")
     String hpan;

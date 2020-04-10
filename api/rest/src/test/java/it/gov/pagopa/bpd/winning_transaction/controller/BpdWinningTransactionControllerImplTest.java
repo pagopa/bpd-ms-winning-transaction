@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.persistence.EntityExistsException;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,20 +58,20 @@ public class BpdWinningTransactionControllerImplTest {
 
     private final String BASE_URL = "/bpd/winning-transactions";
 
-    private final ZonedDateTime zonedDateTime = ZonedDateTime.parse("2020-04-09T16:22:45.304Z");
+    private final OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
 
     private final WinningTransaction newTransaction =
             WinningTransaction.builder().acquirerCode("0").acquirerId(0).amount(BigDecimal.valueOf(1313.3))
                     .amountCurrency("833").awardedTransaction(true).awardPeriodId(0L).circuitType("00")
                     .correlationId(0).hpan("hpan").idTrxAcquirer(0).idTrxIssuer(0).mcc("00")
                     .mccDescription("test").merchantId(0).operationType("00").score(BigDecimal.valueOf(1313.3))
-                    .trxDate(zonedDateTime).build();
+                    .trxDate(offsetDateTime).build();
     private final WinningTransactionDTO newTransactionDTO =
             WinningTransactionDTO.builder().acquirerCode("0").acquirerId(0).amount(BigDecimal.valueOf(1313.3))
                     .amountCurrency("833").awardedTransaction(true).awardPeriodId(0L).circuitType("00")
                     .correlationId(0).hpan("hpan").idTrxAcquirer(0).idTrxIssuer(0).mcc("00")
                     .mccDescription("test").merchantId(0).operationType("00").score(BigDecimal.valueOf(1313.3))
-                    .trxDate(zonedDateTime).build();
+                    .trxDate(offsetDateTime).build();
 
 
     @Before
@@ -87,7 +87,7 @@ public class BpdWinningTransactionControllerImplTest {
 
         BDDMockito.doReturn(newTransaction)
                 .when(winningTransactionServiceMock)
-                .create(Mockito.any(WinningTransaction.class));
+                .create(Mockito.eq(newTransaction));
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.post(BASE_URL)
@@ -108,9 +108,9 @@ public class BpdWinningTransactionControllerImplTest {
         assertEquals(winningTransaction.getAcquirerCode(), newTransaction.getAcquirerCode());
 
         BDDMockito.verify(winningTransactionFactorySpy, Mockito.atLeastOnce())
-                .createModel(Mockito.any(WinningTransactionDTO.class));
+                .createModel(Mockito.eq(newTransactionDTO));
         BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
-                .create(Mockito.any(WinningTransaction.class));
+                .create(Mockito.eq(newTransaction));
         BDDMockito.verify(winningTransactionResourceAssemblerSpy, Mockito.atLeastOnce())
                 .toResource(Mockito.eq(newTransaction));
 
@@ -135,9 +135,9 @@ public class BpdWinningTransactionControllerImplTest {
                 .andExpect(MockMvcResultMatchers.status().is(HttpStatus.CONFLICT.value()));
 
         BDDMockito.verify(winningTransactionFactorySpy, Mockito.atLeastOnce())
-                .createModel(Mockito.any(WinningTransactionDTO.class));
+                .createModel(Mockito.eq(newTransactionDTO));
         BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
-                .create(Mockito.any(WinningTransaction.class));
+                .create(Mockito.eq(newTransaction));
         BDDMockito.verify(winningTransactionResourceAssemblerSpy, Mockito.never())
                 .toResource((Mockito.eq(newTransaction)));
 
