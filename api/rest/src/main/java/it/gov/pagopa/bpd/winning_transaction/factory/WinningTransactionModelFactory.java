@@ -12,7 +12,7 @@ public class WinningTransactionModelFactory implements ModelFactory<WinningTrans
     @SneakyThrows
     @Override
     public WinningTransaction createModel(WinningTransactionDTO dto) {
-        WinningTransaction winningTransaction = new WinningTransaction();
+        WinningTransaction winningTransaction = WinningTransaction.builder().build();
         BeanUtils.copyProperties(winningTransaction, dto);
         return winningTransaction;
     }
