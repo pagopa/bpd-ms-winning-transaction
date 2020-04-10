@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"idTrxAcquirer", "acquirerCode", "trxDate"}, callSuper = false)
 @IdClass(WinningTransactionId.class)
-@Table(name = "bpd_winning_transaction", schema = "bpd_test")
+@Table(name = "bpd_winning_transaction")
 public class WinningTransaction extends BaseEntity implements Serializable {
 
     @Id

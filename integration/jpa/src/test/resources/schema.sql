@@ -1,2 +1,0 @@
-DROP SCHEMA bpd_test IF EXISTS;
-CREATE SCHEMA bpd_test;
