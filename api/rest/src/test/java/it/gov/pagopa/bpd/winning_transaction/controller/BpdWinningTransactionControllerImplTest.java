@@ -3,11 +3,11 @@ package it.gov.pagopa.bpd.winning_transaction.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourceAssembler;
-import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import it.gov.pagopa.bpd.winning_transaction.factory.WinningTransactionModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -59,6 +60,9 @@ public class BpdWinningTransactionControllerImplTest {
     private final String BASE_URL = "/bpd/winning-transactions";
 
     private final OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
+
+    private Random rand = new Random();
+    private final Long totalScore = rand.nextLong();
 
     private final WinningTransaction newTransaction =
             WinningTransaction.builder().acquirerCode("0").acquirerId(0).amount(BigDecimal.valueOf(1313.3))
@@ -332,6 +336,76 @@ public class BpdWinningTransactionControllerImplTest {
         BDDMockito.verify(winningTransactionResourceAssemblerSpy, Mockito.never())
                 .toResource(Mockito.any(WinningTransaction.class));
 
+    }
+
+
+    @Test
+    public void getTotalScore_OK() throws Exception {
+
+        String hpan = "hpan";
+        Long awardPeriodId = 0L;
+
+        BDDMockito.doReturn(totalScore)
+                .when(winningTransactionServiceMock)
+                .getTotalScore(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
+
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.get(BASE_URL + "/total-score")
+                        .param("hpan", hpan)
+                        .param("awardPeriodId", String.valueOf(awardPeriodId))
+                        .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andReturn();
+
+
+        String contentString = result.getResponse().getContentAsString();
+        assertNotNull(contentString);
+        assertFalse(Strings.isBlank(contentString));
+
+        Long newTotalScore = mapper.readValue(
+                contentString, new TypeReference<Long>() {
+                });
+
+        assertEquals(newTotalScore, totalScore);
+
+        BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
+                .getTotalScore(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
+
+    }
+
+    @Test
+    public void getTotalScore_hpanNotFound() throws Exception {
+        String hpan = "hpan";
+        Long awardPeriodId = 0L;
+
+        BDDMockito.doReturn(null)
+                .when(winningTransactionServiceMock)
+                .getTotalScore(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
+
+        MvcResult result = (MvcResult) mockMvc.perform(
+                MockMvcRequestBuilders.get(BASE_URL + "/total-score")
+                        .param("hpan", hpan)
+                        .param("awardPeriodId", String.valueOf(awardPeriodId))
+                        .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andReturn();
+    }
+
+    @Test
+    public void getTotalScore_nullAwardPeriod() throws Exception {
+        String hpan = "hpan";
+        Long awardPeriodId = null;
+
+        MvcResult result = (MvcResult) mockMvc.perform(MockMvcRequestBuilders
+                .get(BASE_URL + "/total-score")
+                .param("hpan", hpan)
+                .param("awardPeriodId", String.valueOf(awardPeriodId))
+                .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andReturn();
+
+        Mockito.verifyZeroInteractions(winningTransactionServiceMock);
     }
 
 }

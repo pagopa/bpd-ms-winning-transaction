@@ -31,4 +31,9 @@ public interface BpdWinningTransactionController {
             @Valid @NotBlank @RequestParam String hpan,
             @Valid @NotNull @RequestParam Long awardPeriodId);
 
+    @GetMapping(value = "/total-score", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    Long getTotalScore(
+            @Valid @NotBlank @RequestParam String hpan,
+            @Valid @NotNull @RequestParam Long awardPeriodId) throws ClassNotFoundException;
 }

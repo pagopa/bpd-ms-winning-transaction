@@ -2,11 +2,11 @@ package it.gov.pagopa.bpd.winning_transaction.controller;
 
 import eu.sia.meda.core.controller.StatelessController;
 import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourceAssembler;
-import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import it.gov.pagopa.bpd.winning_transaction.factory.ModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -71,5 +71,22 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
         return winningTransactions.stream()
                 .map(winningTransactionResourceAssembler::toResource)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Long getTotalScore(
+            @Valid @NotBlank String hpan, @Valid @NotNull Long awardPeriodId) {
+        if (log.isDebugEnabled()) {
+            log.debug("### BpdWinningTransactionControllerImpl - getTotalScore ###");
+            log.debug("hpan:" + hpan);
+            log.debug("awardPeriodId:" + awardPeriodId);
+        }
+        Long totalScore = winningTransactionService.getTotalScore(hpan, awardPeriodId);
+        if (totalScore == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "hpan non trovato");
+        }
+        return totalScore;
+
     }
 }

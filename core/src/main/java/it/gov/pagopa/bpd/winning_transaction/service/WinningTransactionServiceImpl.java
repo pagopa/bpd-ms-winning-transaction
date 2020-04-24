@@ -52,4 +52,15 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
                         hpan, awardPeriodId, true);
     }
 
+
+    @Override
+    public Long getTotalScore(String hpan, Long awardPeriodId) {
+        if (log.isDebugEnabled()) {
+            log.debug("#### WinningTransactionServiceImpl - getTotalScore ####");
+            log.debug("hpan: " + hpan);
+            log.debug("awardPeriodId: " + awardPeriodId);
+        }
+        return winningTransactionDAO.calculateTotalScore(hpan, awardPeriodId);
+    }
+
 }

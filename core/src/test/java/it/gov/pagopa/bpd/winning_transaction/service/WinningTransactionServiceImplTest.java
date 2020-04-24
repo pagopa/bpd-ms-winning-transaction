@@ -1,8 +1,6 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.WinningTransactionDAO;
-import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
-import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionServiceImpl;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransactionId;
 import org.junit.Before;
@@ -22,8 +20,10 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = WinningTransactionServiceImpl.class)
@@ -51,6 +51,9 @@ public class WinningTransactionServiceImplTest {
                     .acquirerCode("0")
                     .trxDate(offsetDateTime)
                     .build();
+
+    private Random rand = new Random();
+    private final Long totalScore = rand.nextLong();
 
     @Before
     public void initTest() {
@@ -121,14 +124,38 @@ public class WinningTransactionServiceImplTest {
                 .getWinningTransactions(hpan, awardPeriodId);
 
         assertNotNull(newWinningTransactions);
-        assertEquals(newWinningTransactions.size(),1);
-        assertEquals(newWinningTransactions.get(0),newTransaction);
+        assertEquals(newWinningTransactions.size(), 1);
+        assertEquals(newWinningTransactions.get(0), newTransaction);
 
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
                 .findByHpanAndAwardPeriodIdAndAwardedTransaction(
                         Mockito.eq(hpan),
                         Mockito.eq(awardPeriodId),
                         Mockito.eq(true));
+
+    }
+
+    @Test
+    public void getTotalScore() {
+
+        String hpan = "hashpan";
+        Long awardPeriodId = 0L;
+
+        BDDMockito.doReturn(totalScore)
+                .when(winningTransactionDAOMock)
+                .calculateTotalScore(
+                        Mockito.eq(hpan),
+                        Mockito.eq(awardPeriodId));
+
+        Long newTotalScore = winningTransactionService.getTotalScore(hpan, awardPeriodId);
+
+        assertNotNull(newTotalScore);
+        assertEquals(newTotalScore, totalScore);
+
+        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
+                .calculateTotalScore(
+                        Mockito.eq(hpan),
+                        Mockito.eq(awardPeriodId));
 
     }
 }

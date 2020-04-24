@@ -10,4 +10,6 @@ public interface WinningTransactionService {
 
     List<WinningTransaction> getWinningTransactions(String hpan, Long awardPeriodId);
 
+    Long getTotalScore(String hpan, Long awardPeriodId);
+
 }

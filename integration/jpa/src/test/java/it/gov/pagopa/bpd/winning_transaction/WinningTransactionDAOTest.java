@@ -7,7 +7,6 @@ import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransactionId;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.function.Function;
 
@@ -64,7 +63,7 @@ public class WinningTransactionDAOTest extends
 
     @Override
     protected void alterEntityToUpdate(WinningTransaction entity) {
-        entity.setEnabled(false);
+        entity.setUpdateUser("userUpdate");
     }
 
 

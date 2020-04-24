@@ -2,6 +2,7 @@ package it.gov.pagopa.bpd.winning_transaction.model.entity;
 
 import it.gov.pagopa.bpd.common.model.entity.BaseEntity;
 import lombok.*;
+import org.hibernate.annotations.Where;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.time.OffsetDateTime;
 @EqualsAndHashCode(of = {"idTrxAcquirer", "acquirerCode", "trxDate"}, callSuper = false)
 @IdClass(WinningTransactionId.class)
 @Table(name = "bpd_winning_transaction")
+@Where(clause = "ENABLED_B = 'TRUE'")
 public class WinningTransaction extends BaseEntity implements Serializable {
 
     @Id
