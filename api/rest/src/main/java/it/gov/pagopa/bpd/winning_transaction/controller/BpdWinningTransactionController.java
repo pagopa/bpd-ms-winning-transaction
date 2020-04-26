@@ -28,12 +28,12 @@ public interface BpdWinningTransactionController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.OK)
     List<WinningTransactionResource> findWinningTransactions(
-            @Valid @NotBlank @RequestParam String hpan,
-            @Valid @NotNull @RequestParam Long awardPeriodId);
+            @NotBlank @RequestParam String hpan,
+            @NotNull @RequestParam Long awardPeriodId);
 
     @GetMapping(value = "/total-score", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.OK)
     Long getTotalScore(
-            @Valid @NotBlank @RequestParam String hpan,
-            @Valid @NotNull @RequestParam Long awardPeriodId) throws ClassNotFoundException;
+            @NotBlank @RequestParam String hpan,
+            @NotNull @RequestParam Long awardPeriodId);
 }

@@ -7,22 +7,16 @@ import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityExistsException;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@Slf4j
 class BpdWinningTransactionControllerImpl extends StatelessController implements BpdWinningTransactionController {
 
     private final ModelFactory<WinningTransactionDTO, WinningTransaction> winningTransactionFactory;
@@ -33,38 +27,35 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
     public BpdWinningTransactionControllerImpl(
             ModelFactory<WinningTransactionDTO, WinningTransaction> winningTransactionFactory,
             WinningTransactionResourceAssembler winningTransactionResourceAssembler,
-            WinningTransactionService winningTransactionService){
+            WinningTransactionService winningTransactionService) {
         this.winningTransactionFactory = winningTransactionFactory;
         this.winningTransactionResourceAssembler = winningTransactionResourceAssembler;
         this.winningTransactionService = winningTransactionService;
     }
 
     @Override
-    public WinningTransactionResource createWinningTransaction(
-            @Valid @RequestBody WinningTransactionDTO dto) {
-        if (log.isDebugEnabled()) {
-            log.debug("### BpdWinningTransactionControllerImpl - createWinningTransaction ###");
-            log.debug(dto.toString());
+    public WinningTransactionResource createWinningTransaction(WinningTransactionDTO dto) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("BpdWinningTransactionControllerImpl.createWinningTransaction");
+            logger.debug("dto = [" + dto + "]");
         }
         try {
             WinningTransaction winningTransaction = winningTransactionFactory.createModel(dto);
             winningTransaction = winningTransactionService.create(winningTransaction);
             return winningTransactionResourceAssembler.toResource(winningTransaction);
         } catch (EntityExistsException e) {
-            if (log.isErrorEnabled()) {
-                log.error(e.getMessage(), e);
+            if (logger.isErrorEnabled()) {
+                logger.error(e.getMessage(), e);
             }
             throw new ResponseStatusException(HttpStatus.CONFLICT);
         }
     }
 
     @Override
-    public List<WinningTransactionResource> findWinningTransactions(
-            @Valid @NotBlank String hpan, @Valid @NotNull Long awardPeriodId) {
-        if (log.isDebugEnabled()) {
-            log.debug("### BpdWinningTransactionControllerImpl - findWinningTransactions ###");
-            log.debug("hpan:" + hpan);
-            log.debug("awardPeriodId:" + awardPeriodId);
+    public List<WinningTransactionResource> findWinningTransactions(String hpan, Long awardPeriodId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("BpdWinningTransactionControllerImpl.findWinningTransactions");
+            logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
         List<WinningTransaction> winningTransactions = winningTransactionService
                 .getWinningTransactions(hpan, awardPeriodId);
@@ -74,12 +65,10 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
     }
 
     @Override
-    public Long getTotalScore(
-            @Valid @NotBlank String hpan, @Valid @NotNull Long awardPeriodId) {
-        if (log.isDebugEnabled()) {
-            log.debug("### BpdWinningTransactionControllerImpl - getTotalScore ###");
-            log.debug("hpan:" + hpan);
-            log.debug("awardPeriodId:" + awardPeriodId);
+    public Long getTotalScore(String hpan, Long awardPeriodId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("BpdWinningTransactionControllerImpl.getTotalScore");
+            logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
         Long totalScore = winningTransactionService.getTotalScore(hpan, awardPeriodId);
         if (totalScore == null) {
