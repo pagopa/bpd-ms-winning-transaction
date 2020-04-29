@@ -304,42 +304,6 @@ public class BpdWinningTransactionControllerImplTest {
 
 
     @Test
-    public void findWinningTransactions_OkWithEmptyList() throws Exception {
-
-        String hpan = "hpan";
-        Long awardPeriodId = 1L;
-
-        BDDMockito.doReturn(Collections.emptyList())
-                .when(winningTransactionServiceMock)
-                .getWinningTransactions(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
-
-        MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.get(BASE_URL)
-                        .param("hpan", hpan)
-                        .param("awardPeriodId", String.valueOf(awardPeriodId))
-                        .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andReturn();
-
-        String contentString = result.getResponse().getContentAsString();
-        assertNotNull(contentString);
-        assertFalse(Strings.isBlank(contentString));
-
-        List<WinningTransactionResource> winningTransactions = mapper.readValue(
-                contentString, new TypeReference<List<WinningTransactionResource>>() {});
-
-        assertTrue(winningTransactions.isEmpty());
-
-        BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
-                .getWinningTransactions(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
-        BDDMockito.verify(winningTransactionResourceAssemblerSpy, Mockito.never())
-                .toResource(Mockito.any(WinningTransaction.class));
-
-    }
-
-
-    @Test
     public void getTotalScore_OK() throws Exception {
 
         String hpan = "hpan";
@@ -372,24 +336,6 @@ public class BpdWinningTransactionControllerImplTest {
         BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
                 .getTotalScore(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
 
-    }
-
-    @Test
-    public void getTotalScore_hpanNotFound() throws Exception {
-        String hpan = "hpan";
-        Long awardPeriodId = 0L;
-
-        BDDMockito.doReturn(null)
-                .when(winningTransactionServiceMock)
-                .getTotalScore(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
-
-        MvcResult result = (MvcResult) mockMvc.perform(
-                MockMvcRequestBuilders.get(BASE_URL + "/total-score")
-                        .param("hpan", hpan)
-                        .param("awardPeriodId", String.valueOf(awardPeriodId))
-                        .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
-                .andReturn();
     }
 
     @Test

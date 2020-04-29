@@ -6,6 +6,9 @@ import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionRe
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+/**
+ * Mapper between <WinningTransaction> Entity class and <WinningTransactionResource> Resource class
+ */
 @Service
 public class WinningTransactionResourceAssembler {
 

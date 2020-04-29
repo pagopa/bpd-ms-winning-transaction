@@ -6,6 +6,9 @@ import lombok.SneakyThrows;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper between <WinningTransactionDTO> DTO class and <WinningTransaction> Entity class
+ */
 @Component
 public class WinningTransactionModelFactory implements ModelFactory<WinningTransactionDTO, WinningTransaction>  {
 

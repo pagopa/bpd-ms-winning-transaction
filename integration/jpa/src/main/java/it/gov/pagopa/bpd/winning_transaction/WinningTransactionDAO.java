@@ -8,6 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Data Access Object to manage all CRUD operations to the database
+ */
 @Repository
 public interface WinningTransactionDAO extends CrudJpaDAO<WinningTransaction, WinningTransactionId> {
 

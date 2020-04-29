@@ -1,6 +1,7 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.WinningTransactionDAO;
+import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionNotFoundException;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransactionId;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,9 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityExistsException;
 import java.util.List;
 
+/**
+ * @See WinningTransactionService
+ */
 @Service
 @Slf4j
 public class WinningTransactionServiceImpl implements WinningTransactionService {
@@ -37,7 +41,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
         throw new EntityExistsException("WinningTransaction with id:" +
                 winningTransaction.getIdTrxAcquirer() + "," +
                 winningTransaction.getAcquirerCode() + "," +
-                winningTransaction.getTrxDate() +" already exists");
+                winningTransaction.getTrxDate() + " already exists");
     }
 
     @Override
@@ -47,9 +51,13 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("hpan: " + hpan);
             log.debug("awardPeriodId: " + awardPeriodId);
         }
-        return winningTransactionDAO
+        List<WinningTransaction> winningTransactions = winningTransactionDAO
                 .findByHpanAndAwardPeriodIdAndAwardedTransaction(
                         hpan, awardPeriodId, true);
+        if (winningTransactions.isEmpty()) {
+            throw new WinningTransactionNotFoundException(hpan);
+        }
+        return winningTransactions;
     }
 
 
@@ -60,7 +68,11 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("hpan: " + hpan);
             log.debug("awardPeriodId: " + awardPeriodId);
         }
-        return winningTransactionDAO.calculateTotalScore(hpan, awardPeriodId);
+        Long totalScore = winningTransactionDAO.calculateTotalScore(hpan, awardPeriodId);
+        if (totalScore == null) {
+            throw new WinningTransactionNotFoundException(hpan);
+        }
+        return totalScore;
     }
 
 }

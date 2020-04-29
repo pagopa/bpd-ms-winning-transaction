@@ -16,6 +16,9 @@ import javax.persistence.EntityExistsException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @See BpdWinningTransactionController
+ */
 @RestController
 class BpdWinningTransactionControllerImpl extends StatelessController implements BpdWinningTransactionController {
 
@@ -70,12 +73,8 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
             logger.debug("BpdWinningTransactionControllerImpl.getTotalScore");
             logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
-        Long totalScore = winningTransactionService.getTotalScore(hpan, awardPeriodId);
-        if (totalScore == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "hpan non trovato");
-        }
-        return totalScore;
+
+        return winningTransactionService.getTotalScore(hpan, awardPeriodId);
 
     }
 }
