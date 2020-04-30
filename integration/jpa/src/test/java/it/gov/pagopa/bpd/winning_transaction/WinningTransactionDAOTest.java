@@ -38,7 +38,7 @@ public class WinningTransactionDAOTest extends
 
 
     @Override
-    protected WinningTransactionDAO getCitizenDAO() {
+    protected WinningTransactionDAO getDao() {
         return dao;
     }
 
