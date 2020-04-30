@@ -14,8 +14,7 @@ import java.util.List;
 @Repository
 public interface WinningTransactionDAO extends CrudJpaDAO<WinningTransaction, WinningTransactionId> {
 
-    List<WinningTransaction> findByHpanAndAwardPeriodIdAndAwardedTransaction(
-            String hpan, Long awardPeriodId, Boolean awardedTransaction);
+    List<WinningTransaction> findByHpanAndAwardPeriodId(String hpan, Long awardPeriodId);
 
     @Query("SELECT SUM(score) FROM WinningTransaction WHERE hpan = ?1 AND awardPeriodId = ?2")
     Long calculateTotalScore(

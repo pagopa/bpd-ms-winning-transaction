@@ -49,11 +49,9 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
         if (log.isDebugEnabled()) {
             log.debug("#### WinningTransactionServiceImpl - getWinningTransactions ####");
             log.debug("hpan: " + hpan);
-            log.debug("awardPeriodId: " + awardPeriodId);
         }
         List<WinningTransaction> winningTransactions = winningTransactionDAO
-                .findByHpanAndAwardPeriodIdAndAwardedTransaction(
-                        hpan, awardPeriodId, true);
+                .findByHpanAndAwardPeriodId(hpan, awardPeriodId);
         if (winningTransactions.isEmpty()) {
             throw new WinningTransactionNotFoundException(hpan);
         }
