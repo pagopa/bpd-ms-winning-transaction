@@ -1,6 +1,7 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.WinningTransactionDAO;
+import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionNotFoundException;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransactionId;
@@ -8,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityExistsException;
 import java.util.List;
 
 /**
@@ -28,28 +28,26 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
     @Override
     public WinningTransaction create(WinningTransaction winningTransaction) {
         if (log.isDebugEnabled()) {
-            log.debug("#### WinningTransactionServiceImpl - create ####");
-            log.debug(winningTransaction.toString());
+            log.debug("WinningTransactionServiceImpl.create");
+            log.debug("winningTransaction = [" + winningTransaction + "]");
         }
-        if (!winningTransactionDAO.existsById(WinningTransactionId.builder()
+        final WinningTransactionId id = WinningTransactionId.builder()
                 .idTrxAcquirer(winningTransaction.getIdTrxAcquirer())
                 .acquirerCode(winningTransaction.getAcquirerCode())
                 .trxDate(winningTransaction.getTrxDate())
-                .build())) {
-            return winningTransactionDAO.save(winningTransaction);
+                .build();
+        if (winningTransactionDAO.existsById(id)) {
+            throw new WinningTransactionExistsException(id);
         }
-        throw new EntityExistsException("WinningTransaction with id:" +
-                winningTransaction.getIdTrxAcquirer() + "," +
-                winningTransaction.getAcquirerCode() + "," +
-                winningTransaction.getTrxDate() + " already exists");
+        return winningTransactionDAO.save(winningTransaction);
+
     }
 
     @Override
     public List<WinningTransaction> getWinningTransactions(String hpan, Long awardPeriodId) {
         if (log.isDebugEnabled()) {
-            log.debug("#### WinningTransactionServiceImpl - getWinningTransactions ####");
-            log.debug("hpan: " + hpan);
-            log.debug("awardPeriodId: " + awardPeriodId);
+            log.debug("WinningTransactionServiceImpl.getWinningTransactions");
+            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
         List<WinningTransaction> winningTransactions = winningTransactionDAO
                 .findByHpanAndAwardPeriodIdAndAwardedTransaction(
@@ -64,9 +62,8 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
     @Override
     public Long getTotalScore(String hpan, Long awardPeriodId) {
         if (log.isDebugEnabled()) {
-            log.debug("#### WinningTransactionServiceImpl - getTotalScore ####");
-            log.debug("hpan: " + hpan);
-            log.debug("awardPeriodId: " + awardPeriodId);
+            log.debug("WinningTransactionServiceImpl.getTotalScore");
+            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
         Long totalScore = winningTransactionDAO.calculateTotalScore(hpan, awardPeriodId);
         if (totalScore == null) {
