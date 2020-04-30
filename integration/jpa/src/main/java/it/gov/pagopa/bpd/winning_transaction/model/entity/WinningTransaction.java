@@ -64,9 +64,6 @@ public class WinningTransaction extends BaseEntity implements Serializable {
     @Column(name="score_n")
     BigDecimal score;
 
-    @Column(name="awarded_transaction_b")
-    Boolean awardedTransaction;
-
     @Column(name="award_period_id_n")
     Long awardPeriodId;
 

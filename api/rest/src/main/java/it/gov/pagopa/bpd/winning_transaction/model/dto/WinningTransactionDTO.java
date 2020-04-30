@@ -54,8 +54,6 @@ public class WinningTransactionDTO {
 
     BigDecimal score;
 
-    Boolean awardedTransaction;
-
     Long awardPeriodId;
 
     Integer acquirerId;

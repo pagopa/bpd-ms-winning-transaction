@@ -50,8 +50,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
         List<WinningTransaction> winningTransactions = winningTransactionDAO
-                .findByHpanAndAwardPeriodIdAndAwardedTransaction(
-                        hpan, awardPeriodId, true);
+                .findByHpanAndAwardPeriodId(hpan, awardPeriodId);
         if (winningTransactions.isEmpty()) {
             throw new WinningTransactionNotFoundException(hpan);
         }
