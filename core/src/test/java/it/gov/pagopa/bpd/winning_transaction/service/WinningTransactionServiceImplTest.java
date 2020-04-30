@@ -1,6 +1,7 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.WinningTransactionDAO;
+import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionNotFoundException;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransactionId;
@@ -16,7 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.persistence.EntityExistsException;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -75,13 +75,12 @@ public class WinningTransactionServiceImplTest {
 
         WinningTransaction winningTransaction = winningTransactionService.create(newTransaction);
         assertNotNull(winningTransaction);
-        assertEquals(winningTransaction,newTransaction);
+        assertEquals(winningTransaction, newTransaction);
 
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).save(Mockito.eq(newTransaction));
 
     }
-
 
 
     @Test
@@ -91,15 +90,11 @@ public class WinningTransactionServiceImplTest {
                 .when(winningTransactionDAOMock)
                 .existsById(Mockito.eq(newTransactionId));
 
-        exceptionRule.expect(EntityExistsException.class);
-        exceptionRule.expectMessage("WinningTransaction with id:" +
-                newTransaction.getIdTrxAcquirer() + "," +
-                newTransaction.getAcquirerCode() + "," +
-                newTransaction.getTrxDate() +" already exists");
+        exceptionRule.expect(WinningTransactionExistsException.class);
 
         WinningTransaction winningTransaction = winningTransactionService.create(newTransaction);
         assertNotNull(winningTransaction);
-        assertEquals(winningTransaction,newTransaction);
+        assertEquals(winningTransaction, newTransaction);
 
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
         BDDMockito.verify(winningTransactionDAOMock, Mockito.never()).save(Mockito.eq(newTransaction));
