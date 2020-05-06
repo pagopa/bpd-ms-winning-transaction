@@ -1,6 +1,7 @@
 package it.gov.pagopa.bpd.winning_transaction.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
 import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionResource;
 import org.springframework.http.HttpStatus;
@@ -28,12 +29,27 @@ public interface BpdWinningTransactionController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.OK)
     List<WinningTransactionResource> findWinningTransactions(
-            @NotBlank @RequestParam String hpan,
-            @NotNull @RequestParam Long awardPeriodId);
+            @ApiParam(value = "${swagger.winningTransaction.hashPan}", required = true)
+            @NotBlank
+            @RequestParam
+                    String hpan,
+            @ApiParam(value = "${swagger.winningTransaction.awardPeriodId}", required = true)
+            @NotNull
+            @RequestParam
+                    Long awardPeriodId
+    );
 
     @GetMapping(value = "/total-score", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.OK)
     Long getTotalScore(
-            @NotBlank @RequestParam String hpan,
-            @NotNull @RequestParam Long awardPeriodId);
+            @ApiParam(value = "${swagger.winningTransaction.hashPan}", required = true)
+            @NotBlank
+            @RequestParam
+                    String hpan,
+            @ApiParam(value = "${swagger.winningTransaction.awardPeriodId}", required = true)
+            @NotNull
+            @RequestParam
+                    Long awardPeriodId
+    );
+
 }

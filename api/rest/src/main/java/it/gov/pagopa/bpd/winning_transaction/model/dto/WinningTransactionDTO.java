@@ -1,5 +1,7 @@
 package it.gov.pagopa.bpd.winning_transaction.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,48 +18,74 @@ import java.time.OffsetDateTime;
 @EqualsAndHashCode(of = {"idTrxAcquirer", "acquirerCode", "trxDate"}, callSuper = false)
 public class WinningTransactionDTO {
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.idTrxAcquirer}", required = true)
+    @JsonProperty(required = true)
     @NotNull
     Integer idTrxAcquirer;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.acquirerCode}", required = true)
+    @JsonProperty(required = true)
     @NotNull
     @NotBlank
     @Size(max = 20)
     String acquirerCode;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.trxDate}", required = true)
+    @JsonProperty(required = true)
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     OffsetDateTime trxDate;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.hpan}", required = true)
+    @JsonProperty(required = true)
     @Size(max = 64)
     String hpan;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.operationType}", required = true)
+    @JsonProperty(required = true)
     @Size(max = 5)
     String operationType;
 
     @Size(max = 5)
     String circuitType;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.idTrxIssuer}", required = true)
+    @JsonProperty(required = true)
     Integer idTrxIssuer;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.correlationId}", required = true)
+    @JsonProperty(required = true)
     Integer correlationId;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.amount}", required = true)
+    @JsonProperty(required = true)
     BigDecimal amount;
 
     @Size(max = 3)
     String amountCurrency;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.mcc}", required = true)
+    @JsonProperty(required = true)
     @Size(max = 5)
     String mcc;
 
     @Size(max = 40)
     String mccDescription;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.score}", required = true)
+    @JsonProperty(required = true)
     BigDecimal score;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.awardPeriodId}", required = true)
+    @JsonProperty(required = true)
     Long awardPeriodId;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.acquirerId}", required = true)
+    @JsonProperty(required = true)
     Integer acquirerId;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.merchantId}", required = true)
+    @JsonProperty(required = true)
     Integer merchantId;
 
 }
