@@ -6,7 +6,9 @@ spring:
     name: "@project.parent.artifactId@"
     version: "@project.version@"
   profiles:
-    active: swaggerIT
+    include:
+      # TO enable italian documentations
+      - swaggerIT
 
 info:
   build:
@@ -25,4 +27,4 @@ meda:
 
 logging:
   level:
-    it.gov.pagopa.bpd..winning_transaction: ${LOG_LEVEL_BPD_WINNING_TRANSACTION:DEBUG}
+    it.gov.pagopa.bpd.winning_transaction: ${LOG_LEVEL_BPD_WINNING_TRANSACTION:DEBUG}
