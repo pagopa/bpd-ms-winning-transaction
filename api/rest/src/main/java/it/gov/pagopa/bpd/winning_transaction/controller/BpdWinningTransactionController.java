@@ -6,6 +6,7 @@ import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,6 +19,7 @@ import java.util.List;
  */
 @Api(tags = "Bonus Pagamenti Digitali winning-transaction Controller")
 @RequestMapping("/bpd/winning-transactions")
+@Validated
 public interface BpdWinningTransactionController {
 
 
