@@ -22,8 +22,8 @@ import java.time.OffsetDateTime;
 public class WinningTransaction extends BaseEntity implements Serializable {
 
     @Id
-    @Column(name = "id_trx_acquirer_n")
-    Integer idTrxAcquirer;
+    @Column(name = "id_trx_acquirer_s")
+    String idTrxAcquirer;
 
     @Id
     @Column(name = "acquirer_c")
@@ -43,11 +43,11 @@ public class WinningTransaction extends BaseEntity implements Serializable {
     @Column(name = "circuit_type_c")
     String circuitType;
 
-    @Column(name="id_trx_issuer_n")
-    Integer idTrxIssuer;
+    @Column(name="id_trx_issuer_s")
+    String idTrxIssuer;
 
-    @Column(name="correlation_id_n")
-    Integer correlationId;
+    @Column(name="correlation_id_s")
+    String correlationId;
 
     @Column(name="amount_i")
     BigDecimal amount;
@@ -67,11 +67,11 @@ public class WinningTransaction extends BaseEntity implements Serializable {
     @Column(name="award_period_id_n")
     Long awardPeriodId;
 
-    @Column(name="acquirer_id_n")
-    Integer acquirerId;
+    @Column(name="acquirer_id_s")
+    String acquirerId;
 
-    @Column(name="merchant_id_n")
-    Integer merchantId;
+    @Column(name="merchant_id_s")
+    String merchantId;
 
 }
 

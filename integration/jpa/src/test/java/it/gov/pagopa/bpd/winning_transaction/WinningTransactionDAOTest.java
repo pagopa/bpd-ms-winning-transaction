@@ -15,7 +15,7 @@ public class WinningTransactionDAOTest extends
 
     @Data
     private static class WinningTransactionCriteria implements CriteriaQuery<WinningTransaction> {
-        Integer idTrxAcquirer;
+        String idTrxAcquirer;
         String acquirerCode;
         OffsetDateTime trxDate;
     }
@@ -73,7 +73,7 @@ public class WinningTransactionDAOTest extends
             WinningTransactionId winningTransactionId = new WinningTransactionId();
             OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
             winningTransactionId.setTrxDate(offsetDateTime);
-            winningTransactionId.setIdTrxAcquirer(bias);
+            winningTransactionId.setIdTrxAcquirer(String.valueOf(bias));
             winningTransactionId.setAcquirerCode(bias.toString());
             return winningTransactionId;
         };

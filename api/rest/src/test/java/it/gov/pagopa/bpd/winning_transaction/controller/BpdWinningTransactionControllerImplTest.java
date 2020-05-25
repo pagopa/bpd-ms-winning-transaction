@@ -65,16 +65,16 @@ public class BpdWinningTransactionControllerImplTest {
     private final Long totalScore = rand.nextLong();
 
     private final WinningTransaction newTransaction =
-            WinningTransaction.builder().acquirerCode("0").acquirerId(0).amount(BigDecimal.valueOf(1313.3))
+            WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
                     .amountCurrency("833").awardPeriodId(0L).circuitType("00")
-                    .correlationId(0).hpan("hpan").idTrxAcquirer(0).idTrxIssuer(0).mcc("00")
-                    .mccDescription("test").merchantId(0).operationType("00").score(BigDecimal.valueOf(1313.3))
+                    .correlationId("0").hpan("hpan").idTrxAcquirer("0").idTrxIssuer("0").mcc("00")
+                    .mccDescription("test").merchantId("0").operationType("00").score(BigDecimal.valueOf(1313.3))
                     .trxDate(offsetDateTime).build();
     private final WinningTransactionDTO newTransactionDTO =
-            WinningTransactionDTO.builder().acquirerCode("0").acquirerId(0).amount(BigDecimal.valueOf(1313.3))
+            WinningTransactionDTO.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
                     .amountCurrency("833").awardPeriodId(0L).circuitType("00")
-                    .correlationId(0).hpan("hpan").idTrxAcquirer(0).idTrxIssuer(0).mcc("00")
-                    .mccDescription("test").merchantId(0).operationType("00").score(BigDecimal.valueOf(1313.3))
+                    .correlationId("0").hpan("hpan").idTrxAcquirer("0").idTrxIssuer("0").mcc("00")
+                    .mccDescription("test").merchantId("0").operationType("00").score(BigDecimal.valueOf(1313.3))
                     .trxDate(offsetDateTime).build();
 
 

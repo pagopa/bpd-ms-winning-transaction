@@ -22,7 +22,7 @@ public class WinningTransactionResource {
 
     @ApiModelProperty(value = "${swagger.winningTransaction.idTrxAcquirer}", required = true)
     @JsonProperty(required = true)
-    private Number idTrxAcquirer;
+    private String idTrxAcquirer;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.idTrxIssuer}", required = true)
     @JsonProperty(required = true)

@@ -21,7 +21,7 @@ public class WinningTransactionDTO {
     @ApiModelProperty(value = "${swagger.winningTransaction.idTrxAcquirer}", required = true)
     @JsonProperty(required = true)
     @NotNull
-    Integer idTrxAcquirer;
+    String idTrxAcquirer;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.acquirerCode}", required = true)
     @JsonProperty(required = true)
@@ -51,11 +51,11 @@ public class WinningTransactionDTO {
 
     @ApiModelProperty(value = "${swagger.winningTransaction.idTrxIssuer}", required = true)
     @JsonProperty(required = true)
-    Integer idTrxIssuer;
+    String idTrxIssuer;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.correlationId}", required = true)
     @JsonProperty(required = true)
-    Integer correlationId;
+    String correlationId;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.amount}", required = true)
     @JsonProperty(required = true)
@@ -82,10 +82,10 @@ public class WinningTransactionDTO {
 
     @ApiModelProperty(value = "${swagger.winningTransaction.acquirerId}", required = true)
     @JsonProperty(required = true)
-    Integer acquirerId;
+    String acquirerId;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.merchantId}", required = true)
     @JsonProperty(required = true)
-    Integer merchantId;
+    String merchantId;
 
 }

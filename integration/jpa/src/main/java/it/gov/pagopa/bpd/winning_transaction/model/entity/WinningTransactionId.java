@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 @Builder
 public class WinningTransactionId implements Serializable {
 
-    Integer idTrxAcquirer;
+    String idTrxAcquirer;
     String acquirerCode;
     OffsetDateTime trxDate;
 
