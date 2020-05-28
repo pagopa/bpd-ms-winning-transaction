@@ -1,6 +1,6 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
-import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package it.gov.pagopa.bpd.winning_transaction.model.entity;
+package it.gov.pagopa.bpd.winning_transaction.connector.jpa.model;
 
 import lombok.*;
 

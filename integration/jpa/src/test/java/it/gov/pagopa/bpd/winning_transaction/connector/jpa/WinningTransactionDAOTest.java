@@ -1,9 +1,9 @@
-package it.gov.pagopa.bpd.winning_transaction;
+package it.gov.pagopa.bpd.winning_transaction.connector.jpa;
 
 import eu.sia.meda.layers.connector.query.CriteriaQuery;
-import it.gov.pagopa.bpd.common.BaseCrudJpaDAOTest;
-import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransactionId;
+import it.gov.pagopa.bpd.common.connector.jpa.BaseCrudJpaDAOTest;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 

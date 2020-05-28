@@ -1,10 +1,10 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
-import it.gov.pagopa.bpd.winning_transaction.WinningTransactionDAO;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionNotFoundException;
-import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.model.entity.WinningTransactionId;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
