@@ -6,6 +6,7 @@ import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourc
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.factory.WinningTransactionModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
+import it.gov.pagopa.bpd.winning_transaction.model.resource.TotalScoreResource;
 import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.apache.logging.log4j.util.Strings;
@@ -327,11 +328,11 @@ public class BpdWinningTransactionControllerImplTest {
         assertNotNull(contentString);
         assertFalse(Strings.isBlank(contentString));
 
-        Long newTotalScore = mapper.readValue(
-                contentString, new TypeReference<Long>() {
+        TotalScoreResource resource = mapper.readValue(
+                contentString, new TypeReference<TotalScoreResource>() {
                 });
 
-        assertEquals(newTotalScore, totalScore);
+        assertEquals(resource.getTotalScore(), totalScore);
 
         BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
                 .getTotalScore(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
