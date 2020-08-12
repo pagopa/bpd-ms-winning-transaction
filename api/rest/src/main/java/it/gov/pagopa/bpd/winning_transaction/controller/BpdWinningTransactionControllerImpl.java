@@ -5,6 +5,7 @@ import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourc
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.factory.ModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
+import it.gov.pagopa.bpd.winning_transaction.model.resource.TotalScoreResource;
 import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,13 +69,13 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
     }
 
     @Override
-    public Long getTotalScore(String hpan, Long awardPeriodId) {
+    public TotalScoreResource getTotalScore(String hpan, Long awardPeriodId) {
         if (logger.isDebugEnabled()) {
             logger.debug("BpdWinningTransactionControllerImpl.getTotalScore");
             logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
 
-        return winningTransactionService.getTotalScore(hpan, awardPeriodId);
+        return new TotalScoreResource(winningTransactionService.getTotalScore(hpan, awardPeriodId));
 
     }
 }
