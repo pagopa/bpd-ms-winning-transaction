@@ -73,5 +73,11 @@ public class WinningTransaction extends BaseEntity implements Serializable {
     @Column(name="merchant_id_s")
     String merchantId;
 
+    @Column(name="bin_s")
+    String bin;
+
+    @Column(name="terminal_id_s")
+    String terminalId;
+
 }
 
