@@ -4,7 +4,6 @@ import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
-import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,9 +61,6 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
         Long totalScore = winningTransactionDAO.calculateTotalScore(hpan, awardPeriodId);
-        if (totalScore == null) {
-            throw new WinningTransactionNotFoundException(hpan);
-        }
         return totalScore;
     }
 

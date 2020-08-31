@@ -4,7 +4,6 @@ import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
-import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionNotFoundException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -154,18 +153,4 @@ public class WinningTransactionServiceImplTest {
 
     }
 
-    @Test(expected = WinningTransactionNotFoundException.class)
-    public void getTotalScore_KO() {
-
-        String wrongHpan = "wrongHpan";
-        Long awardPeriodId = 0L;
-
-        BDDMockito.doReturn(null)
-                .when(winningTransactionDAOMock)
-                .calculateTotalScore(
-                        Mockito.eq(wrongHpan),
-                        Mockito.eq(awardPeriodId));
-
-        Long newTotalScore = winningTransactionService.getTotalScore(wrongHpan, awardPeriodId);
-    }
 }
