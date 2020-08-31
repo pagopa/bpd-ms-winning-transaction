@@ -129,24 +129,6 @@ public class WinningTransactionServiceImplTest {
 
     }
 
-    @Test(expected = WinningTransactionNotFoundException.class)
-    public void getWinningTransactions_KO() {
-
-        String wrongHashpan = "wrongHashpan";
-        Long awardPeriodId = 0L;
-
-        List<WinningTransaction> winningTransactions = Collections.EMPTY_LIST;
-
-        BDDMockito.doReturn(winningTransactions)
-                .when(winningTransactionDAOMock)
-                .findByHpanAndAwardPeriodId(
-                        Mockito.eq(wrongHashpan),
-                        Mockito.eq(awardPeriodId));
-
-        List<WinningTransaction> newWinningTransactions = winningTransactionService
-                .getWinningTransactions(wrongHashpan, awardPeriodId);
-
-    }
 
     @Test
     public void getTotalScore() {

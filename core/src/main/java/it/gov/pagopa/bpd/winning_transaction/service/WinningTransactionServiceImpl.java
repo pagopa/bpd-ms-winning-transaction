@@ -51,9 +51,6 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
         }
         List<WinningTransaction> winningTransactions = winningTransactionDAO
                 .findByHpanAndAwardPeriodId(hpan, awardPeriodId);
-        if (winningTransactions.isEmpty()) {
-            throw new WinningTransactionNotFoundException(hpan);
-        }
         return winningTransactions;
     }
 
