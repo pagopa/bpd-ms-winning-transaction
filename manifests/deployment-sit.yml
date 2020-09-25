@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: bpdmswinningtransaction
-          image: cstarregistry.azurecr.io/bpdmswinningtransaction-sit
+          image: cstarregistry.azurecr.io/bpdmswinningtransaction
           ports:
             - containerPort: 8080
           envFrom:
@@ -21,6 +21,8 @@ spec:
                 name: eventhub-logging
             - configMapRef:
                 name: bpdmswinningtransaction
+            - configMapRef:
+                name: jvm
       hostAliases:
         - hostnames:
             - bpd-hub-dev.servicebus.windows.net
