@@ -4,7 +4,6 @@ import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
-import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionNotFoundException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -129,24 +128,6 @@ public class WinningTransactionServiceImplTest {
 
     }
 
-    @Test(expected = WinningTransactionNotFoundException.class)
-    public void getWinningTransactions_KO() {
-
-        String wrongHashpan = "wrongHashpan";
-        Long awardPeriodId = 0L;
-
-        List<WinningTransaction> winningTransactions = Collections.EMPTY_LIST;
-
-        BDDMockito.doReturn(winningTransactions)
-                .when(winningTransactionDAOMock)
-                .findByHpanAndAwardPeriodId(
-                        Mockito.eq(wrongHashpan),
-                        Mockito.eq(awardPeriodId));
-
-        List<WinningTransaction> newWinningTransactions = winningTransactionService
-                .getWinningTransactions(wrongHashpan, awardPeriodId);
-
-    }
 
     @Test
     public void getTotalScore() {
@@ -172,18 +153,4 @@ public class WinningTransactionServiceImplTest {
 
     }
 
-    @Test(expected = WinningTransactionNotFoundException.class)
-    public void getTotalScore_KO() {
-
-        String wrongHpan = "wrongHpan";
-        Long awardPeriodId = 0L;
-
-        BDDMockito.doReturn(null)
-                .when(winningTransactionDAOMock)
-                .calculateTotalScore(
-                        Mockito.eq(wrongHpan),
-                        Mockito.eq(awardPeriodId));
-
-        Long newTotalScore = winningTransactionService.getTotalScore(wrongHpan, awardPeriodId);
-    }
 }
