@@ -50,8 +50,8 @@ public class WinningTransactionDTO {
     @Size(max = 5)
     String circuitType;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.idTrxIssuer}", required = true)
-    @JsonProperty(required = true)
+    @ApiModelProperty(value = "${swagger.winningTransaction.idTrxIssuer}")
+    @JsonProperty
     String idTrxIssuer;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.correlationId}", required = true)
