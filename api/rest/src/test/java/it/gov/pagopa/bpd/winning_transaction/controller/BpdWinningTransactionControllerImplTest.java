@@ -2,10 +2,12 @@ package it.gov.pagopa.bpd.winning_transaction.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.factory.WinningTransactionModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
+import it.gov.pagopa.bpd.winning_transaction.model.resource.FindWinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.model.resource.TotalScoreResource;
 import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
@@ -51,6 +53,9 @@ public class BpdWinningTransactionControllerImplTest {
 
     @SpyBean
     private WinningTransactionResourceAssembler winningTransactionResourceAssemblerSpy;
+
+    @SpyBean
+    private FindWinningTransactionResourceAssembler findWinningTransactionResourceAssemblerSpy;
 
     @MockBean
     private WinningTransactionService winningTransactionServiceMock;
@@ -288,17 +293,17 @@ public class BpdWinningTransactionControllerImplTest {
         assertNotNull(contentString);
         assertFalse(Strings.isBlank(contentString));
 
-        List<WinningTransactionResource> winningTransactions = mapper.readValue(
-                contentString, new TypeReference<List<WinningTransactionResource>>() {});
+        List<FindWinningTransactionResource> winningTransactions = mapper.readValue(
+                contentString, new TypeReference<List<FindWinningTransactionResource>>() {});
 
         assertEquals(winningTransactions.size(), 1);
-        assertEquals(winningTransactions.get(0).getAcquirerCode(), newTransaction.getAcquirerCode());
+        assertEquals(winningTransactions.get(0).getIdTrxIssuer(), newTransaction.getIdTrxIssuer());
 
         BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
                 .getWinningTransactions(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
-        BDDMockito.verify(winningTransactionResourceAssemblerSpy, Mockito.times(winningTransactions.size()))
+        BDDMockito.verify(findWinningTransactionResourceAssemblerSpy, Mockito.times(winningTransactions.size()))
                 .toResource(Mockito.any(WinningTransaction.class));
-        BDDMockito.verify(winningTransactionResourceAssemblerSpy, Mockito.atMost(1))
+        BDDMockito.verify(findWinningTransactionResourceAssemblerSpy, Mockito.atMost(1))
                 .toResource(Mockito.eq(newTransaction));
 
     }
@@ -315,7 +320,7 @@ public class BpdWinningTransactionControllerImplTest {
                 .getTotalScore(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
 
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.get(BASE_URL + "/total-score")
+                MockMvcRequestBuilders.get(BASE_URL + "/total-cashback")
                         .param("hpan", hpan)
                         .param("awardPeriodId", String.valueOf(awardPeriodId))
                         .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
