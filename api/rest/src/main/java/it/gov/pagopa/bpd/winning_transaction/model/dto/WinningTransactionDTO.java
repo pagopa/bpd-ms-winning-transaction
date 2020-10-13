@@ -73,9 +73,9 @@ public class WinningTransactionDTO {
     @Size(max = 40)
     String mccDescription;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.score}", required = true)
+    @ApiModelProperty(value = "${swagger.winningTransaction.cashback}", required = true)
     @JsonProperty(required = true)
-    BigDecimal score;
+    BigDecimal cashback;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.awardPeriodId}", required = true)
     @JsonProperty(required = true)

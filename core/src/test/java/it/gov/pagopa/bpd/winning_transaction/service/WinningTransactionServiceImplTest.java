@@ -43,7 +43,7 @@ public class WinningTransactionServiceImplTest {
             WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
                     .amountCurrency("833").awardPeriodId(0L).circuitType("00")
                     .correlationId("0").hpan("hpan").idTrxAcquirer("0").idTrxIssuer("0").mcc("00")
-                    .mccDescription("test").merchantId("0").operationType("00").score(BigDecimal.valueOf(1313.3))
+                    .mccDescription("test").merchantId("0").operationType("00").cashback(BigDecimal.valueOf(1313.3))
                     .trxDate(offsetDateTime).build();
     private final WinningTransactionId newTransactionId =
             WinningTransactionId.builder()

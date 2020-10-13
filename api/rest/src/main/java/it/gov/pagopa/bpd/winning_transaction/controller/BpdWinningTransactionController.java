@@ -33,9 +33,8 @@ public interface BpdWinningTransactionController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.OK)
     List<FindWinningTransactionResource> findWinningTransactions(
-            @ApiParam(value = "${swagger.winningTransaction.hashPan}", required = true)
-            @NotBlank
-            @RequestParam
+            @ApiParam(value = "${swagger.winningTransaction.hashPan}", required = false)
+            @RequestParam(required = false)
                     String hpan,
             @ApiParam(value = "${swagger.winningTransaction.awardPeriodId}", required = true)
             @NotNull

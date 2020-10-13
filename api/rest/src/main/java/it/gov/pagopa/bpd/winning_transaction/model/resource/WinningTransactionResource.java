@@ -28,9 +28,9 @@ public class WinningTransactionResource {
     @JsonProperty(required = true)
     private String idTrxIssuer;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.score}", required = true)
+    @ApiModelProperty(value = "${swagger.winningTransaction.cashback}", required = true)
     @JsonProperty(required = true)
-    private BigDecimal score;
+    private BigDecimal cashback;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.trxDate}", required = true)
     @JsonProperty(required = true)

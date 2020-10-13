@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,8 +49,15 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("WinningTransactionServiceImpl.getWinningTransactions");
             log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
-        List<WinningTransaction> winningTransactions = winningTransactionDAO
-                .findByHpanAndAwardPeriodId(hpan, awardPeriodId);
+
+        List<WinningTransaction> winningTransactions = new ArrayList<>();
+
+        if( hpan!=null&& !hpan.isEmpty()){
+            winningTransactions = winningTransactionDAO.findByHpanAndAwardPeriodId(hpan, awardPeriodId);
+        } else {
+            winningTransactions = winningTransactionDAO.findByAwardPeriodId(awardPeriodId);
+        }
+
         return winningTransactions;
     }
 

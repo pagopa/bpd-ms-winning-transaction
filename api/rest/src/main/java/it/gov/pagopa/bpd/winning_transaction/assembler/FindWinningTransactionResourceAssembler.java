@@ -17,7 +17,7 @@ public class FindWinningTransactionResourceAssembler {
         if (model != null) {
             resource = FindWinningTransactionResource.builder().build();
             BeanUtils.copyProperties(model, resource, "operationType");
-            resource.setCashback(model.getScore());
+            resource.setCashback(model.getCashback());
             resource.setHashPan(model.getHpan());
         }
 
