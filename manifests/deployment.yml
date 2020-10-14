@@ -1,0 +1,16 @@
+apiVersion : apps/v1beta1
+kind: Deployment
+metadata:
+  name: bpdmswinningtransaction 
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: bpdmswinningtransaction 
+    spec:
+      containers:
+        - name: bpdmswinningtransaction 
+          image: cstarregistry.azurecr.io/bpdmswinningtransaction
+          ports:
+          - containerPort: 8080
