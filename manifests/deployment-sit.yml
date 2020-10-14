@@ -1,0 +1,29 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: bpdmswinningtransaction
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: bpdmswinningtransaction
+    spec:
+      containers:
+        - name: bpdmswinningtransaction
+          image: cstarregistry.azurecr.io/bpdmswinningtransaction
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: postgres-credentials
+            - configMapRef:
+                name: eventhub-logging
+            - configMapRef:
+                name: bpdmswinningtransaction
+            - configMapRef:
+                name: jvm
+      hostAliases:
+        - hostnames:
+            - bpd-hub-dev.servicebus.windows.net
+          ip: 10.70.5.9
