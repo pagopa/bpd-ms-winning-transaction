@@ -35,10 +35,9 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
                 .acquirerCode(winningTransaction.getAcquirerCode())
                 .trxDate(winningTransaction.getTrxDate())
                 .build();
-        //TODO: Risistemare a termine UAT
-//        if (winningTransactionDAO.existsById(id)) {
-//            throw new WinningTransactionExistsException(id);
-//        }
+        if (winningTransactionDAO.existsById(id)) {
+            throw new WinningTransactionExistsException(id);
+        }
         return winningTransactionDAO.save(winningTransaction);
 
     }

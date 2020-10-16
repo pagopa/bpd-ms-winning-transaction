@@ -82,23 +82,23 @@ public class WinningTransactionServiceImplTest {
     }
 
 
-//    @Test
-//    public void create_ko() {
-//
-//        BDDMockito.doReturn(true)
-//                .when(winningTransactionDAOMock)
-//                .existsById(Mockito.eq(newTransactionId));
-//
-//        exceptionRule.expect(WinningTransactionExistsException.class);
-//
-//        WinningTransaction winningTransaction = winningTransactionService.create(newTransaction);
-//        assertNotNull(winningTransaction);
-//        assertEquals(winningTransaction, newTransaction);
-//
-//        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
-//        BDDMockito.verify(winningTransactionDAOMock, Mockito.never()).save(Mockito.eq(newTransaction));
-//
-//    }
+    @Test
+    public void create_ko() {
+
+        BDDMockito.doReturn(true)
+                .when(winningTransactionDAOMock)
+                .existsById(Mockito.eq(newTransactionId));
+
+        exceptionRule.expect(WinningTransactionExistsException.class);
+
+        WinningTransaction winningTransaction = winningTransactionService.create(newTransaction);
+        assertNotNull(winningTransaction);
+        assertEquals(winningTransaction, newTransaction);
+
+        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
+        BDDMockito.verify(winningTransactionDAOMock, Mockito.never()).save(Mockito.eq(newTransaction));
+
+    }
 
     @Test
     public void getWinningTransactions() {
