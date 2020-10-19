@@ -5,7 +5,6 @@ import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TotalScoreResourceDTO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
-import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,6 +30,8 @@ import static org.junit.Assert.assertNotNull;
 @ContextConfiguration(classes = WinningTransactionServiceImpl.class)
 public class WinningTransactionServiceImplTest {
 
+    private final OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
+
     @MockBean
     private WinningTransactionDAO winningTransactionDAOMock;
 
@@ -47,7 +48,6 @@ public class WinningTransactionServiceImplTest {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
-    private final OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
     @MockBean
     private CitizenTransactionDAO citizenTransactionDAOMock;
     private final WinningTransactionId newTransactionId =
@@ -80,12 +80,14 @@ public class WinningTransactionServiceImplTest {
         WinningTransaction winningTransaction = winningTransactionService.create(newTransaction);
         assertNotNull(winningTransaction);
         assertEquals(winningTransaction, newTransaction);
+//TODO: Risistemare a termine UAT
 
-        //BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
+//        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).save(Mockito.eq(newTransaction));
 
     }
 
+//TODO: Risistemare a termine UAT
 
 //    @Test
 //    public void create_ko() {

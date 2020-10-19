@@ -47,6 +47,8 @@ import static org.junit.Assert.*;
 @WebMvcTest(value = BpdWinningTransactionControllerImpl.class, secure = false)
 public class BpdWinningTransactionControllerImplTest {
 
+    private final OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
+
     @Autowired
     MockMvc mockMvc;
 
@@ -73,8 +75,6 @@ public class BpdWinningTransactionControllerImplTest {
     ObjectMapper mapper;
 
     private final String BASE_URL = "/bpd/winning-transactions";
-
-    private final OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
 
     private Random rand = new Random();
     private final Long totalScore = rand.nextLong();
