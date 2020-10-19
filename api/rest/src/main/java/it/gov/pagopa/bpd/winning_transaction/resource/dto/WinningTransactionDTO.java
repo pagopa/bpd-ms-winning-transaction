@@ -1,4 +1,4 @@
-package it.gov.pagopa.bpd.winning_transaction.model.dto;
+package it.gov.pagopa.bpd.winning_transaction.resource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -73,9 +73,9 @@ public class WinningTransactionDTO {
     @Size(max = 40)
     String mccDescription;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.cashback}", required = true)
+    @ApiModelProperty(value = "${swagger.winningTransaction.score}", required = true)
     @JsonProperty(required = true)
-    BigDecimal cashback;
+    BigDecimal score;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.awardPeriodId}", required = true)
     @JsonProperty(required = true)

@@ -18,8 +18,11 @@ public interface WinningTransactionDAO extends CrudJpaDAO<WinningTransaction, Wi
 
     List<WinningTransaction> findByAwardPeriodId(Long awardPeriodId);
 
-    @Query("SELECT SUM(cashback) FROM WinningTransaction WHERE hpan = ?1 AND awardPeriodId = ?2")
+    @Query("SELECT SUM(score) FROM WinningTransaction WHERE hpan = ?1 AND awardPeriodId = ?2")
     Long calculateTotalScore(
             String hpan, Long awardPeriodId);
 
+    @Query("SELECT COUNT(*) FROM WinningTransaction WHERE hpan = ?1 AND awardPeriodId = ?2")
+    Long calculateTotalTransaction(
+            String hpan, Long awardPeriodId);
 }

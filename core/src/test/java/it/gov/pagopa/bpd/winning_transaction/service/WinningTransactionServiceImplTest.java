@@ -1,6 +1,8 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.CitizenTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TotalScoreResourceDTO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
@@ -32,6 +34,13 @@ public class WinningTransactionServiceImplTest {
     @MockBean
     private WinningTransactionDAO winningTransactionDAOMock;
 
+    private final WinningTransaction newTransaction =
+            WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
+                    .amountCurrency("833").awardPeriodId(0L).circuitType("00")
+                    .correlationId("0").hpan("hpan").idTrxAcquirer("0").idTrxIssuer("0").mcc("00")
+                    .mccDescription("test").merchantId("0").operationType("00").score(BigDecimal.valueOf(1313.3))
+                    .trxDate(offsetDateTime).build();
+
     @Autowired
     private WinningTransactionService winningTransactionService;
 
@@ -39,12 +48,8 @@ public class WinningTransactionServiceImplTest {
     public ExpectedException exceptionRule = ExpectedException.none();
 
     private final OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
-    private final WinningTransaction newTransaction =
-            WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
-                    .amountCurrency("833").awardPeriodId(0L).circuitType("00")
-                    .correlationId("0").hpan("hpan").idTrxAcquirer("0").idTrxIssuer("0").mcc("00")
-                    .mccDescription("test").merchantId("0").operationType("00").cashback(BigDecimal.valueOf(1313.3))
-                    .trxDate(offsetDateTime).build();
+    @MockBean
+    private CitizenTransactionDAO citizenTransactionDAOMock;
     private final WinningTransactionId newTransactionId =
             WinningTransactionId.builder()
                     .idTrxAcquirer("0")
@@ -128,23 +133,24 @@ public class WinningTransactionServiceImplTest {
 
     }
 
-
     @Test
     public void getTotalScore() {
 
         String hpan = "hashpan";
         Long awardPeriodId = 0L;
+        String fiscalCode = "fiscalCode";
 
         BDDMockito.doReturn(totalScore)
                 .when(winningTransactionDAOMock)
                 .calculateTotalScore(
                         Mockito.eq(hpan),
                         Mockito.eq(awardPeriodId));
+        BigDecimal finalTotalScore = new BigDecimal(totalScore);
 
-        Long newTotalScore = winningTransactionService.getTotalScore(hpan, awardPeriodId);
+        TotalScoreResourceDTO newTotalScore = winningTransactionService.getTotalScore(hpan, awardPeriodId, fiscalCode);
 
         assertNotNull(newTotalScore);
-        assertEquals(newTotalScore, totalScore);
+        assertEquals(newTotalScore.getTotalScore(), finalTotalScore);
 
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
                 .calculateTotalScore(

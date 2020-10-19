@@ -1,4 +1,4 @@
-package it.gov.pagopa.bpd.winning_transaction.model.resource;
+package it.gov.pagopa.bpd.winning_transaction.resource.resource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;

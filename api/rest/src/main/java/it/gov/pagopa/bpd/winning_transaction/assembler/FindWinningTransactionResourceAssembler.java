@@ -1,7 +1,7 @@
 package it.gov.pagopa.bpd.winning_transaction.assembler;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.model.resource.FindWinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class FindWinningTransactionResourceAssembler {
         if (model != null) {
             resource = FindWinningTransactionResource.builder().build();
             BeanUtils.copyProperties(model, resource, "operationType");
-            resource.setCashback(model.getCashback());
+            resource.setCashback(model.getScore());
             resource.setHashPan(model.getHpan());
         }
 

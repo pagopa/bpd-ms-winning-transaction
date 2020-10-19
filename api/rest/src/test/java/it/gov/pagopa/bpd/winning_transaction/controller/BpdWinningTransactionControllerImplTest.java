@@ -3,13 +3,15 @@ package it.gov.pagopa.bpd.winning_transaction.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionResourceAssembler;
+import it.gov.pagopa.bpd.winning_transaction.assembler.TotalScoreResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourceAssembler;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TotalScoreResourceDTO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.factory.WinningTransactionModelFactory;
-import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
-import it.gov.pagopa.bpd.winning_transaction.model.resource.FindWinningTransactionResource;
-import it.gov.pagopa.bpd.winning_transaction.model.resource.TotalScoreResource;
-import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.TotalScoreResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
@@ -57,6 +59,13 @@ public class BpdWinningTransactionControllerImplTest {
     @SpyBean
     private FindWinningTransactionResourceAssembler findWinningTransactionResourceAssemblerSpy;
 
+    private final WinningTransaction newTransaction =
+            WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
+                    .amountCurrency("833").awardPeriodId(0L).circuitType("00")
+                    .correlationId("0").hpan("hpan").idTrxAcquirer("0").idTrxIssuer("0").mcc("00")
+                    .mccDescription("test").merchantId("0").operationType("00").score(BigDecimal.valueOf(1313.3))
+                    .trxDate(offsetDateTime).bin("000011").terminalId("01301313").build();
+
     @MockBean
     private WinningTransactionService winningTransactionServiceMock;
 
@@ -69,19 +78,14 @@ public class BpdWinningTransactionControllerImplTest {
 
     private Random rand = new Random();
     private final Long totalScore = rand.nextLong();
-
-    private final WinningTransaction newTransaction =
-            WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
-                    .amountCurrency("833").awardPeriodId(0L).circuitType("00")
-                    .correlationId("0").hpan("hpan").idTrxAcquirer("0").idTrxIssuer("0").mcc("00")
-                    .mccDescription("test").merchantId("0").operationType("00").cashback(BigDecimal.valueOf(1313.3))
-                    .trxDate(offsetDateTime).bin("000011").terminalId("01301313").build();
     private final WinningTransactionDTO newTransactionDTO =
             WinningTransactionDTO.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
                     .amountCurrency("833").awardPeriodId(0L).circuitType("00")
                     .correlationId("0").hpan("hpan").idTrxAcquirer("0").idTrxIssuer("0").mcc("00")
-                    .mccDescription("test").merchantId("0").operationType("00").cashback(BigDecimal.valueOf(1313.3))
+                    .mccDescription("test").merchantId("0").operationType("00").score(BigDecimal.valueOf(1313.3))
                     .trxDate(offsetDateTime).bin("000011").terminalId("01301313").build();
+    @SpyBean
+    private TotalScoreResourceAssembler totalScoreResourceAssemblerSpy;
 
 
     @Before
@@ -308,21 +312,25 @@ public class BpdWinningTransactionControllerImplTest {
 
     }
 
-
     @Test
     public void getTotalScore_OK() throws Exception {
 
         String hpan = "hpan";
         Long awardPeriodId = 0L;
+        String fiscalCode = "fiscalCode";
+        BigDecimal testTotalScore = new BigDecimal(totalScore);
+        TotalScoreResourceDTO totalScoreResource = new TotalScoreResourceDTO();
+        totalScoreResource.setTotalScore(testTotalScore);
 
-        BDDMockito.doReturn(totalScore)
+        BDDMockito.doReturn(totalScoreResource)
                 .when(winningTransactionServiceMock)
-                .getTotalScore(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
+                .getTotalScore(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode));
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.get(BASE_URL + "/total-cashback")
                         .param("hpan", hpan)
                         .param("awardPeriodId", String.valueOf(awardPeriodId))
+                        .param("fiscalCode", fiscalCode)
                         .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -337,10 +345,11 @@ public class BpdWinningTransactionControllerImplTest {
                 contentString, new TypeReference<TotalScoreResource>() {
                 });
 
-        assertEquals(resource.getTotalScore(), totalScore);
+        BigDecimal finalTotalScore = new BigDecimal(totalScore);
+        assertEquals(resource.getTotalScore(), finalTotalScore);
 
         BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
-                .getTotalScore(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
+                .getTotalScore(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode));
 
     }
 

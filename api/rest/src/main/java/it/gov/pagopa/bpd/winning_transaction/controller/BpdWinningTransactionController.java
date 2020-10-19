@@ -2,10 +2,10 @@ package it.gov.pagopa.bpd.winning_transaction.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
-import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
-import it.gov.pagopa.bpd.winning_transaction.model.resource.FindWinningTransactionResource;
-import it.gov.pagopa.bpd.winning_transaction.model.resource.TotalScoreResource;
-import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.TotalScoreResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -45,14 +45,17 @@ public interface BpdWinningTransactionController {
     @GetMapping(value = "/total-cashback", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.OK)
     TotalScoreResource getTotalScore(
-            @ApiParam(value = "${swagger.winningTransaction.hashPan}", required = true)
-            @NotBlank
-            @RequestParam
+            @ApiParam(value = "${swagger.winningTransaction.hashPan}", required = false)
+            @RequestParam(required = false)
                     String hpan,
             @ApiParam(value = "${swagger.winningTransaction.awardPeriodId}", required = true)
             @NotNull
             @RequestParam
-                    Long awardPeriodId
+                    Long awardPeriodId,
+            @ApiParam(value = "${swagger.winningTransaction.fiscalCode}", required = true)
+            @NotBlank
+            @RequestParam
+                    String fiscalCode
     );
 
 }

@@ -1,8 +1,8 @@
-package it.gov.pagopa.bpd.winning_transaction.model.resource;
+package it.gov.pagopa.bpd.winning_transaction.resource.resource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-import it.gov.pagopa.bpd.winning_transaction.model.enums.OperationType;
+import it.gov.pagopa.bpd.winning_transaction.resource.enums.OperationType;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -28,9 +28,9 @@ public class WinningTransactionResource {
     @JsonProperty(required = true)
     private String idTrxIssuer;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.cashback}", required = true)
+    @ApiModelProperty(value = "${swagger.winningTransaction.score}", required = true)
     @JsonProperty(required = true)
-    private BigDecimal cashback;
+    private BigDecimal score;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.trxDate}", required = true)
     @JsonProperty(required = true)
