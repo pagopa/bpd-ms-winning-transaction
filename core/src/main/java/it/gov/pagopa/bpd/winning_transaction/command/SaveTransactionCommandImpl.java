@@ -85,7 +85,6 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
                     dateTimeFormatter.format(save_end),
                     ChronoUnit.MILLIS.between(save_start, save_end));
 
-
             OffsetDateTime end_exec = OffsetDateTime.now();
 
             log.info("Executed ProcessTransactionCommand for transaction: {}, {}, {} " +
