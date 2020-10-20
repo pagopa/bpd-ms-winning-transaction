@@ -17,8 +17,12 @@ spec:
           envFrom:
             - secretRef:
                 name: postgres-credentials
+            - secretRef:
+                name: bpdmswinningtransaction
             - configMapRef:
                 name: eventhub-logging
+            - configMapRef:
+                name: eventhub-common
             - configMapRef:
                 name: bpdmswinningtransaction
             - configMapRef:
