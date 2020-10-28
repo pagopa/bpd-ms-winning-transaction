@@ -10,12 +10,12 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"totalScore"}, callSuper = false)
-public class TotalScoreResource {
+@EqualsAndHashCode(of = {"totalCashback"}, callSuper = false)
+public class TotalCashbackResource {
 
     @ApiModelProperty(value = "${swagger.winningTransaction.totalScore}", required = true)
     @JsonProperty(required = true)
-    private BigDecimal totalScore;
+    private BigDecimal totalCashback;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.transactionNumber}", required = true)
     @JsonProperty(required = true)

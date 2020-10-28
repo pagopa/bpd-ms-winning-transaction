@@ -1,17 +1,15 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
+import it.gov.pagopa.bpd.winning_transaction.connector.CitizenRestClient;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.CitizenTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.CitizenWinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TotalScoreResourceDTO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
-import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
+import it.gov.pagopa.bpd.winning_transaction.connector.model.CitizenResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +22,16 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
     private final WinningTransactionDAO winningTransactionDAO;
     private final CitizenTransactionDAO citizenTransactionDAO;
+    private final CitizenRestClient citizenRestClient;
 
     @Autowired
     public WinningTransactionServiceImpl(
             WinningTransactionDAO winningTransactionDAO,
-            CitizenTransactionDAO citizenTransactionDAO) {
+            CitizenTransactionDAO citizenTransactionDAO,
+            CitizenRestClient citizenRestClient) {
         this.winningTransactionDAO = winningTransactionDAO;
         this.citizenTransactionDAO = citizenTransactionDAO;
+        this.citizenRestClient = citizenRestClient;
     }
 
     @Override
@@ -72,25 +73,14 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
 
     @Override
-    public TotalScoreResourceDTO getTotalScore(String hpan, Long awardPeriodId, String fiscalCode) {
+    public CitizenResource getCashback(String hpan, Long awardPeriodId, String fiscalCode) {
         if (log.isDebugEnabled()) {
             log.debug("WinningTransactionServiceImpl.getTotalScore");
             log.debug("fiscalCode = [" + fiscalCode + "], awardPeriodId = [" + awardPeriodId + "]");
         }
 
-        TotalScoreResourceDTO resource = new TotalScoreResourceDTO();
-
-        if (hpan != null) {
-            BigDecimal totalScore = new BigDecimal(winningTransactionDAO.calculateTotalScore(hpan, awardPeriodId));
-            resource.setTotalScore(totalScore);
-            resource.setTransactionNumber(winningTransactionDAO.calculateTotalTransaction(hpan, awardPeriodId));
-        } else {
-            List<CitizenWinningTransaction> transactions = citizenTransactionDAO.findTransactionByFiscalCode(fiscalCode, awardPeriodId);
-            resource.setTotalScore(transactions.stream()
-                    .map(CitizenWinningTransaction::getScore).reduce(BigDecimal.ZERO, BigDecimal::add));
-            resource.setTransactionNumber((long) transactions.size());
-        }
-        return resource;
+        return citizenRestClient.getTotalCashback(hpan, fiscalCode, awardPeriodId);
     }
+
 
 }

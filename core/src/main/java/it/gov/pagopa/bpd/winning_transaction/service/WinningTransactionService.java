@@ -1,7 +1,7 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TotalScoreResourceDTO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
+import it.gov.pagopa.bpd.winning_transaction.connector.model.CitizenResource;
 
 import java.util.List;
 
@@ -14,6 +14,6 @@ public interface WinningTransactionService {
 
     List<WinningTransaction> getWinningTransactions(String hpan, Long awardPeriodId);
 
-    TotalScoreResourceDTO getTotalScore(String hpan, Long awardPeriodId, String fiscalCode);
+    CitizenResource getCashback(String hpan, Long awardPeriodId, String fiscalCode);
 
 }

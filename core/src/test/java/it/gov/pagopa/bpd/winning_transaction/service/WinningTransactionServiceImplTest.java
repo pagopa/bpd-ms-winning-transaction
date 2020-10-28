@@ -1,10 +1,11 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
+import it.gov.pagopa.bpd.winning_transaction.connector.CitizenRestClient;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.CitizenTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TotalScoreResourceDTO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
+import it.gov.pagopa.bpd.winning_transaction.connector.model.CitizenResource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -35,6 +36,9 @@ public class WinningTransactionServiceImplTest {
     @MockBean
     private WinningTransactionDAO winningTransactionDAOMock;
 
+    @MockBean
+    private CitizenRestClient citizenRestClientMock;
+
     private final WinningTransaction newTransaction =
             WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
                     .amountCurrency("833").awardPeriodId(0L).circuitType("00")
@@ -58,7 +62,6 @@ public class WinningTransactionServiceImplTest {
                     .build();
 
     private Random rand = new Random();
-    private final Long totalScore = rand.nextLong();
 
     @Before
     public void initTest() {
@@ -68,6 +71,7 @@ public class WinningTransactionServiceImplTest {
         BDDMockito.doReturn(newTransaction)
                 .when(winningTransactionDAOMock)
                 .save(Mockito.eq(newTransaction));
+
     }
 
     @Test
@@ -136,27 +140,32 @@ public class WinningTransactionServiceImplTest {
     }
 
     @Test
-    public void getTotalScore() {
+    public void getCashback() {
 
         String hpan = "hashpan";
         Long awardPeriodId = 0L;
         String fiscalCode = "fiscalCode";
 
-        BDDMockito.doReturn(totalScore)
-                .when(winningTransactionDAOMock)
-                .calculateTotalScore(
+        CitizenResource resource = new CitizenResource();
+        resource.setTransactionNumber(1L);
+        resource.setTotalCashback(new BigDecimal(1));
+
+        BDDMockito.doReturn(resource).when(citizenRestClientMock)
+                .getTotalCashback(
                         Mockito.eq(hpan),
+                        Mockito.eq(fiscalCode),
                         Mockito.eq(awardPeriodId));
-        BigDecimal finalTotalScore = new BigDecimal(totalScore);
 
-        TotalScoreResourceDTO newTotalScore = winningTransactionService.getTotalScore(hpan, awardPeriodId, fiscalCode);
+        CitizenResource cashback = winningTransactionService.getCashback(hpan, awardPeriodId, fiscalCode);
 
-        assertNotNull(newTotalScore);
-        assertEquals(newTotalScore.getTotalScore(), finalTotalScore);
+        assertNotNull(cashback);
+        assertEquals(cashback.getTransactionNumber(), resource.getTransactionNumber());
+        assertEquals(cashback.getTotalCashback(), resource.getTotalCashback());
 
-        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
-                .calculateTotalScore(
+        BDDMockito.verify(citizenRestClientMock, Mockito.atLeastOnce())
+                .getTotalCashback(
                         Mockito.eq(hpan),
+                        Mockito.eq(fiscalCode),
                         Mockito.eq(awardPeriodId));
 
     }

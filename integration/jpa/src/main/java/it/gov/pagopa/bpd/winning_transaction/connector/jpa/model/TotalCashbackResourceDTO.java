@@ -8,12 +8,12 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Data
-public class TotalScoreResourceDTO {
+public class TotalCashbackResourceDTO {
 
     @JsonProperty(required = true)
     @NotNull
     @NotBlank
-    private BigDecimal totalScore;
+    private BigDecimal totalCashback;
 
     @JsonProperty(required = true)
     @NotNull

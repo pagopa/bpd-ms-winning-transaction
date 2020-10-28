@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
-import it.gov.pagopa.bpd.winning_transaction.resource.resource.TotalScoreResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.TotalCashbackResource;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,9 +44,9 @@ public interface BpdWinningTransactionController {
 
     @GetMapping(value = "/total-cashback", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    TotalScoreResource getTotalScore(
+    TotalCashbackResource getTotalCashback(
             @ApiParam(value = "${swagger.winningTransaction.hashPan}", required = false)
-            @RequestParam(required = false)
+            @RequestParam(value = "hpan", required = false)
                     String hpan,
             @ApiParam(value = "${swagger.winningTransaction.awardPeriodId}", required = true)
             @NotNull
