@@ -20,7 +20,17 @@
         </dependency>
         <dependency>
             <groupId>eu.sia.meda</groupId>
+            <artifactId>meda-arch-event</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.sia.meda</groupId>
             <artifactId>meda-arch-event-listener</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.sia.meda</groupId>
+            <artifactId>meda-arch-event</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>

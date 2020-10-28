@@ -1,4 +1,4 @@
-package it.gov.pagopa.bpd.winning_transaction.model.dto;
+package it.gov.pagopa.bpd.winning_transaction.resource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -37,7 +37,7 @@ public class WinningTransactionDTO {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     OffsetDateTime trxDate;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.hpan}", required = true)
+    @ApiModelProperty(value = "${swagger.winningTransaction.hashPan}", required = true)
     @JsonProperty(required = true)
     @Size(max = 64)
     String hpan;

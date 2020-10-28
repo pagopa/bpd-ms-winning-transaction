@@ -1,8 +1,7 @@
-package it.gov.pagopa.bpd.winning_transaction.model.resource;
+package it.gov.pagopa.bpd.winning_transaction.resource.resource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-import it.gov.pagopa.bpd.winning_transaction.model.enums.OperationType;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -13,8 +12,8 @@ import java.time.OffsetDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"trxDate", "idTrxAcquirer", "acquirerCode"}, callSuper = false)
-public class WinningTransactionResource {
+@EqualsAndHashCode(of = {"trxDate", "idTrxAcquirer"}, callSuper = false)
+public class FindWinningTransactionResource {
 
     @ApiModelProperty(value = "${swagger.winningTransaction.hashPan}", required = true)
     @JsonProperty(required = true)
@@ -28,30 +27,22 @@ public class WinningTransactionResource {
     @JsonProperty(required = true)
     private String idTrxIssuer;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.score}", required = true)
+    @ApiModelProperty(value = "${swagger.winningTransaction.amount}", required = true)
     @JsonProperty(required = true)
-    private BigDecimal score;
+    private BigDecimal amount;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.trxDate}", required = true)
     @JsonProperty(required = true)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private OffsetDateTime trxDate;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.mcc}", required = true)
+    @ApiModelProperty(value = "${swagger.winningTransaction.cashback}", required = true)
     @JsonProperty(required = true)
-    private String mcc;
+    private BigDecimal cashback;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.operationType}", required = true)
+    @ApiModelProperty(value = "${swagger.winningTransaction.circuitType}", required = true)
     @JsonProperty(required = true)
-    private OperationType operationType;
-
-    @ApiModelProperty(value = "${swagger.winningTransaction.correlationId}", required = true)
-    @JsonProperty(required = true)
-    private String correlationId;
-
-    @ApiModelProperty(value = "${swagger.winningTransaction.acquirerCode}", required = true)
-    @JsonProperty(required = true)
-    private String acquirerCode;
+    private String circuitType;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.awardPeriodId}", required = true)
     @JsonProperty(required = true)

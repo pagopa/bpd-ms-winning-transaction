@@ -20,12 +20,16 @@ spec:
           envFrom:
             - secretRef:
                 name: postgres-credentials
+            - secretRef:
+                name: bpdmswinningtransaction
             - configMapRef:
                 name: eventhub-logging
             - configMapRef:
+                name: eventhub-common
+            - configMapRef:
                 name: bpdmswinningtransaction
             - configMapRef:
-                name: jvm                
+                name: jvm
       hostAliases:
         - hostnames:
             - u87cstarprod.servicebus.windows.net
