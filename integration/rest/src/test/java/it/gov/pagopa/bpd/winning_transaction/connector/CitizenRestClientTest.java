@@ -45,7 +45,7 @@ public class CitizenRestClientTest extends BaseFeignRestClientTest {
     private CitizenRestClient restClient;
 
     @Test
-    public void findById() {
+    public void getTotalCashback() {
         final String hpan = "hpan";
         final String fiscalCode = "fiscalCode";
         final Long aw_period = 1L;
