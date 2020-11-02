@@ -1,8 +1,6 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.CitizenTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TotalScoreResourceDTO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import org.junit.Before;
@@ -21,7 +19,6 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -48,8 +45,6 @@ public class WinningTransactionServiceImplTest {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
-    @MockBean
-    private CitizenTransactionDAO citizenTransactionDAOMock;
     private final WinningTransactionId newTransactionId =
             WinningTransactionId.builder()
                     .idTrxAcquirer("0")
@@ -57,8 +52,6 @@ public class WinningTransactionServiceImplTest {
                     .trxDate(offsetDateTime)
                     .build();
 
-    private Random rand = new Random();
-    private final Long totalScore = rand.nextLong();
 
     @Before
     public void initTest() {
@@ -130,32 +123,6 @@ public class WinningTransactionServiceImplTest {
 
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
                 .findByHpanAndAwardPeriodId(
-                        Mockito.eq(hpan),
-                        Mockito.eq(awardPeriodId));
-
-    }
-
-    @Test
-    public void getTotalScore() {
-
-        String hpan = "hashpan";
-        Long awardPeriodId = 0L;
-        String fiscalCode = "fiscalCode";
-
-        BDDMockito.doReturn(totalScore)
-                .when(winningTransactionDAOMock)
-                .calculateTotalScore(
-                        Mockito.eq(hpan),
-                        Mockito.eq(awardPeriodId));
-        BigDecimal finalTotalScore = new BigDecimal(totalScore);
-
-        TotalScoreResourceDTO newTotalScore = winningTransactionService.getTotalScore(hpan, awardPeriodId, fiscalCode);
-
-        assertNotNull(newTotalScore);
-        assertEquals(newTotalScore.getTotalScore(), finalTotalScore);
-
-        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
-                .calculateTotalScore(
                         Mockito.eq(hpan),
                         Mockito.eq(awardPeriodId));
 
