@@ -61,7 +61,7 @@ public class WinningTransaction extends BaseEntity implements Serializable {
     @Column(name="mcc_descr_s")
     String mccDescription;
 
-    @Column(name="score_n")
+    @Column(name = "score_n")
     BigDecimal score;
 
     @Column(name="award_period_id_n")

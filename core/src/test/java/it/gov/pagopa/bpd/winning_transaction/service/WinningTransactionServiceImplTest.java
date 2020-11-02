@@ -1,9 +1,10 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.CitizenTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TotalScoreResourceDTO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
-import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,8 +30,17 @@ import static org.junit.Assert.assertNotNull;
 @ContextConfiguration(classes = WinningTransactionServiceImpl.class)
 public class WinningTransactionServiceImplTest {
 
+    private final OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
+
     @MockBean
     private WinningTransactionDAO winningTransactionDAOMock;
+
+    private final WinningTransaction newTransaction =
+            WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
+                    .amountCurrency("833").awardPeriodId(0L).circuitType("00")
+                    .correlationId("0").hpan("hpan").idTrxAcquirer("0").idTrxIssuer("0").mcc("00")
+                    .mccDescription("test").merchantId("0").operationType("00").score(BigDecimal.valueOf(1313.3))
+                    .trxDate(offsetDateTime).build();
 
     @Autowired
     private WinningTransactionService winningTransactionService;
@@ -38,13 +48,8 @@ public class WinningTransactionServiceImplTest {
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
-    private final OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
-    private final WinningTransaction newTransaction =
-            WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
-                    .amountCurrency("833").awardPeriodId(0L).circuitType("00")
-                    .correlationId("0").hpan("hpan").idTrxAcquirer("0").idTrxIssuer("0").mcc("00")
-                    .mccDescription("test").merchantId("0").operationType("00").score(BigDecimal.valueOf(1313.3))
-                    .trxDate(offsetDateTime).build();
+    @MockBean
+    private CitizenTransactionDAO citizenTransactionDAOMock;
     private final WinningTransactionId newTransactionId =
             WinningTransactionId.builder()
                     .idTrxAcquirer("0")
@@ -75,12 +80,14 @@ public class WinningTransactionServiceImplTest {
         WinningTransaction winningTransaction = winningTransactionService.create(newTransaction);
         assertNotNull(winningTransaction);
         assertEquals(winningTransaction, newTransaction);
+//TODO: Risistemare a termine UAT
 
-        //BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
+//        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).save(Mockito.eq(newTransaction));
 
     }
 
+//TODO: Risistemare a termine UAT
 
     @Test
     public void create_ko() {
@@ -128,23 +135,24 @@ public class WinningTransactionServiceImplTest {
 
     }
 
-
     @Test
     public void getTotalScore() {
 
         String hpan = "hashpan";
         Long awardPeriodId = 0L;
+        String fiscalCode = "fiscalCode";
 
         BDDMockito.doReturn(totalScore)
                 .when(winningTransactionDAOMock)
                 .calculateTotalScore(
                         Mockito.eq(hpan),
                         Mockito.eq(awardPeriodId));
+        BigDecimal finalTotalScore = new BigDecimal(totalScore);
 
-        Long newTotalScore = winningTransactionService.getTotalScore(hpan, awardPeriodId);
+        TotalScoreResourceDTO newTotalScore = winningTransactionService.getTotalScore(hpan, awardPeriodId, fiscalCode);
 
         assertNotNull(newTotalScore);
-        assertEquals(newTotalScore, totalScore);
+        assertEquals(newTotalScore.getTotalScore(), finalTotalScore);
 
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
                 .calculateTotalScore(

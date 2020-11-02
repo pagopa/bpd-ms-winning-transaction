@@ -1,8 +1,8 @@
 package it.gov.pagopa.bpd.winning_transaction.assembler;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.model.enums.OperationType;
-import it.gov.pagopa.bpd.winning_transaction.model.resource.WinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.enums.OperationType;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

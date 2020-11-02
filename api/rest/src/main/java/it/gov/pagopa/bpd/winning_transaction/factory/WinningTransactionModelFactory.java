@@ -1,7 +1,7 @@
 package it.gov.pagopa.bpd.winning_transaction.factory;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.model.dto.WinningTransactionDTO;
+import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
 import lombok.SneakyThrows;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Component;

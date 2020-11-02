@@ -17,6 +17,11 @@
             <artifactId>bpd-ms-winning-transaction-api-rest</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>it.gov.pagopa.bpd.ms.winning_transaction.api</groupId>
+            <artifactId>bpd-ms-winning-transaction-api-event</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
