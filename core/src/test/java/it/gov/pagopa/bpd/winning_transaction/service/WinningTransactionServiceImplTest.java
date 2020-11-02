@@ -5,6 +5,7 @@ import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TotalScoreResourceDTO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
+import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,6 +16,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
@@ -28,6 +30,7 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = WinningTransactionServiceImpl.class)
+@TestPropertySource(properties = "winningTransaction.core.checkExists.enable=true")
 public class WinningTransactionServiceImplTest {
 
     private final OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
@@ -80,14 +83,11 @@ public class WinningTransactionServiceImplTest {
         WinningTransaction winningTransaction = winningTransactionService.create(newTransaction);
         assertNotNull(winningTransaction);
         assertEquals(winningTransaction, newTransaction);
-//TODO: Risistemare a termine UAT
 
-//        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
+        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).save(Mockito.eq(newTransaction));
-
     }
 
-//TODO: Risistemare a termine UAT
 
     @Test
     public void create_ko() {
