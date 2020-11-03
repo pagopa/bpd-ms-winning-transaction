@@ -5,6 +5,7 @@ import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransact
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +19,9 @@ import java.util.List;
 public class WinningTransactionServiceImpl implements WinningTransactionService {
 
     private final WinningTransactionDAO winningTransactionDAO;
+
+    @Value(value = "${winningTransaction.core.checkExists.enable}")
+    private boolean checkExists;
 
     @Autowired
     public WinningTransactionServiceImpl(
@@ -36,10 +40,9 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
                 .acquirerCode(winningTransaction.getAcquirerCode())
                 .trxDate(winningTransaction.getTrxDate())
                 .build();
-        //TODO: Risistemare a termine UAT
-//        if (winningTransactionDAO.existsById(id)) {
-//            throw new WinningTransactionExistsException(id);
-//        }
+        if (checkExists && winningTransactionDAO.existsById(id)) {
+            throw new WinningTransactionExistsException(id);
+        }
         return winningTransactionDAO.save(winningTransaction);
 
     }
@@ -53,7 +56,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
         List<WinningTransaction> winningTransactions = new ArrayList<>();
 
-        if( hpan!=null&& !hpan.isEmpty()){
+        if (hpan != null && !hpan.isEmpty()) {
             winningTransactions = winningTransactionDAO.findByHpanAndAwardPeriodId(hpan, awardPeriodId);
         } else {
             winningTransactions = winningTransactionDAO.findByAwardPeriodId(awardPeriodId);
