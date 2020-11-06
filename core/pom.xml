@@ -16,10 +16,6 @@
             <groupId>it.gov.pagopa.bpd.ms.winning_transaction.integration</groupId>
             <artifactId>bpd-ms-winning-transaction-integration-jpa</artifactId>
         </dependency>
-        <dependency>
-            <groupId>it.gov.pagopa.bpd.ms.winning_transaction.integration</groupId>
-            <artifactId>bpd-ms-winning-transaction-integration-rest</artifactId>
-        </dependency>
     </dependencies>
 
 </project>
