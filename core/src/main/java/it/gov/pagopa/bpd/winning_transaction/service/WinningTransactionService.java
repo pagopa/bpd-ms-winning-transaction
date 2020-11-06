@@ -11,6 +11,6 @@ public interface WinningTransactionService {
 
     WinningTransaction create(WinningTransaction winningTransaction);
 
-    List<WinningTransaction> getWinningTransactions(String hpan, Long awardPeriodId);
+    List<WinningTransaction> getWinningTransactions(String hpan, Long awardPeriodId, String fiscalCode);
 
 }

@@ -272,17 +272,19 @@ public class BpdWinningTransactionControllerImplTest {
     @Test
     public void findWinningTransactions_OkWithElement() throws Exception {
 
+        String fiscalCode = "DSULTN82H03H904Q";
         String hpan = "hpan";
         Long awardPeriodId = 0L;
 
         BDDMockito.doReturn(Collections.singletonList(newTransaction))
                 .when(winningTransactionServiceMock)
-                .getWinningTransactions(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
+                .getWinningTransactions(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode));
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.get(BASE_URL)
                 .param("hpan", hpan)
                 .param("awardPeriodId", String.valueOf(awardPeriodId))
+                .param("fiscalCode", fiscalCode)
                 .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -299,7 +301,7 @@ public class BpdWinningTransactionControllerImplTest {
         assertEquals(winningTransactions.get(0).getIdTrxIssuer(), newTransaction.getIdTrxIssuer());
 
         BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
-                .getWinningTransactions(Mockito.eq(hpan), Mockito.eq(awardPeriodId));
+                .getWinningTransactions(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode));
         BDDMockito.verify(findWinningTransactionResourceAssemblerSpy, Mockito.times(winningTransactions.size()))
                 .toResource(Mockito.any(WinningTransaction.class));
         BDDMockito.verify(findWinningTransactionResourceAssemblerSpy, Mockito.atMost(1))

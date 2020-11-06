@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityExistsException;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,13 +61,13 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
     }
 
     @Override
-    public List<FindWinningTransactionResource> findWinningTransactions(String hpan, Long awardPeriodId) {
+    public List<FindWinningTransactionResource> findWinningTransactions(String hpan, Long awardPeriodId, String fiscalCode) {
         if (logger.isDebugEnabled()) {
             logger.debug("BpdWinningTransactionControllerImpl.findWinningTransactions");
             logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
         List<WinningTransaction> winningTransactions = winningTransactionService
-                .getWinningTransactions(hpan, awardPeriodId);
+                .getWinningTransactions(hpan, awardPeriodId, fiscalCode);
         return winningTransactions.stream()
                 .map(findWinningTransactionResourceAssembler::toResource)
                 .collect(Collectors.toList());

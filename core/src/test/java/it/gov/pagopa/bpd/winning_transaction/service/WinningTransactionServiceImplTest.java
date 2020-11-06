@@ -101,31 +101,55 @@ public class WinningTransactionServiceImplTest {
     }
 
     @Test
-    public void getWinningTransactions() {
+    public void getWinningTransactionsNoHpan() {
 
-        String hpan = "hashpan";
+        String fiscalCode = "fiscalCode";
         Long awardPeriodId = 0L;
 
         List<WinningTransaction> winningTransactions = Collections.singletonList(newTransaction);
 
         BDDMockito.doReturn(winningTransactions)
                 .when(winningTransactionDAOMock)
-                .findByHpanAndAwardPeriodId(
-                        Mockito.eq(hpan),
-                        Mockito.eq(awardPeriodId));
+                .findCitizenTransactions( Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId));
 
         List<WinningTransaction> newWinningTransactions = winningTransactionService
-                .getWinningTransactions(hpan, awardPeriodId);
+                .getWinningTransactions(null, awardPeriodId, fiscalCode);
 
         assertNotNull(newWinningTransactions);
         assertEquals(newWinningTransactions.size(), 1);
         assertEquals(newWinningTransactions.get(0), newTransaction);
 
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
-                .findByHpanAndAwardPeriodId(
-                        Mockito.eq(hpan),
+                .findCitizenTransactions(
+                        Mockito.eq(fiscalCode),
                         Mockito.eq(awardPeriodId));
+    }
 
+    @Test
+    public void getWinningTransactionsWithHpan() {
+
+        String fiscalCode = "fiscalCode";
+        String hpan = "hpan";
+        Long awardPeriodId = 0L;
+
+        List<WinningTransaction> winningTransactions = Collections.singletonList(newTransaction);
+
+        BDDMockito.doReturn(winningTransactions)
+                .when(winningTransactionDAOMock)
+                .findCitizenTransactionsByHpan( Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId), Mockito.eq(hpan));
+
+        List<WinningTransaction> newWinningTransactions = winningTransactionService
+                .getWinningTransactions(hpan, awardPeriodId, fiscalCode);
+
+        assertNotNull(newWinningTransactions);
+        assertEquals(newWinningTransactions.size(), 1);
+        assertEquals(newWinningTransactions.get(0), newTransaction);
+
+        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
+                .findCitizenTransactionsByHpan(
+                        Mockito.eq(fiscalCode),
+                        Mockito.eq(awardPeriodId),
+                        Mockito.eq(hpan));
     }
 
 }
