@@ -25,6 +25,9 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @Transient
     private boolean isNew = true;
 
+    @Transient
+    private boolean updatable = false;
+
     @Id
     @Column(name = "id_trx_acquirer_s")
     String idTrxAcquirer;
@@ -95,7 +98,21 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
 
     @Override
     public boolean isNew() {
-        return true;
+        if (!updatable) {
+            return true;
+        } else {
+            return isNew;
+        }
+    }
+
+    @PrePersist
+    @PostLoad
+    void markNotNew() {
+        this.isNew = false;
+    }
+
+    public void setUpdatable(boolean updatable) {
+        this.updatable = updatable;
     }
 }
 
