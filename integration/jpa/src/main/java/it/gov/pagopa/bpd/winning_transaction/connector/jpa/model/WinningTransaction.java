@@ -93,15 +93,9 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
                 .build();
     }
 
-    @PrePersist
-    @PostLoad
-    void markNotNew() {
-        this.isNew = false;
-    }
-
     @Override
     public boolean isNew() {
-        return isNew;
+        return true;
     }
 }
 
