@@ -21,9 +21,6 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
     private final WinningTransactionDAO winningTransactionDAO;
 
-    @Value(value = "${winningTransaction.core.checkExists.enable}")
-    private boolean checkExists;
-
     @Autowired
     public WinningTransactionServiceImpl(
             WinningTransactionDAO winningTransactionDAO) {
@@ -35,14 +32,6 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
         if (log.isDebugEnabled()) {
             log.debug("WinningTransactionServiceImpl.create");
             log.debug("winningTransaction = [" + winningTransaction + "]");
-        }
-        final WinningTransactionId id = WinningTransactionId.builder()
-                .idTrxAcquirer(winningTransaction.getIdTrxAcquirer())
-                .acquirerCode(winningTransaction.getAcquirerCode())
-                .trxDate(winningTransaction.getTrxDate())
-                .build();
-        if (checkExists && winningTransactionDAO.existsById(id)) {
-            throw new WinningTransactionExistsException(id);
         }
         return winningTransactionDAO.save(winningTransaction);
 
