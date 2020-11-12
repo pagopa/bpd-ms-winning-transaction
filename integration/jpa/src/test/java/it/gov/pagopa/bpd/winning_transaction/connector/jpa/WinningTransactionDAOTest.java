@@ -48,7 +48,6 @@ public class WinningTransactionDAOTest extends
         entity.setAcquirerCode(id.getAcquirerCode());
         entity.setTrxDate(id.getTrxDate());
         entity.setIdTrxAcquirer(id.getIdTrxAcquirer());
-        entity.setUpdatable(true);
     }
 
 
@@ -64,7 +63,6 @@ public class WinningTransactionDAOTest extends
 
     @Override
     protected void alterEntityToUpdate(WinningTransaction entity) {
-        entity.setUpdatable(true);
         entity.setUpdateUser("userUpdate");
     }
 
