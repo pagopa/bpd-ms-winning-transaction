@@ -3,7 +3,6 @@ package it.gov.pagopa.bpd.winning_transaction.connector.jpa.model;
 import it.gov.pagopa.bpd.common.connector.jpa.model.BaseEntity;
 import lombok.*;
 import org.hibernate.annotations.Where;
-import org.springframework.data.domain.Persistable;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -20,10 +19,7 @@ import java.time.OffsetDateTime;
 @IdClass(WinningTransactionId.class)
 @Table(name = "bpd_winning_transaction")
 @Where(clause = "ENABLED_B = 'TRUE'")
-public class WinningTransaction extends BaseEntity implements Serializable, Persistable<WinningTransactionId> {
-
-    @Transient
-    private boolean isNew = true;
+public class WinningTransaction extends BaseEntity implements Serializable {
 
     @Id
     @Column(name = "id_trx_acquirer_s")
@@ -83,25 +79,5 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @Column(name="terminal_id_s")
     String terminalId;
 
-    @Override
-    public WinningTransactionId getId() {
-        return WinningTransactionId
-                .builder()
-                .idTrxAcquirer(idTrxAcquirer)
-                .acquirerCode(acquirerCode)
-                .trxDate(trxDate)
-                .build();
-    }
-
-    @PrePersist
-    @PostLoad
-    void markNotNew() {
-        this.isNew = false;
-    }
-
-    @Override
-    public boolean isNew() {
-        return isNew;
-    }
 }
 
