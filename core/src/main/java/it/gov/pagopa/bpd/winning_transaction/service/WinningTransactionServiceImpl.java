@@ -7,7 +7,6 @@ import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsE
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,11 +33,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("WinningTransactionServiceImpl.create");
             log.debug("winningTransaction = [" + winningTransaction + "]");
         }
-        try {
-            return winningTransactionDAO.save(winningTransaction);
-        } catch (DataIntegrityViolationException e) {
-            throw new WinningTransactionExistsException(winningTransaction.getId());
-        }
+        return winningTransactionDAO.save(winningTransaction);
 
     }
 
