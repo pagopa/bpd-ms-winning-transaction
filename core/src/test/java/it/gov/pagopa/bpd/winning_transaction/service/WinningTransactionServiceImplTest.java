@@ -17,7 +17,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -70,10 +69,15 @@ public class WinningTransactionServiceImplTest {
     @Test
     public void create_ok() {
 
+        BDDMockito.doReturn(false)
+                .when(winningTransactionDAOMock)
+                .existsById(Mockito.eq(newTransactionId));
+
         WinningTransaction winningTransaction = winningTransactionService.create(newTransaction);
         assertNotNull(winningTransaction);
         assertEquals(winningTransaction, newTransaction);
 
+        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).save(Mockito.eq(newTransaction));
     }
 
@@ -81,16 +85,17 @@ public class WinningTransactionServiceImplTest {
     @Test
     public void create_ko() {
 
-        BDDMockito.doThrow(EntityNotFoundException.class)
+        BDDMockito.doReturn(true)
                 .when(winningTransactionDAOMock)
-                .save(Mockito.any());
+                .existsById(Mockito.eq(newTransactionId));
 
-        exceptionRule.expect(EntityNotFoundException.class);
+        exceptionRule.expect(WinningTransactionExistsException.class);
 
         WinningTransaction winningTransaction = winningTransactionService.create(newTransaction);
         assertNotNull(winningTransaction);
         assertEquals(winningTransaction, newTransaction);
 
+        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce()).existsById(Mockito.eq(newTransactionId));
         BDDMockito.verify(winningTransactionDAOMock, Mockito.never()).save(Mockito.eq(newTransaction));
 
     }

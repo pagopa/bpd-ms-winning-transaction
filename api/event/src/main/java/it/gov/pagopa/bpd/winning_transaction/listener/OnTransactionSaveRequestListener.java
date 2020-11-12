@@ -101,12 +101,11 @@ public class OnTransactionSaveRequestListener extends BaseConsumerAwareEventList
                 }
             }
 
-            //TODO: Gestire adeguatamente casi d'errore
 //            if (!pointProcessorErrorPublisherService.publishErrorEvent(payload, headers, error)) {
             if (log.isErrorEnabled()) {
                 log.error("Could not publish transaction processing error");
             }
-//            throw e;
+            throw e;
 //            }
 
         }
