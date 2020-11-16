@@ -56,4 +56,13 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
         return winningTransactions;
     }
 
+    @Override
+    public void deleteByFiscalCode(String fiscalCode) {
+        if (log.isDebugEnabled()) {
+            log.debug("WinningTransactionServiceImpl.deleteByFiscalCode");
+            log.debug("fiscalCode = [" + fiscalCode + "]");
+        }
+        winningTransactionDAO.deactivateCitizenTransactions(fiscalCode);
+    }
+
 }

@@ -86,6 +86,9 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @Column(name="terminal_id_s")
     String terminalId;
 
+    @Column(name="fiscal_code_s")
+    String fiscalCode;
+
     @Override
     public WinningTransactionId getId() {
         return WinningTransactionId

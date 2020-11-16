@@ -78,7 +78,7 @@ public class WinningTransactionDAOTest extends
     protected Function<Integer, WinningTransactionId> idBuilderFn() {
         return (bias) -> {
             WinningTransactionId winningTransactionId = new WinningTransactionId();
-            OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304+02:00");
             winningTransactionId.setTrxDate(offsetDateTime);
             winningTransactionId.setIdTrxAcquirer(String.valueOf(bias));
             winningTransactionId.setAcquirerCode(bias.toString());

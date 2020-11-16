@@ -13,4 +13,6 @@ public interface WinningTransactionService {
 
     List<WinningTransaction> getWinningTransactions(String hpan, Long awardPeriodId, String fiscalCode);
 
+    void deleteByFiscalCode(String fiscalCode);
+
 }
