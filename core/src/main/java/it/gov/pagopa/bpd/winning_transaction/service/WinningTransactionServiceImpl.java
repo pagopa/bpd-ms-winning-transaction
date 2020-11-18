@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +64,15 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("fiscalCode = [" + fiscalCode + "]");
         }
         winningTransactionDAO.deactivateCitizenTransactions(fiscalCode);
+    }
+
+    @Override
+    public void reactivateForRollback(String fiscalCode, OffsetDateTime requestTimestamp) {
+        if (log.isDebugEnabled()) {
+            log.debug("WinningTransactionServiceImpl.reactivateForRollback");
+            log.debug("fiscalCode = [" + fiscalCode + "], requestTimestamp = [" + requestTimestamp + "]");
+        }
+        winningTransactionDAO.reactivateForRollback(fiscalCode, requestTimestamp);
     }
 
 }

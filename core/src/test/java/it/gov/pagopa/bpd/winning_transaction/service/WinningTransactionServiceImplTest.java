@@ -158,4 +158,11 @@ public class WinningTransactionServiceImplTest {
         verify(winningTransactionDAOMock, times(1)).deactivateCitizenTransactions(eq(fiscalCode));
     }
 
+
+    @Test
+    public void reactivateForRollback() {
+        winningTransactionService.reactivateForRollback("fiscalCode", OffsetDateTime.now());
+        verify(winningTransactionDAOMock, times(1)).reactivateForRollback(Mockito.any(), Mockito.any());
+    }
+
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -28,5 +29,13 @@ public interface WinningTransactionDAO extends CrudJpaDAO<WinningTransaction, Wi
     @Modifying
     @Query("update WinningTransaction wt set wt.enabled = false where wt.fiscalCode = :fiscalCode")
     void deactivateCitizenTransactions(@Param("fiscalCode") String fiscalCode);
+
+    @Modifying
+    @Query("update WinningTransaction " +
+            "set enabled = true " +
+            "where updateDate >= :requestTimestamp " +
+            "and fiscal_code_s = :fiscalCode")
+    void reactivateForRollback(@Param("fiscalCode") String fiscalCode, @Param("requestTimestamp") OffsetDateTime requestTimestamp);
+
 
 }
