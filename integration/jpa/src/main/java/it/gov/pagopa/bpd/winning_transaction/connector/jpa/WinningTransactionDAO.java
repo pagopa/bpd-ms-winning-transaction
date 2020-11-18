@@ -27,15 +27,21 @@ public interface WinningTransactionDAO extends CrudJpaDAO<WinningTransaction, Wi
                                                      @Param("awardPeriodId") Long awardPeriodId);
 
     @Modifying
-    @Query("update WinningTransaction wt set wt.enabled = false where wt.fiscalCode = :fiscalCode")
-    void deactivateCitizenTransactions(@Param("fiscalCode") String fiscalCode);
+    @Query("update WinningTransaction wt " +
+            "set wt.enabled = false," +
+            "updateDate = :updateDate " +
+            " where wt.fiscalCode = :fiscalCode")
+    void deactivateCitizenTransactions(@Param("fiscalCode") String fiscalCode, @Param("updateDate") OffsetDateTime updateDate);
 
     @Modifying
     @Query("update WinningTransaction " +
-            "set enabled = true " +
+            "set enabled = true," +
+            "updateDate = :updateDate " +
             "where updateDate >= :requestTimestamp " +
             "and fiscal_code_s = :fiscalCode")
-    void reactivateForRollback(@Param("fiscalCode") String fiscalCode, @Param("requestTimestamp") OffsetDateTime requestTimestamp);
+    void reactivateForRollback(@Param("fiscalCode") String fiscalCode,
+                               @Param("requestTimestamp") OffsetDateTime requestTimestamp,
+                                @Param("updateDate") OffsetDateTime updateDate);
 
 
 }

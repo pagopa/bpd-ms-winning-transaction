@@ -63,7 +63,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("WinningTransactionServiceImpl.deleteByFiscalCode");
             log.debug("fiscalCode = [" + fiscalCode + "]");
         }
-        winningTransactionDAO.deactivateCitizenTransactions(fiscalCode);
+        winningTransactionDAO.deactivateCitizenTransactions(fiscalCode, OffsetDateTime.now());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("WinningTransactionServiceImpl.reactivateForRollback");
             log.debug("fiscalCode = [" + fiscalCode + "], requestTimestamp = [" + requestTimestamp + "]");
         }
-        winningTransactionDAO.reactivateForRollback(fiscalCode, requestTimestamp);
+        winningTransactionDAO.reactivateForRollback(fiscalCode, requestTimestamp, OffsetDateTime.now());
     }
 
 }
