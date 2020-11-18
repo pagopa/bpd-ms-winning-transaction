@@ -49,4 +49,12 @@ public interface BpdWinningTransactionController {
                     String fiscalCode
     );
 
+    @DeleteMapping(value = "/{fiscalCode}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteByFiscalCode(
+            @ApiParam(value = "${swagger.winningTransaction.fiscalCode}", required = true)
+            @PathVariable("fiscalCode")
+            @NotBlank String fiscalCode
+    );
+
 }

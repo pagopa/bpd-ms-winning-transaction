@@ -73,4 +73,13 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteByFiscalCode(String fiscalCode) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("BpdWinningTransactionControllerImpl.deleteByFiscalCode");
+            logger.debug("fiscalCode = [" + fiscalCode + "]");
+        }
+        winningTransactionService.deleteByFiscalCode(fiscalCode);
+    }
+
 }

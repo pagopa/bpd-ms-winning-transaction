@@ -24,6 +24,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = WinningTransactionServiceImpl.class)
@@ -150,6 +154,13 @@ public class WinningTransactionServiceImplTest {
                         Mockito.eq(fiscalCode),
                         Mockito.eq(awardPeriodId),
                         Mockito.eq(hpan));
+    }
+
+    @Test
+    public void deleteByFiscalCode() {
+        final String fiscalCode = "fiscalCode";
+        winningTransactionService.deleteByFiscalCode(fiscalCode);
+        verify(winningTransactionDAOMock, times(1)).deactivateCitizenTransactions(eq(fiscalCode));
     }
 
 }

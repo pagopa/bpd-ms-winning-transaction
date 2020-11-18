@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = BpdWinningTransactionControllerImpl.class)
@@ -307,6 +309,13 @@ public class BpdWinningTransactionControllerImplTest {
         BDDMockito.verify(findWinningTransactionResourceAssemblerSpy, Mockito.atMost(1))
                 .toResource(Mockito.eq(newTransaction));
 
+    }
+
+    @Test
+    public void delete() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL +"/fiscalCode"))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+        verify(winningTransactionServiceMock).deleteByFiscalCode(any());
     }
 
 }

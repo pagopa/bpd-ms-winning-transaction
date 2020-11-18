@@ -3,6 +3,7 @@ package it.gov.pagopa.bpd.winning_transaction.connector.jpa.model;
 import it.gov.pagopa.bpd.common.connector.jpa.model.BaseEntity;
 import lombok.*;
 import org.hibernate.annotations.Where;
+import org.springframework.data.domain.Persistable;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -19,7 +20,13 @@ import java.time.OffsetDateTime;
 @IdClass(WinningTransactionId.class)
 @Table(name = "bpd_winning_transaction")
 @Where(clause = "ENABLED_B = 'TRUE'")
-public class WinningTransaction extends BaseEntity implements Serializable {
+public class WinningTransaction extends BaseEntity implements Serializable, Persistable<WinningTransactionId> {
+
+    @Transient
+    private boolean isNew = true;
+
+    @Transient
+    private boolean updatable = false;
 
     @Id
     @Column(name = "id_trx_acquirer_s")
@@ -79,5 +86,36 @@ public class WinningTransaction extends BaseEntity implements Serializable {
     @Column(name="terminal_id_s")
     String terminalId;
 
+    @Column(name="fiscal_code_s")
+    String fiscalCode;
+
+    @Override
+    public WinningTransactionId getId() {
+        return WinningTransactionId
+                .builder()
+                .idTrxAcquirer(idTrxAcquirer)
+                .acquirerCode(acquirerCode)
+                .trxDate(trxDate)
+                .build();
+    }
+
+    @Override
+    public boolean isNew() {
+        if (!updatable) {
+            return true;
+        } else {
+            return isNew;
+        }
+    }
+
+    @PrePersist
+    @PostLoad
+    void markNotNew() {
+        this.isNew = false;
+    }
+
+    public void setUpdatable(boolean updatable) {
+        this.updatable = updatable;
+    }
 }
 

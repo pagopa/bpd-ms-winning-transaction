@@ -1,6 +1,7 @@
 package it.gov.pagopa.bpd.winning_transaction.connector.jpa;
 
 import eu.sia.meda.layers.connector.query.CriteriaQuery;
+import eu.sia.meda.util.TestUtils;
 import it.gov.pagopa.bpd.common.connector.jpa.BaseCrudJpaDAOTest;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
@@ -66,6 +67,10 @@ public class WinningTransactionDAOTest extends
         entity.setUpdateUser("userUpdate");
     }
 
+    @Override
+    protected void compare(WinningTransaction entityToSave, WinningTransaction saved) {
+        TestUtils.reflectionEqualsByName(entityToSave, saved, new String[]{"insertDate", "insertUser", "updateDate", "updateUser", "enabled", "updatable", "new", "isNew"});
+    }
 
     @Override
     protected Function<Integer, WinningTransactionId> idBuilderFn() {
