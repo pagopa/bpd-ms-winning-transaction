@@ -322,7 +322,7 @@ public class BpdWinningTransactionControllerImplTest {
     @Test
     public void rollback() throws Exception {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-        mockMvc.perform(MockMvcRequestBuilders.patch(BASE_URL +"/fiscalCode")
+        mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL +"/rollback/fiscalCode")
                 .param("requestTimestamp",  offsetDateTime.format(dateTimeFormatter)))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
         verify(winningTransactionServiceMock).reactivateForRollback(any(), any());

@@ -59,7 +59,7 @@ public interface BpdWinningTransactionController {
             @NotBlank String fiscalCode
     );
 
-    @PatchMapping(value = "/{fiscalCode}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/rollback/{fiscalCode}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void rollback(
             @ApiParam(required = true)
