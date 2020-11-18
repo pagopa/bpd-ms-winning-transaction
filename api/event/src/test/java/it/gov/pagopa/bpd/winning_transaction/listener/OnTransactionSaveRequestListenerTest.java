@@ -7,6 +7,7 @@ import it.gov.pagopa.bpd.winning_transaction.command.SaveTransactionCommand;
 import it.gov.pagopa.bpd.winning_transaction.command.model.Transaction;
 import it.gov.pagopa.bpd.winning_transaction.command.model.enums.OperationType;
 import it.gov.pagopa.bpd.winning_transaction.listener.factory.SaveTransactionCommandModelFactory;
+import it.gov.pagopa.bpd.winning_transaction.service.TransactionErrorPublisherService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.BDDMockito;
@@ -48,6 +49,9 @@ public class OnTransactionSaveRequestListenerTest extends BaseEventListenerTest 
     @MockBean
     SaveTransactionCommand saveTransactionCommandMock;
 
+    @MockBean
+    TransactionErrorPublisherService transactionErrorPublisherServiceMock;
+
 
     @Before
     public void setUp() throws Exception {
@@ -55,7 +59,9 @@ public class OnTransactionSaveRequestListenerTest extends BaseEventListenerTest 
         Mockito.reset(
                 onTransactionProcessRequestListenerSpy,
                 saveTransactionCommandModelFactorySpy,
-                beanFactoryMock, saveTransactionCommandMock);
+                beanFactoryMock,
+                saveTransactionCommandMock,
+                transactionErrorPublisherServiceMock);
         Mockito.doReturn(true).when(saveTransactionCommandMock).execute();
 
     }
@@ -102,7 +108,7 @@ public class OnTransactionSaveRequestListenerTest extends BaseEventListenerTest 
 
     @Override
     protected ErrorPublisherService getErrorPublisherService() {
-        return null;
+        return transactionErrorPublisherServiceMock;
     }
 
 }
