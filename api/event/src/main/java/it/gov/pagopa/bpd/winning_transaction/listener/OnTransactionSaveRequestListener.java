@@ -6,6 +6,7 @@ import eu.sia.meda.eventlistener.BaseEventListener;
 import it.gov.pagopa.bpd.winning_transaction.command.SaveTransactionCommand;
 import it.gov.pagopa.bpd.winning_transaction.command.model.SaveTransactionCommandModel;
 import it.gov.pagopa.bpd.winning_transaction.listener.factory.ModelFactory;
+import it.gov.pagopa.bpd.winning_transaction.service.TransactionErrorPublisherService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -28,19 +29,16 @@ public class OnTransactionSaveRequestListener extends BaseConsumerAwareEventList
     private final ModelFactory<Pair<byte[], Headers>, SaveTransactionCommandModel>
             saveTransactionCommandModelModelFactory;
     private final BeanFactory beanFactory;
-    //    private final PointProcessorErrorPublisherService pointProcessorErrorPublisherService;
-    private final ObjectMapper objectMapper;
+    private final TransactionErrorPublisherService transactionErrorPublisherService;
 
     @Autowired
     public OnTransactionSaveRequestListener(
             ModelFactory<Pair<byte[], Headers>, SaveTransactionCommandModel> saveTransactionCommandModelModelFactory,
             BeanFactory beanFactory,
-//            PointProcessorErrorPublisherService pointProcessorErrorPublisherService,
-            ObjectMapper objectMapper) {
+            TransactionErrorPublisherService transactionErrorPublisherService) {
         this.saveTransactionCommandModelModelFactory = saveTransactionCommandModelModelFactory;
         this.beanFactory = beanFactory;
-//        this.pointProcessorErrorPublisherService = pointProcessorErrorPublisherService;
-        this.objectMapper = objectMapper;
+        this.transactionErrorPublisherService = transactionErrorPublisherService;
     }
 
     /**
@@ -101,12 +99,10 @@ public class OnTransactionSaveRequestListener extends BaseConsumerAwareEventList
                 }
             }
 
-//            if (!pointProcessorErrorPublisherService.publishErrorEvent(payload, headers, error)) {
-            if (log.isErrorEnabled()) {
+            if (!transactionErrorPublisherService.publishErrorEvent(payload, headers, error)) {
                 log.error("Could not publish transaction processing error");
+                throw e;
             }
-            throw e;
-//            }
 
         }
     }
