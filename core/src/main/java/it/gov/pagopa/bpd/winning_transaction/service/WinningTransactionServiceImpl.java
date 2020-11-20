@@ -2,11 +2,10 @@ package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -22,9 +21,6 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
     private final WinningTransactionDAO winningTransactionDAO;
 
-    @Value(value = "${winningTransaction.core.checkExists.enable}")
-    private boolean checkExists;
-
     @Autowired
     public WinningTransactionServiceImpl(
             WinningTransactionDAO winningTransactionDAO) {
@@ -37,15 +33,11 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("WinningTransactionServiceImpl.create");
             log.debug("winningTransaction = [" + winningTransaction + "]");
         }
-        final WinningTransactionId id = WinningTransactionId.builder()
-                .idTrxAcquirer(winningTransaction.getIdTrxAcquirer())
-                .acquirerCode(winningTransaction.getAcquirerCode())
-                .trxDate(winningTransaction.getTrxDate())
-                .build();
-        if (checkExists && winningTransactionDAO.existsById(id)) {
-            throw new WinningTransactionExistsException(id);
+        try {
+            return winningTransactionDAO.save(winningTransaction);
+        } catch (DataIntegrityViolationException e) {
+            throw new WinningTransactionExistsException(winningTransaction.getId());
         }
-        return winningTransactionDAO.save(winningTransaction);
 
     }
 
@@ -58,7 +50,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
         List<WinningTransaction> winningTransactions = new ArrayList<>();
         winningTransactions = hpan != null? winningTransactionDAO.findCitizenTransactionsByHpan(fiscalCode,awardPeriodId,hpan)
-        : winningTransactionDAO.findCitizenTransactions(fiscalCode, awardPeriodId);
+                : winningTransactionDAO.findCitizenTransactions(fiscalCode, awardPeriodId);
 
         return winningTransactions;
     }
