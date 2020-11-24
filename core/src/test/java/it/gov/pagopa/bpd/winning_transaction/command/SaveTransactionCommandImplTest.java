@@ -7,7 +7,6 @@ import it.gov.pagopa.bpd.winning_transaction.command.model.enums.OperationType;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.mapper.TransactionMapper;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,8 +16,6 @@ import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -92,6 +89,7 @@ public class SaveTransactionCommandImplTest extends BaseTest {
                 .score(BigDecimal.ONE)
                 .bin("000001")
                 .terminalId("0")
+                .fiscalCode("fiscalCode")
                 .build();
     }
 
@@ -114,6 +112,7 @@ public class SaveTransactionCommandImplTest extends BaseTest {
                 .score(BigDecimal.ONE)
                 .bin("000001")
                 .terminalId("0")
+                .fiscalCode("fiscalCode")
                 .build();
     }
 
