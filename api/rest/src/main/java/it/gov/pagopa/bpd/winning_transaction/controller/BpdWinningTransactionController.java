@@ -6,6 +6,7 @@ import it.gov.pagopa.bpd.common.util.Constants;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +17,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -55,6 +57,17 @@ public interface BpdWinningTransactionController {
             @ApiParam(value = "${swagger.winningTransaction.fiscalCode}", required = true)
             @PathVariable("fiscalCode")
             @NotBlank String fiscalCode
+    );
+
+    @PutMapping(value = "/rollback/{fiscalCode}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void rollback(
+            @ApiParam(required = true)
+            @PathVariable("fiscalCode")
+            @NotBlank
+                    String fiscalCode,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                    OffsetDateTime requestTimestamp
     );
 
 }

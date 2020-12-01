@@ -33,6 +33,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import javax.persistence.EntityExistsException;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -316,6 +317,15 @@ public class BpdWinningTransactionControllerImplTest {
         mockMvc.perform(MockMvcRequestBuilders.delete(BASE_URL +"/fiscalCode"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
         verify(winningTransactionServiceMock).deleteByFiscalCode(any());
+    }
+
+    @Test
+    public void rollback() throws Exception {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+        mockMvc.perform(MockMvcRequestBuilders.put(BASE_URL +"/rollback/fiscalCode")
+                .param("requestTimestamp",  offsetDateTime.format(dateTimeFormatter)))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+        verify(winningTransactionServiceMock).reactivateForRollback(any(), any());
     }
 
 }

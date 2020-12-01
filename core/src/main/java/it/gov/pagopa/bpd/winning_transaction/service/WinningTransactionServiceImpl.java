@@ -2,14 +2,13 @@ package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +50,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
         List<WinningTransaction> winningTransactions = new ArrayList<>();
         winningTransactions = hpan != null? winningTransactionDAO.findCitizenTransactionsByHpan(fiscalCode,awardPeriodId,hpan)
-        : winningTransactionDAO.findCitizenTransactions(fiscalCode, awardPeriodId);
+                : winningTransactionDAO.findCitizenTransactions(fiscalCode, awardPeriodId);
 
         return winningTransactions;
     }
@@ -62,7 +61,16 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("WinningTransactionServiceImpl.deleteByFiscalCode");
             log.debug("fiscalCode = [" + fiscalCode + "]");
         }
-        winningTransactionDAO.deactivateCitizenTransactions(fiscalCode);
+        winningTransactionDAO.deactivateCitizenTransactions(fiscalCode, OffsetDateTime.now());
+    }
+
+    @Override
+    public void reactivateForRollback(String fiscalCode, OffsetDateTime requestTimestamp) {
+        if (log.isDebugEnabled()) {
+            log.debug("WinningTransactionServiceImpl.reactivateForRollback");
+            log.debug("fiscalCode = [" + fiscalCode + "], requestTimestamp = [" + requestTimestamp + "]");
+        }
+        winningTransactionDAO.reactivateForRollback(fiscalCode, requestTimestamp, OffsetDateTime.now());
     }
 
 }

@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityExistsException;
 import javax.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,6 +81,15 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
             logger.debug("fiscalCode = [" + fiscalCode + "]");
         }
         winningTransactionService.deleteByFiscalCode(fiscalCode);
+    }
+
+    @Override
+    public void rollback(String fiscalCode, OffsetDateTime requestTimestamp) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("BpdWinningTransactionControllerImpl.rollback");
+            logger.debug("fiscalCode = [" + fiscalCode + "], requestTimestamp = [" + requestTimestamp + "]");
+        }
+        winningTransactionService.reactivateForRollback(fiscalCode, requestTimestamp);
     }
 
 }

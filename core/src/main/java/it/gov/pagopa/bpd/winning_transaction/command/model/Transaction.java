@@ -84,4 +84,8 @@ public class Transaction {
     @NotBlank
     String terminalId;
 
+    @NotNull
+    @NotBlank
+    String fiscalCode;
+
 }

@@ -8,7 +8,10 @@ import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransact
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.function.Function;
 
 public class WinningTransactionDAOTest extends
@@ -78,7 +81,8 @@ public class WinningTransactionDAOTest extends
     protected Function<Integer, WinningTransactionId> idBuilderFn() {
         return (bias) -> {
             WinningTransactionId winningTransactionId = new WinningTransactionId();
-            OffsetDateTime offsetDateTime = OffsetDateTime.parse("2020-04-09T16:22:45.304Z");
+            OffsetDateTime offsetDateTime = LocalDateTime.parse("2020-04-09T16:22:45.304")
+                    .atZone(ZoneId.systemDefault()).toOffsetDateTime();
             winningTransactionId.setTrxDate(offsetDateTime);
             winningTransactionId.setIdTrxAcquirer(String.valueOf(bias));
             winningTransactionId.setAcquirerCode(bias.toString());

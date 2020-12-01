@@ -2,6 +2,7 @@ package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 /**
@@ -15,4 +16,5 @@ public interface WinningTransactionService {
 
     void deleteByFiscalCode(String fiscalCode);
 
+    void reactivateForRollback(String fiscalCode, OffsetDateTime requestTimestamp);
 }
