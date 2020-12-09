@@ -4,11 +4,11 @@
     <parent>
         <artifactId>bpd-ms-winning-transaction-api</artifactId>
         <groupId>it.gov.pagopa.bpd.ms.winning_transaction</groupId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
 
     <groupId>it.gov.pagopa.bpd.ms.winning_transaction.api</groupId>
     <artifactId>bpd-ms-winning-transaction-api-rest</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
 </project>
