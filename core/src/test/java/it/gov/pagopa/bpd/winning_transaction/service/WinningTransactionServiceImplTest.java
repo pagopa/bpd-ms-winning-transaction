@@ -3,7 +3,6 @@ package it.gov.pagopa.bpd.winning_transaction.service;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
-import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -154,19 +153,17 @@ public class WinningTransactionServiceImplTest {
     @Test
     public void deleteByFiscalCode() {
         final String fiscalCode = "fiscalCode";
-        final OffsetDateTime updateDate = OffsetDateTime.now();
         winningTransactionService.deleteByFiscalCode(fiscalCode);
-        verify(winningTransactionDAOMock, times(1)).deactivateCitizenTransactions(eq(fiscalCode), eq(updateDate));
+        verify(winningTransactionDAOMock, times(1)).deactivateCitizenTransactions(eq(fiscalCode), any());
     }
 
 
     @Test
     public void reactivateForRollback() {
         final String fiscalCode = "fiscalCode";
-        final OffsetDateTime updateDate = OffsetDateTime.now();
         final OffsetDateTime requestTimestamp = OffsetDateTime.now();
         winningTransactionService.reactivateForRollback("fiscalCode", requestTimestamp);
-        verify(winningTransactionDAOMock, times(1)).reactivateForRollback(eq(fiscalCode), eq(requestTimestamp), eq(updateDate));
+        verify(winningTransactionDAOMock, times(1)).reactivateForRollback(eq(fiscalCode), eq(requestTimestamp), any());
     }
 
 }
