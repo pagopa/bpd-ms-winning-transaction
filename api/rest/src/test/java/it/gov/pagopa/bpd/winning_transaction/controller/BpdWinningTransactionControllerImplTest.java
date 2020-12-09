@@ -8,6 +8,7 @@ import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransact
 import it.gov.pagopa.bpd.winning_transaction.factory.WinningTransactionModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.PagedResources;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.apache.logging.log4j.util.Strings;
@@ -21,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -306,6 +309,49 @@ public class BpdWinningTransactionControllerImplTest {
         BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
                 .getWinningTransactions(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode));
         BDDMockito.verify(findWinningTransactionResourceAssemblerSpy, Mockito.times(winningTransactions.size()))
+                .toResource(Mockito.any(WinningTransaction.class));
+        BDDMockito.verify(findWinningTransactionResourceAssemblerSpy, Mockito.atMost(1))
+                .toResource(Mockito.eq(newTransaction));
+
+    }
+
+    @Test
+    public void findWinningTransactionsPaged_OkWithElement() throws Exception {
+
+        String fiscalCode = "DSULTN82H03H904Q";
+        String hpan = "hpan";
+        Long awardPeriodId = 0L;
+
+        BDDMockito.doReturn(new PageImpl<>(Collections.singletonList(newTransaction)))
+                .when(winningTransactionServiceMock)
+                .getWinningTransactionsPaged(Mockito.eq(hpan), Mockito.eq(awardPeriodId),
+                        Mockito.eq(fiscalCode),Mockito.any(),Mockito.any());
+
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.get(BASE_URL.concat("/paged"))
+                        .param("hpan", hpan)
+                        .param("awardPeriodId", String.valueOf(awardPeriodId))
+                        .param("fiscalCode", fiscalCode)
+                        .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andReturn();
+
+        String contentString = result.getResponse().getContentAsString();
+        assertNotNull(contentString);
+        assertFalse(Strings.isBlank(contentString));
+
+        PagedResources<FindWinningTransactionResource> winningTransactions = mapper.readValue(
+                contentString, new TypeReference<PagedResources<FindWinningTransactionResource>>() {});
+
+        assertEquals(winningTransactions.getResources().size(), 1);
+        assertEquals(winningTransactions.getResources().get(0).getIdTrxIssuer(), newTransaction.getIdTrxIssuer());
+
+        BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
+                .getWinningTransactionsPaged(Mockito.eq(hpan), Mockito.eq(awardPeriodId),
+                        Mockito.eq(fiscalCode), Mockito.any(), Mockito.any());
+        BDDMockito.verify(findWinningTransactionResourceAssemblerSpy,
+                Mockito.times(winningTransactions.getResources().size()))
                 .toResource(Mockito.any(WinningTransaction.class));
         BDDMockito.verify(findWinningTransactionResourceAssemblerSpy, Mockito.atMost(1))
                 .toResource(Mockito.eq(newTransaction));

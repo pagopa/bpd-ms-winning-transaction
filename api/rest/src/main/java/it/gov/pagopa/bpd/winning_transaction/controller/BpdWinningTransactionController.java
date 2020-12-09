@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiParam;
 import it.gov.pagopa.bpd.common.util.Constants;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.PagedResources;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,27 @@ public interface BpdWinningTransactionController {
             @RequestParam
             @Valid @NotBlank @Size(min = 16, max = 16) @Pattern(regexp = Constants.FISCAL_CODE_REGEX)
                     String fiscalCode
+    );
+
+    @GetMapping(value = "/paged", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    PagedResources<FindWinningTransactionResource> findWinningTransactionsPaged(
+            @ApiParam(value = "${swagger.winningTransaction.hashPan}", required = false)
+            @RequestParam(required = false)
+                    String hpan,
+            @ApiParam(value = "${swagger.winningTransaction.awardPeriodId}", required = true)
+            @NotNull
+            @RequestParam
+                    Long awardPeriodId,
+            @ApiParam(value = "${swagger.winningTransaction.fiscalCode}", required = true)
+            @NotNull
+            @RequestParam
+            @Valid @NotBlank @Size(min = 16, max = 16) @Pattern(regexp = Constants.FISCAL_CODE_REGEX)
+                    String fiscalCode,
+            @ApiParam(value = "${swagger.winningTransaction.pageNumber}")
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @ApiParam(value = "${swagger.winningTransaction.pageSize}")
+            @RequestParam(defaultValue = "100") int pageSize
     );
 
     @DeleteMapping(value = "/{fiscalCode}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

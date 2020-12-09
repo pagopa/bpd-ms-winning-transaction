@@ -6,6 +6,8 @@ import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsE
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -48,11 +50,23 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
             log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
 
-        List<WinningTransaction> winningTransactions = new ArrayList<>();
-        winningTransactions = hpan != null? winningTransactionDAO.findCitizenTransactionsByHpan(fiscalCode,awardPeriodId,hpan)
+        return hpan != null? winningTransactionDAO.findCitizenTransactionsByHpan(fiscalCode,awardPeriodId,hpan)
                 : winningTransactionDAO.findCitizenTransactions(fiscalCode, awardPeriodId);
+    }
 
-        return winningTransactions;
+    @Override
+    public Page<WinningTransaction> getWinningTransactionsPaged(
+            String hpan, Long awardPeriodId, String fiscalCode, Integer pageNumber, Integer pageSize) {
+        if (log.isDebugEnabled()) {
+            log.debug("WinningTransactionServiceImpl.getWinningTransactions");
+            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
+        }
+
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+
+        return hpan != null?
+                winningTransactionDAO.findCitizenTransactionsByHpanPaged(fiscalCode,awardPeriodId,hpan, pageRequest)
+                : winningTransactionDAO.findCitizenTransactionsPaged(fiscalCode, awardPeriodId, pageRequest);
     }
 
     @Override

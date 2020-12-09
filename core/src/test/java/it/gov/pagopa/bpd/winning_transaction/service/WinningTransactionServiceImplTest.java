@@ -10,9 +10,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -152,21 +155,50 @@ public class WinningTransactionServiceImplTest {
     }
 
     @Test
+    public void getPagedWinningTransactionsWithHpan() {
+
+        String fiscalCode = "fiscalCode";
+        String hpan = "hpan";
+        Long awardPeriodId = 0L;
+
+        List<WinningTransaction> winningTransactions = Collections.singletonList(newTransaction);
+
+        BDDMockito.doReturn(new PageImpl<>(winningTransactions))
+                .when(winningTransactionDAOMock)
+                .findCitizenTransactionsByHpanPaged(
+                        Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId), Mockito.eq(hpan),Mockito.any());
+
+        Page<WinningTransaction> newWinningTransactions = winningTransactionService
+                .getWinningTransactionsPaged(hpan, awardPeriodId, fiscalCode, 1, 1);
+
+        assertNotNull(newWinningTransactions);
+        assertEquals(newWinningTransactions.getContent().size(), 1);
+        assertEquals(newWinningTransactions.getContent().get(0), newTransaction);
+
+        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
+                .findCitizenTransactionsByHpanPaged(
+                        Mockito.eq(fiscalCode),
+                        Mockito.eq(awardPeriodId),
+                        Mockito.eq(hpan),
+                        Mockito.any());
+    }
+
+    @Test
     public void deleteByFiscalCode() {
         final String fiscalCode = "fiscalCode";
-        final OffsetDateTime updateDate = OffsetDateTime.now();
         winningTransactionService.deleteByFiscalCode(fiscalCode);
-        verify(winningTransactionDAOMock, times(1)).deactivateCitizenTransactions(eq(fiscalCode), eq(updateDate));
+        verify(winningTransactionDAOMock, times(1))
+                .deactivateCitizenTransactions(eq(fiscalCode), Mockito.any());
     }
 
 
     @Test
     public void reactivateForRollback() {
         final String fiscalCode = "fiscalCode";
-        final OffsetDateTime updateDate = OffsetDateTime.now();
         final OffsetDateTime requestTimestamp = OffsetDateTime.now();
         winningTransactionService.reactivateForRollback("fiscalCode", requestTimestamp);
-        verify(winningTransactionDAOMock, times(1)).reactivateForRollback(eq(fiscalCode), eq(requestTimestamp), eq(updateDate));
+        verify(winningTransactionDAOMock, times(1)).reactivateForRollback(
+                eq(fiscalCode), eq(requestTimestamp), Mockito.any());
     }
 
 }

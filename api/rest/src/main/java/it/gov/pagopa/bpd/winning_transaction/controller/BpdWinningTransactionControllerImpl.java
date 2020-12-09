@@ -7,15 +7,16 @@ import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransact
 import it.gov.pagopa.bpd.winning_transaction.factory.ModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.PagedResources;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityExistsException;
-import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,6 +73,33 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
         return winningTransactions.stream()
                 .map(findWinningTransactionResourceAssembler::toResource)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PagedResources<FindWinningTransactionResource> findWinningTransactionsPaged(
+            String hpan, Long awardPeriodId, String fiscalCode, int pageNumber, int pageSize) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("BpdWinningTransactionControllerImpl.findWinningTransactions");
+            logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
+        }
+        Page<WinningTransaction> winningTransactions = winningTransactionService
+                .getWinningTransactionsPaged(hpan, awardPeriodId, fiscalCode, pageNumber, pageSize);
+
+        List<FindWinningTransactionResource> winningTransactionResources =
+                winningTransactions.stream()
+                .map(findWinningTransactionResourceAssembler::toResource)
+                .collect(Collectors.toList());
+
+        PagedResources<FindWinningTransactionResource> pagedResources =
+                new PagedResources<>();
+        pagedResources.setResources(winningTransactionResources);
+        pagedResources.setCurrentPage(winningTransactions.getNumber());
+        pagedResources.setNumberOfElements(winningTransactions.getNumberOfElements());
+        pagedResources.setCurrentSize(winningTransactions.getSize());
+        pagedResources.setTotalElements(winningTransactions.getTotalElements());
+        pagedResources.setTotalPages(winningTransactions.getTotalPages());
+
+        return pagedResources;
     }
 
     @Override
