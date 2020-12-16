@@ -4,16 +4,16 @@
 
     <parent>
         <groupId>it.gov.pagopa.bpd.ms</groupId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
         <artifactId>bpd-ms-starter-parent</artifactId>
     </parent>
 
     <artifactId>bpd-ms-winning-transaction</artifactId>
-    <version>1.0.0-rc1</version>
+    <version>1.0.2-rc2</version>
     <packaging>pom</packaging>
 
     <properties>
-        <bpd-commons.version>1.0.7</bpd-commons.version>
+        <bpd-commons.version>1.0.8</bpd-commons.version>
     </properties>
 
     <dependencyManagement>
@@ -21,12 +21,7 @@
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction.integration</groupId>
                 <artifactId>bpd-ms-winning-transaction-integration-jpa</artifactId>
-                <version>1.0.0-rc1</version>
-            </dependency>
-            <dependency>
-                <groupId>it.gov.pagopa.bpd.ms.winning_transaction.integration</groupId>
-                <artifactId>bpd-ms-winning-transaction-integration-event</artifactId>
-                <version>1.0.0-rc1</version>
+                <version>1.0.2-rc2</version>
             </dependency>
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction.integration</groupId>
@@ -36,22 +31,22 @@
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction.integration</groupId>
                 <artifactId>bpd-ms-winning-transaction-integration-event</artifactId>
-                <version>1.0.0-rc1</version>
+                <version>1.0.2-rc2</version>
             </dependency>
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction</groupId>
                 <artifactId>bpd-ms-winning-transaction-core</artifactId>
-                <version>1.0.0-rc1</version>
+                <version>1.0.2-rc2</version>
             </dependency>
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction.api</groupId>
                 <artifactId>bpd-ms-winning-transaction-api-rest</artifactId>
-                <version>1.0.0-rc1</version>
+                <version>1.0.2-rc2</version>
             </dependency>
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction.api</groupId>
                 <artifactId>bpd-ms-winning-transaction-api-event</artifactId>
-                <version>1.0.0-rc1</version>
+                <version>1.0.2-rc2</version>
             </dependency>
             <dependency>
                 <groupId>it.gov.pagopa.bpd.commons</groupId>
