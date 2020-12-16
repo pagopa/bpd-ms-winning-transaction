@@ -3,7 +3,6 @@ package it.gov.pagopa.bpd.winning_transaction.service;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
-import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -109,7 +108,7 @@ public class WinningTransactionServiceImplTest {
 
         BDDMockito.doReturn(winningTransactions)
                 .when(winningTransactionDAOMock)
-                .findCitizenTransactions( Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId));
+                .findCitizenTransactions(Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId), Mockito.any());
 
         List<WinningTransaction> newWinningTransactions = winningTransactionService
                 .getWinningTransactions(null, awardPeriodId, fiscalCode);
@@ -121,7 +120,8 @@ public class WinningTransactionServiceImplTest {
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
                 .findCitizenTransactions(
                         Mockito.eq(fiscalCode),
-                        Mockito.eq(awardPeriodId));
+                        Mockito.eq(awardPeriodId),
+                        Mockito.any());
     }
 
     @Test
@@ -135,7 +135,7 @@ public class WinningTransactionServiceImplTest {
 
         BDDMockito.doReturn(winningTransactions)
                 .when(winningTransactionDAOMock)
-                .findCitizenTransactionsByHpan( Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId), Mockito.eq(hpan));
+                .findCitizenTransactions(Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId), Mockito.eq(hpan));
 
         List<WinningTransaction> newWinningTransactions = winningTransactionService
                 .getWinningTransactions(hpan, awardPeriodId, fiscalCode);
@@ -145,7 +145,7 @@ public class WinningTransactionServiceImplTest {
         assertEquals(newWinningTransactions.get(0), newTransaction);
 
         BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
-                .findCitizenTransactionsByHpan(
+                .findCitizenTransactions(
                         Mockito.eq(fiscalCode),
                         Mockito.eq(awardPeriodId),
                         Mockito.eq(hpan));

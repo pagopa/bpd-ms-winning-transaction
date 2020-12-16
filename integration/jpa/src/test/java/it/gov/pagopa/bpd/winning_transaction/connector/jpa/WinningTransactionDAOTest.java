@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.function.Function;
 
 public class WinningTransactionDAOTest extends
@@ -74,7 +73,7 @@ public class WinningTransactionDAOTest extends
 
     @Override
     protected void compare(WinningTransaction entityToSave, WinningTransaction saved) {
-        TestUtils.reflectionEqualsByName(entityToSave, saved, new String[]{"insertDate", "insertUser", "updateDate", "updateUser", "enabled", "updatable", "new", "isNew"});
+        TestUtils.reflectionEqualsByName(entityToSave, saved, "insertDate", "insertUser", "updateDate", "updateUser", "enabled", "updatable", "new", "isNew");
     }
 
     @Override

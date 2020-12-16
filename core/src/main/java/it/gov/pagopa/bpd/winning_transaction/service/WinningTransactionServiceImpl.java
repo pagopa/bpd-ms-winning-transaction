@@ -49,8 +49,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
         }
 
         List<WinningTransaction> winningTransactions = new ArrayList<>();
-        winningTransactions = hpan != null? winningTransactionDAO.findCitizenTransactionsByHpan(fiscalCode,awardPeriodId,hpan)
-                : winningTransactionDAO.findCitizenTransactions(fiscalCode, awardPeriodId);
+        winningTransactions = winningTransactionDAO.findCitizenTransactions(fiscalCode, awardPeriodId, hpan);
 
         return winningTransactions;
     }
