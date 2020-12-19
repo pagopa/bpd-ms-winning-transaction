@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>bpd-ms-winning-transaction</artifactId>
-    <version>1.0.2-rc3</version>
+    <version>1.0.2-rc4</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -21,7 +21,7 @@
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction.integration</groupId>
                 <artifactId>bpd-ms-winning-transaction-integration-jpa</artifactId>
-                <version>1.0.2-rc3</version>
+                <version>1.0.2-rc4</version>
             </dependency>
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction.integration</groupId>
@@ -31,22 +31,22 @@
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction.integration</groupId>
                 <artifactId>bpd-ms-winning-transaction-integration-event</artifactId>
-                <version>1.0.2-rc3</version>
+                <version>1.0.2-rc4</version>
             </dependency>
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction</groupId>
                 <artifactId>bpd-ms-winning-transaction-core</artifactId>
-                <version>1.0.2-rc3</version>
+                <version>1.0.2-rc4</version>
             </dependency>
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction.api</groupId>
                 <artifactId>bpd-ms-winning-transaction-api-rest</artifactId>
-                <version>1.0.2-rc3</version>
+                <version>1.0.2-rc4</version>
             </dependency>
             <dependency>
                 <groupId>it.gov.pagopa.bpd.ms.winning_transaction.api</groupId>
                 <artifactId>bpd-ms-winning-transaction-api-event</artifactId>
-                <version>1.0.2-rc3</version>
+                <version>1.0.2-rc4</version>
             </dependency>
             <dependency>
                 <groupId>it.gov.pagopa.bpd.commons</groupId>
