@@ -15,5 +15,6 @@ public class WinningTransactionId implements Serializable {
     String idTrxAcquirer;
     String acquirerCode;
     OffsetDateTime trxDate;
+    String operationType;
 
 }
