@@ -52,6 +52,7 @@ public class WinningTransactionDAOTest extends
         entity.setAcquirerCode(id.getAcquirerCode());
         entity.setTrxDate(id.getTrxDate());
         entity.setIdTrxAcquirer(id.getIdTrxAcquirer());
+        entity.setOperationType(id.getOperationType());
         entity.setUpdatable(true);
     }
 
@@ -62,6 +63,7 @@ public class WinningTransactionDAOTest extends
         winningTransactionId.setAcquirerCode(entity.getAcquirerCode());
         winningTransactionId.setIdTrxAcquirer(entity.getIdTrxAcquirer());
         winningTransactionId.setTrxDate(entity.getTrxDate());
+        winningTransactionId.setOperationType(entity.getOperationType());
         return winningTransactionId;
     }
 
@@ -86,6 +88,7 @@ public class WinningTransactionDAOTest extends
             winningTransactionId.setTrxDate(offsetDateTime);
             winningTransactionId.setIdTrxAcquirer(String.valueOf(bias));
             winningTransactionId.setAcquirerCode(bias.toString());
+            winningTransactionId.setOperationType(bias.toString());
             return winningTransactionId;
         };
     }

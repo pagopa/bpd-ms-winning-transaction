@@ -58,6 +58,7 @@ public class WinningTransactionServiceImplTest {
                     .idTrxAcquirer("0")
                     .acquirerCode("0")
                     .trxDate(offsetDateTime)
+                    .operationType("00")
                     .build();
 
 
