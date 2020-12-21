@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@EqualsAndHashCode(of = {"idTrxAcquirer", "acquirerCode", "trxDate", "operationType"}, callSuper = false)
+@EqualsAndHashCode(of = {"idTrxAcquirer", "acquirerCode", "trxDate", "operationType", "acquirerId"}, callSuper = false)
 @IdClass(WinningTransactionId.class)
 @Table(name = "bpd_winning_transaction")
 @Where(clause = "ENABLED_B = 'TRUE'")
@@ -75,6 +75,7 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @Column(name="award_period_id_n")
     Long awardPeriodId;
 
+    @Id
     @Column(name="acquirer_id_s")
     String acquirerId;
 
@@ -98,6 +99,7 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
                 .acquirerCode(acquirerCode)
                 .trxDate(trxDate)
                 .operationType(operationType)
+                .acquirerId(acquirerId)
                 .build();
     }
 
