@@ -1,9 +1,9 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionReplicaDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
-import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,6 +39,9 @@ public class WinningTransactionServiceImplTest {
 
     @MockBean
     private WinningTransactionDAO winningTransactionDAOMock;
+
+    @MockBean
+    private WinningTransactionReplicaDAO winningTransactionReplicaDAOMock;
 
     private final WinningTransaction newTransaction =
             WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
@@ -110,7 +113,7 @@ public class WinningTransactionServiceImplTest {
         List<WinningTransaction> winningTransactions = Collections.singletonList(newTransaction);
 
         BDDMockito.doReturn(winningTransactions)
-                .when(winningTransactionDAOMock)
+                .when(winningTransactionReplicaDAOMock)
                 .findCitizenTransactions( Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId));
 
         List<WinningTransaction> newWinningTransactions = winningTransactionService
@@ -120,7 +123,7 @@ public class WinningTransactionServiceImplTest {
         assertEquals(newWinningTransactions.size(), 1);
         assertEquals(newWinningTransactions.get(0), newTransaction);
 
-        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
+        BDDMockito.verify(winningTransactionReplicaDAOMock, Mockito.atLeastOnce())
                 .findCitizenTransactions(
                         Mockito.eq(fiscalCode),
                         Mockito.eq(awardPeriodId));
@@ -136,7 +139,7 @@ public class WinningTransactionServiceImplTest {
         List<WinningTransaction> winningTransactions = Collections.singletonList(newTransaction);
 
         BDDMockito.doReturn(winningTransactions)
-                .when(winningTransactionDAOMock)
+                .when(winningTransactionReplicaDAOMock)
                 .findCitizenTransactionsByHpan( Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId), Mockito.eq(hpan));
 
         List<WinningTransaction> newWinningTransactions = winningTransactionService
@@ -146,7 +149,7 @@ public class WinningTransactionServiceImplTest {
         assertEquals(newWinningTransactions.size(), 1);
         assertEquals(newWinningTransactions.get(0), newTransaction);
 
-        BDDMockito.verify(winningTransactionDAOMock, Mockito.atLeastOnce())
+        BDDMockito.verify(winningTransactionReplicaDAOMock, Mockito.atLeastOnce())
                 .findCitizenTransactionsByHpan(
                         Mockito.eq(fiscalCode),
                         Mockito.eq(awardPeriodId),

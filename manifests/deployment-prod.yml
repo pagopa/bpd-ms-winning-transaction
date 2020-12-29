@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: bpdmswinningtransaction
 spec:
-  replicas: 1  
+  replicas: 12
   selector:
     matchLabels:
       app: bpdmswinningtransaction
