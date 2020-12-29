@@ -1,6 +1,7 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionReplicaDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +21,14 @@ import java.util.List;
 public class WinningTransactionServiceImpl implements WinningTransactionService {
 
     private final WinningTransactionDAO winningTransactionDAO;
+    private final WinningTransactionReplicaDAO winningTransactionReplicaDAO;
 
     @Autowired
     public WinningTransactionServiceImpl(
-            WinningTransactionDAO winningTransactionDAO) {
+            WinningTransactionDAO winningTransactionDAO,
+            WinningTransactionReplicaDAO winningTransactionReplicaDAO) {
         this.winningTransactionDAO = winningTransactionDAO;
+        this.winningTransactionReplicaDAO = winningTransactionReplicaDAO;
     }
 
     @Override
@@ -49,8 +53,8 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
         }
 
         List<WinningTransaction> winningTransactions = new ArrayList<>();
-        winningTransactions = hpan != null? winningTransactionDAO.findCitizenTransactionsByHpan(fiscalCode,awardPeriodId,hpan)
-                : winningTransactionDAO.findCitizenTransactions(fiscalCode, awardPeriodId);
+        winningTransactions = hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsByHpan(fiscalCode,awardPeriodId,hpan)
+                : winningTransactionReplicaDAO.findCitizenTransactions(fiscalCode, awardPeriodId);
 
         return winningTransactions;
     }

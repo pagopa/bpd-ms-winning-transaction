@@ -8,9 +8,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@PropertySource("classpath:config/jpaConnectionConfig.properties")
+@PropertySource("classpath:config/replicaJpaConnectionConfig.properties")
 @EnableJpaRepositories(
-        excludeFilters = @ComponentScan.Filter(ReadOnlyRepository.class)
+        includeFilters = @ComponentScan.Filter(ReadOnlyRepository.class)
 )
-public class WinningTransactionJpaConfig extends BaseJpaConfig {
+public class WinningTransactionReplicaJpaConfig extends BaseJpaConfig {
 }
