@@ -34,7 +34,7 @@ import java.util.Properties;
         entityManagerFactoryRef = "entityManagerFactory",
         transactionManagerRef = "transactionManager"
 )
-public class WinningTransactionJpaConfig extends BaseJpaConfig {
+public class WinningTransactionJpaConfig /* extends BaseJpaConfig */ {
     @Value("${spring.datasource.url}")
     private String url;
 
