@@ -17,15 +17,6 @@ import java.util.List;
 @Repository
 public interface WinningTransactionDAO extends CrudJpaDAO<WinningTransaction, WinningTransactionId> {
 
-    @Query(nativeQuery = true, value = "SELECT * FROM get_citizen_transactions( :fiscalCode, :awardPeriodId, :hpan)")
-    List<WinningTransaction> findCitizenTransactionsByHpan(@Param("fiscalCode") String fiscalCode,
-                                                     @Param("awardPeriodId") Long awardPeriodId,
-                                                     @Param("hpan") String hpan);
-
-    @Query(nativeQuery = true, value = "SELECT * FROM get_citizen_transactions( :fiscalCode, :awardPeriodId)")
-    List<WinningTransaction> findCitizenTransactions(@Param("fiscalCode") String fiscalCode,
-                                                     @Param("awardPeriodId") Long awardPeriodId);
-
     @Modifying
     @Query("update WinningTransaction wt " +
             "set wt.enabled = false," +

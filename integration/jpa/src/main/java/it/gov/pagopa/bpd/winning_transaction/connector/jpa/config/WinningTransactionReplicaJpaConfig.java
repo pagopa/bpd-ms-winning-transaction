@@ -7,6 +7,7 @@ import it.gov.pagopa.bpd.common.connector.jpa.config.BaseJpaConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -25,51 +26,56 @@ import java.util.Objects;
 import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:config/jpaConnectionConfig.properties")
+@PropertySource("classpath:config/replicaJpaConnectionConfig.properties")
+@EntityScan(
+        basePackages = {"it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionReplicaDAO"}
+)
 @EnableJpaRepositories(
         repositoryBaseClass = CustomJpaRepository.class,
         basePackages = {"it.gov.pagopa.bpd.winning_transaction.connector.jpa"},
-        excludeFilters = @ComponentScan.Filter(ReadOnlyRepository.class),
-        includeFilters = @ComponentScan.Filter(Repository.class),
-        entityManagerFactoryRef = "entityManagerFactory",
-        transactionManagerRef = "transactionManager"
+        excludeFilters = @ComponentScan.Filter(Repository.class),
+        includeFilters = @ComponentScan.Filter(ReadOnlyRepository.class),
+        entityManagerFactoryRef = "readEntityManagerFactory",
+        transactionManagerRef = "readTransactionManager"
 )
-public class WinningTransactionJpaConfig /* extends BaseJpaConfig */ {
-    @Value("${spring.datasource.url}")
+public class WinningTransactionReplicaJpaConfig /* extends BaseJpaConfig */{
+    @Value("${spring.replica.datasource.url}")
     private String url;
 
-    @Value("${spring.datasource.username}")
+    @Value("${spring.replica.datasource.username}")
     private String username;
 
-    @Value("${spring.datasource.password}")
+    @Value("${spring.replica.datasource.password}")
     private String password;
 
-    @Value("${spring.datasource.driver-class-name}")
+    @Value("${spring.replica.datasource.driver-class-name}")
     private String driverClassName;
 
-    @Value("${spring.datasource.hikari.maximumPoolSize}")
+    @Value("${spring.replica.datasource.hikari.maximumPoolSize}")
     private int connectionPoolSize;
 
-    @Value("${spring.datasource.hikari.schema}")
+    @Value("${spring.replica.datasource.hikari.schema}")
     private String schema;
 
-    @Value("${spring.datasource.hikari.connectionTimeout}")
+    @Value("${spring.replica.datasource.hikari.connectionTimeout}")
     private long timeout;
 
-    @Value("${spring.datasource.hikari.readOnly}")
+    @Value("${spring.replica.datasource.hikari.readOnly}")
     private boolean readOnly;
 
-    @Value("${spring.jpa.database-platform}")
+    @Value("${spring.replica.jpa.database-platform}")
     private String hibernateDialect;
 
-    @Value("${spring.jpa.show-sql}")
+    @Value("${spring.replica.jpa.show-sql}")
     private boolean showSql;
 
-    @Value("${spring.jpa.hibernate.ddl-auto}")
+    @Value("${spring.replica.jpa.hibernate.ddl-auto}")
     private String hibernateDdlAuto;
 
-    @Bean(name = {"dataSource"})
-    public DataSource dataSource() throws Exception{
+    @Bean(
+            name = {"readDataSource"}
+    )
+    public DataSource readDataSource() throws Exception{
         HikariDataSource ds = new HikariDataSource();
         ds.setMaximumPoolSize(this.connectionPoolSize);
         ds.setConnectionTimeout(this.timeout);
@@ -85,9 +91,11 @@ public class WinningTransactionJpaConfig /* extends BaseJpaConfig */ {
         return ds;
     }
 
-    @Bean(name = {"entityManagerFactory"})
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            @Qualifier("dataSource") DataSource datasource
+    @Bean(
+            name = {"readEntityManagerFactory"}
+    )
+    public LocalContainerEntityManagerFactoryBean readEntityManagerFactory(
+            @Qualifier("readDataSource") DataSource datasource
     ){
         Properties jpaProperties = new Properties();
 
@@ -95,8 +103,8 @@ public class WinningTransactionJpaConfig /* extends BaseJpaConfig */ {
         jpaProperties.put("hibernate.dialect", this.hibernateDialect);
         jpaProperties.put("hibernate.show_sql", this.showSql);
         jpaProperties.put("hibernate.jdbc.batch_size", 5);
-        jpaProperties.put("hibernate.order_inserts", Boolean.TRUE);
-        jpaProperties.put("hibernate.order_updates", Boolean.TRUE);
+        jpaProperties.put("hibernate.order_inserts", Boolean.FALSE);
+        jpaProperties.put("hibernate.order_updates", Boolean.FALSE);
         jpaProperties.put("hibernate.jdbc.batch_versioned_data", Boolean.FALSE);
         jpaProperties.put("hibernate.id.new_generator_mappings", Boolean.FALSE);
         jpaProperties.put("hibernate.jdbc.lob.non_contextual_creation",
@@ -123,8 +131,10 @@ public class WinningTransactionJpaConfig /* extends BaseJpaConfig */ {
         return entityManagerFactoryBean;
     }
 
-    @Bean(name = {"transactionManager"})
-    public PlatformTransactionManager transactionManager() throws Exception {
-        return new JpaTransactionManager(this.entityManagerFactory(this.dataSource()).getObject());
+    @Bean(
+            name = {"readTransactionManager"}
+    )
+    public PlatformTransactionManager readTransactionManager() throws Exception {
+        return new JpaTransactionManager(this.readEntityManagerFactory(this.readDataSource()).getObject());
     }
 }
