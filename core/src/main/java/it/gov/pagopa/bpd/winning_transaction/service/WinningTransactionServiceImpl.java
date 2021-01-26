@@ -7,6 +7,8 @@ import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsE
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -57,6 +59,17 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
                 : winningTransactionReplicaDAO.findCitizenTransactions(fiscalCode, awardPeriodId);
 
         return winningTransactions;
+    }
+
+    @Override
+    public Page<WinningTransaction> getWinningTransactionsV2(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable) {
+        if (log.isDebugEnabled()) {
+            log.debug("WinningTransactionServiceImpl.getWinningTransactions");
+            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
+        }
+
+        return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsByHpanPage(fiscalCode,awardPeriodId,hpan, pageable)
+                : winningTransactionReplicaDAO.findCitizenTransactionsPage(fiscalCode, awardPeriodId, pageable);
     }
 
     @Override

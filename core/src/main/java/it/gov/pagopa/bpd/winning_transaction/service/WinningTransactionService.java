@@ -1,6 +1,8 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -13,6 +15,8 @@ public interface WinningTransactionService {
     WinningTransaction create(WinningTransaction winningTransaction);
 
     List<WinningTransaction> getWinningTransactions(String hpan, Long awardPeriodId, String fiscalCode);
+
+    Page<WinningTransaction> getWinningTransactionsV2(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable);
 
     void deleteByFiscalCode(String fiscalCode);
 

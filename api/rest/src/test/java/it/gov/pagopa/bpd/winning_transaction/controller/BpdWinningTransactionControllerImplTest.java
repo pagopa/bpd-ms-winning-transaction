@@ -3,11 +3,13 @@ package it.gov.pagopa.bpd.winning_transaction.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionResourceAssembler;
+import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionV2ResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.factory.WinningTransactionModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionPage;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.apache.logging.log4j.util.Strings;
@@ -21,6 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -60,6 +65,9 @@ public class BpdWinningTransactionControllerImplTest {
 
     @SpyBean
     private FindWinningTransactionResourceAssembler findWinningTransactionResourceAssemblerSpy;
+
+    @SpyBean
+    private FindWinningTransactionV2ResourceAssembler findWinningTransactionV2ResourceAssemblerSpy;
 
     private final WinningTransaction newTransaction =
             WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
@@ -311,6 +319,47 @@ public class BpdWinningTransactionControllerImplTest {
                 .toResource(Mockito.eq(newTransaction));
 
     }
+
+    public void findWinningTransactionsV2_OkWithElement() throws Exception {
+
+        String fiscalCode = "DSULTN82H03H904Q";
+        String hpan = "hpan";
+        Long awardPeriodId = 0L;
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.asc("trx_timestamp_t")));
+
+        BDDMockito.doReturn(Collections.singletonList(newTransaction))
+                .when(winningTransactionServiceMock)
+                .getWinningTransactionsV2(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
+
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.get(BASE_URL)
+                        .param("hpan", hpan)
+                        .param("awardPeriodId", String.valueOf(awardPeriodId))
+                        .param("fiscalCode", fiscalCode)
+                        .param("next_cursor", "0")
+                        .param("limit", "1")
+                        .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andReturn();
+
+        String contentString = result.getResponse().getContentAsString();
+        assertNotNull(contentString);
+        assertFalse(Strings.isBlank(contentString));
+
+        WinningTransactionPage winningTransactionsObject = mapper.readValue(
+                contentString, new TypeReference<WinningTransactionPage>() {});
+
+        assertNotNull(winningTransactionsObject);
+        assertEquals(winningTransactionsObject.getTransactions().size(), 1);
+
+        BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
+                .getWinningTransactionsV2(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
+        BDDMockito.verify(findWinningTransactionV2ResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
+                .toResource(Mockito.any(), Mockito.eq(0), Mockito.any());
+
+    }
+
 
     @Test
     public void delete() throws Exception {

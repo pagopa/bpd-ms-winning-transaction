@@ -2,22 +2,26 @@ package it.gov.pagopa.bpd.winning_transaction.controller;
 
 import eu.sia.meda.core.controller.StatelessController;
 import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionResourceAssembler;
+import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionV2ResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.factory.ModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionsOfTheDay;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionPage;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityExistsException;
-import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +33,7 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
     private final ModelFactory<WinningTransactionDTO, WinningTransaction> winningTransactionFactory;
     private final WinningTransactionResourceAssembler winningTransactionResourceAssembler;
     private final FindWinningTransactionResourceAssembler findWinningTransactionResourceAssembler;
+    private final FindWinningTransactionV2ResourceAssembler findWinningTransactionV2ResourceAssembler;
     private final WinningTransactionService winningTransactionService;
 
     @Autowired
@@ -36,10 +41,11 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
             ModelFactory<WinningTransactionDTO, WinningTransaction> winningTransactionFactory,
             WinningTransactionResourceAssembler winningTransactionResourceAssembler,
             FindWinningTransactionResourceAssembler findWinningTransactionResourceAssembler,
-            WinningTransactionService winningTransactionService) {
+            FindWinningTransactionV2ResourceAssembler findWinningTransactionV2ResourceAssembler, WinningTransactionService winningTransactionService) {
         this.winningTransactionFactory = winningTransactionFactory;
         this.winningTransactionResourceAssembler = winningTransactionResourceAssembler;
         this.findWinningTransactionResourceAssembler = findWinningTransactionResourceAssembler;
+        this.findWinningTransactionV2ResourceAssembler = findWinningTransactionV2ResourceAssembler;
         this.winningTransactionService = winningTransactionService;
     }
 
@@ -72,6 +78,30 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
         return winningTransactions.stream()
                 .map(findWinningTransactionResourceAssembler::toResource)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public WinningTransactionPage findWinningTransactionsPage(String hpan, Long awardPeriodId, String fiscalCode, Integer currentPage, Integer size) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("BpdWinningTransactionControllerImpl.findWinningTransactions");
+            logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
+        }
+        Pageable pageable = PageRequest.of(currentPage, size, Sort.by(Sort.Order.desc("trx_timestamp_t")));
+
+        Page<WinningTransaction> winningTransactionsPage = winningTransactionService
+                .getWinningTransactionsV2(hpan, awardPeriodId, fiscalCode, pageable);
+
+        Map<OffsetDateTime, List<FindWinningTransactionResource>> winningTransactionsByDate =
+                winningTransactionsPage.stream()
+                .map(findWinningTransactionResourceAssembler::toResource)
+                .collect(Collectors.groupingBy(FindWinningTransactionResource::getTrxDate));
+
+        List<WinningTransactionsOfTheDay> transactions =
+                winningTransactionsByDate.entrySet().stream()
+                        .map(findWinningTransactionV2ResourceAssembler::toGroupingByDateAndCount)
+                        .collect(Collectors.toList());
+
+        return findWinningTransactionV2ResourceAssembler.toResource(winningTransactionsPage.getTotalPages(), currentPage, transactions);
     }
 
     @Override
