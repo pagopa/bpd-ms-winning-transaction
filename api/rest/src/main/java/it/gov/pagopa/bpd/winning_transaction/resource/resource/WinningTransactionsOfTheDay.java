@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -18,8 +18,8 @@ import java.util.List;
 public class WinningTransactionsOfTheDay {
     @ApiModelProperty(value = "${swagger.winningTransaction.date}", required = true)
     @JsonProperty(required = true)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private OffsetDateTime date;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate date;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.count}", required = true)
     @JsonProperty(required = true)

@@ -1,11 +1,11 @@
 package it.gov.pagopa.bpd.winning_transaction.assembler;
 
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
-import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionsOfTheDay;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionPage;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionsOfTheDay;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -15,13 +15,13 @@ import java.util.Map;
 @Service
 public class FindWinningTransactionV2ResourceAssembler {
 
-    public WinningTransactionsOfTheDay toGroupingByDateAndCount(Map.Entry<OffsetDateTime, List<FindWinningTransactionResource>> entry) {
+    public WinningTransactionsOfTheDay toGroupingByDateAndCount(Map.Entry<LocalDate, List<FindWinningTransactionResource>> entry) {
         WinningTransactionsOfTheDay resource = null;
 
         if (entry != null) {
             resource = WinningTransactionsOfTheDay.builder().build();
 
-            OffsetDateTime trxDate = entry.getKey();
+            LocalDate trxDate = entry.getKey();
             if (trxDate != null){
                 resource.setDate(trxDate);
             }

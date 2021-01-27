@@ -7,10 +7,7 @@ import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourc
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.factory.ModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
-import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
-import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionsOfTheDay;
-import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionPage;
-import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.*;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityExistsException;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
@@ -91,10 +89,10 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
         Page<WinningTransaction> winningTransactionsPage = winningTransactionService
                 .getWinningTransactionsV2(hpan, awardPeriodId, fiscalCode, pageable);
 
-        Map<OffsetDateTime, List<FindWinningTransactionResource>> winningTransactionsByDate =
+        Map<LocalDate, List<FindWinningTransactionResource>> winningTransactionsByDate =
                 winningTransactionsPage.stream()
                 .map(findWinningTransactionResourceAssembler::toResource)
-                .collect(Collectors.groupingBy(FindWinningTransactionResource::getTrxDate));
+                .collect(Collectors.groupingBy(resource -> resource.getTrxDate().toLocalDate()));
 
         List<WinningTransactionsOfTheDay> transactions =
                 winningTransactionsByDate.entrySet().stream()
