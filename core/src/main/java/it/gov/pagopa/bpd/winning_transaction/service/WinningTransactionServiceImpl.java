@@ -62,7 +62,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
     }
 
     @Override
-    public Page<WinningTransaction> getWinningTransactionsV2(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable) {
+    public Page<WinningTransaction> getWinningTransactionsPage(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable) {
         if (log.isDebugEnabled()) {
             log.debug("WinningTransactionServiceImpl.getWinningTransactions");
             log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");

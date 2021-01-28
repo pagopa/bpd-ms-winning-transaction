@@ -87,7 +87,7 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
         Pageable pageable = PageRequest.of(currentPage, size, Sort.by(Sort.Order.desc("trx_timestamp_t")));
 
         Page<WinningTransaction> winningTransactionsPage = winningTransactionService
-                .getWinningTransactionsV2(hpan, awardPeriodId, fiscalCode, pageable);
+                .getWinningTransactionsPage(hpan, awardPeriodId, fiscalCode, pageable);
 
         Map<LocalDate, List<FindWinningTransactionResource>> winningTransactionsByDate =
                 winningTransactionsPage.stream()

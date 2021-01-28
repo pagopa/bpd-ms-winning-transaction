@@ -16,7 +16,7 @@ public interface WinningTransactionService {
 
     List<WinningTransaction> getWinningTransactions(String hpan, Long awardPeriodId, String fiscalCode);
 
-    Page<WinningTransaction> getWinningTransactionsV2(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable);
+    Page<WinningTransaction> getWinningTransactionsPage(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable);
 
     void deleteByFiscalCode(String fiscalCode);
 

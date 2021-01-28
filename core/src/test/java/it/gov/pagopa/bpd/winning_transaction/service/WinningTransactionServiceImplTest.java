@@ -13,6 +13,7 @@ import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -170,6 +171,66 @@ public class WinningTransactionServiceImplTest {
         final OffsetDateTime requestTimestamp = OffsetDateTime.now();
         winningTransactionService.reactivateForRollback("fiscalCode", requestTimestamp);
         verify(winningTransactionDAOMock, times(1)).reactivateForRollback(eq(fiscalCode), eq(requestTimestamp), any());
+    }
+
+    @Test
+    public void getWinningTransactionsPageNoHpan() {
+
+        String fiscalCode = "fiscalCode";
+        Long awardPeriodId = 0L;
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.desc("trx_timestamp_t")));
+
+        Page<WinningTransaction> winningTransactions = new PageImpl<>(Collections.singletonList(newTransaction));
+
+        BDDMockito.doReturn(winningTransactions)
+                .when(winningTransactionReplicaDAOMock)
+                .findCitizenTransactionsPage( Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId), Mockito.eq(pageable));
+
+        Page<WinningTransaction> newWinningTransactions = winningTransactionService
+                .getWinningTransactionsPage(null, awardPeriodId, fiscalCode, pageable);
+
+        assertNotNull(newWinningTransactions);
+        assertEquals(newWinningTransactions.getTotalPages(), 1);
+        assertEquals(newWinningTransactions.getTotalElements(), 1);
+        assertEquals(newWinningTransactions.get().findFirst().isPresent() ?
+                newWinningTransactions.get().findFirst().get() : null, newTransaction);
+
+        BDDMockito.verify(winningTransactionReplicaDAOMock, Mockito.atLeastOnce())
+                .findCitizenTransactionsPage(
+                        Mockito.eq(fiscalCode),
+                        Mockito.eq(awardPeriodId),
+                        Mockito.eq(pageable));
+    }
+
+    @Test
+    public void getWinningTransactionsPageWithHpan() {
+
+        String fiscalCode = "fiscalCode";
+        Long awardPeriodId = 0L;
+        String hpan = "hpan";
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.desc("trx_timestamp_t")));
+
+        Page<WinningTransaction> winningTransactions = new PageImpl<>(Collections.singletonList(newTransaction));
+
+        BDDMockito.doReturn(winningTransactions)
+                .when(winningTransactionReplicaDAOMock)
+                .findCitizenTransactionsByHpanPage( Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId), Mockito.eq(hpan), Mockito.eq(pageable));
+
+        Page<WinningTransaction> newWinningTransactions = winningTransactionService
+                .getWinningTransactionsPage(hpan, awardPeriodId, fiscalCode, pageable);
+
+        assertNotNull(newWinningTransactions);
+        assertEquals(newWinningTransactions.getTotalPages(), 1);
+        assertEquals(newWinningTransactions.getTotalElements(), 1);
+        assertEquals(newWinningTransactions.get().findFirst().isPresent() ?
+                newWinningTransactions.get().findFirst().get() : null, newTransaction);
+
+        BDDMockito.verify(winningTransactionReplicaDAOMock, Mockito.atLeastOnce())
+                .findCitizenTransactionsByHpanPage(
+                        Mockito.eq(fiscalCode),
+                        Mockito.eq(awardPeriodId),
+                        Mockito.eq(hpan),
+                        Mockito.eq(pageable));
     }
 
 }

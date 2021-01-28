@@ -329,7 +329,7 @@ public class BpdWinningTransactionControllerImplTest {
 
         BDDMockito.doReturn(Collections.singletonList(newTransaction))
                 .when(winningTransactionServiceMock)
-                .getWinningTransactionsV2(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
+                .getWinningTransactionsPage(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.get(BASE_URL)
@@ -354,7 +354,7 @@ public class BpdWinningTransactionControllerImplTest {
         assertEquals(winningTransactionsObject.getTransactions().size(), 1);
 
         BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
-                .getWinningTransactionsV2(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
+                .getWinningTransactionsPage(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
         BDDMockito.verify(findWinningTransactionV2ResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
                 .toResource(Mockito.any(), Mockito.eq(0), Mockito.any());
 
