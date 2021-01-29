@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WinningTransactionsOfTheDay {
+public class WinningTransactionsOfTheDay<T> {
     @ApiModelProperty(value = "${swagger.winningTransaction.date}", required = true)
     @JsonProperty(required = true)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -27,5 +27,5 @@ public class WinningTransactionsOfTheDay {
 
     @ApiModelProperty(value = "${swagger.winningTransaction.transactions}", required = true)
     @JsonProperty(required = true)
-    List<FindWinningTransactionResource> transactions;
+    List<T> transactions;
 }

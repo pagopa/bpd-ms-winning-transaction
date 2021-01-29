@@ -3,14 +3,20 @@ package it.gov.pagopa.bpd.winning_transaction.controller;
 import eu.sia.meda.core.controller.StatelessController;
 import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionV2ResourceAssembler;
+import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionMilestoneResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionByDateCount;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
 import it.gov.pagopa.bpd.winning_transaction.factory.ModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.*;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,6 +37,7 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
     private final ModelFactory<WinningTransactionDTO, WinningTransaction> winningTransactionFactory;
     private final WinningTransactionResourceAssembler winningTransactionResourceAssembler;
     private final FindWinningTransactionResourceAssembler findWinningTransactionResourceAssembler;
+    private final WinningTransactionMilestoneResourceAssembler winningTransactionMilestoneResourceAssembler;
     private final FindWinningTransactionV2ResourceAssembler findWinningTransactionV2ResourceAssembler;
     private final WinningTransactionService winningTransactionService;
 
@@ -39,10 +46,11 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
             ModelFactory<WinningTransactionDTO, WinningTransaction> winningTransactionFactory,
             WinningTransactionResourceAssembler winningTransactionResourceAssembler,
             FindWinningTransactionResourceAssembler findWinningTransactionResourceAssembler,
-            FindWinningTransactionV2ResourceAssembler findWinningTransactionV2ResourceAssembler, WinningTransactionService winningTransactionService) {
+            WinningTransactionMilestoneResourceAssembler winningTransactionMilestoneResourceAssembler, FindWinningTransactionV2ResourceAssembler findWinningTransactionV2ResourceAssembler, WinningTransactionService winningTransactionService) {
         this.winningTransactionFactory = winningTransactionFactory;
         this.winningTransactionResourceAssembler = winningTransactionResourceAssembler;
         this.findWinningTransactionResourceAssembler = findWinningTransactionResourceAssembler;
+        this.winningTransactionMilestoneResourceAssembler = winningTransactionMilestoneResourceAssembler;
         this.findWinningTransactionV2ResourceAssembler = findWinningTransactionV2ResourceAssembler;
         this.winningTransactionService = winningTransactionService;
     }
@@ -79,7 +87,7 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
     }
 
     @Override
-    public WinningTransactionPage findWinningTransactionsPage(String hpan, Long awardPeriodId, String fiscalCode, Integer currentPage, Integer size) {
+    public WinningTransactionPage<WinningTransactionsOfTheDay<FindWinningTransactionResource>> findWinningTransactionsPage(String hpan, Long awardPeriodId, String fiscalCode, Integer currentPage, Integer size) {
         if (logger.isDebugEnabled()) {
             logger.debug("BpdWinningTransactionControllerImpl.findWinningTransactions");
             logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
@@ -89,17 +97,46 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
         Page<WinningTransaction> winningTransactionsPage = winningTransactionService
                 .getWinningTransactionsPage(hpan, awardPeriodId, fiscalCode, pageable);
 
+        List<WinningTransactionByDateCount> winningTransactionByDateCounts = winningTransactionService.getWinningTransactionByDateCount(hpan, awardPeriodId, fiscalCode);
+
         Map<LocalDate, List<FindWinningTransactionResource>> winningTransactionsByDate =
                 winningTransactionsPage.stream()
                 .map(findWinningTransactionResourceAssembler::toResource)
                 .collect(Collectors.groupingBy(resource -> resource.getTrxDate().toLocalDate()));
 
-        List<WinningTransactionsOfTheDay> transactions =
+        List<WinningTransactionsOfTheDay<FindWinningTransactionResource>> transactions =
                 winningTransactionsByDate.entrySet().stream()
-                        .map(findWinningTransactionV2ResourceAssembler::toGroupingByDateAndCount)
+                        .map(entry -> findWinningTransactionV2ResourceAssembler.toGroupingByDateAndCount(entry, winningTransactionByDateCounts))
                         .collect(Collectors.toList());
 
-        return findWinningTransactionV2ResourceAssembler.toResource(winningTransactionsPage.getTotalPages(), currentPage, transactions);
+        return findWinningTransactionV2ResourceAssembler.toResourceFindWinningTransactionResource(winningTransactionsPage.getTotalPages(), currentPage, transactions);
+    }
+
+    @Override
+    public WinningTransactionPage<WinningTransactionsOfTheDay<WinningTransactionMilestoneResource>> findWinningTransactionsMilestonePage(String hpan, Long awardPeriodId, String fiscalCode, Integer currentPage, Integer size) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("BpdWinningTransactionControllerImpl.findWinningTransactions");
+            logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
+        }
+        Pageable pageable = PageRequest.of(currentPage, size, Sort.by(Sort.Order.desc("trxDate")));
+
+        Page<WinningTransactionMilestone> winningTransactionsMilestonePage = winningTransactionService
+                .getWinningTransactionsMilestonePage(hpan, awardPeriodId, fiscalCode, pageable);
+
+        List<WinningTransactionByDateCount> winningTransactionByDateCounts = winningTransactionService.getWinningTransactionByDateCount(hpan, awardPeriodId, fiscalCode);
+
+        Map<LocalDate, List<WinningTransactionMilestoneResource>> winningTransactionsByDate =
+                winningTransactionsMilestonePage.stream()
+                        .map(winningTransactionMilestoneResourceAssembler::toResource)
+                        .collect(Collectors.groupingBy(resource -> resource.getTrxDate().toLocalDate()));
+
+        List<WinningTransactionsOfTheDay<WinningTransactionMilestoneResource>> transactions =
+                winningTransactionsByDate.entrySet().stream()
+                        .map(entry -> findWinningTransactionV2ResourceAssembler
+                                .toMilestoneGroupingByDateAndCount(entry, winningTransactionByDateCounts))
+                        .collect(Collectors.toList());
+
+        return findWinningTransactionV2ResourceAssembler.toResourceWinningTransactionMilestoneResource(winningTransactionsMilestonePage.getTotalPages(), currentPage, transactions);
     }
 
     @Override

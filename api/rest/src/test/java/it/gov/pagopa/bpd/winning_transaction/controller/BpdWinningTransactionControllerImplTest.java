@@ -11,12 +11,15 @@ import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionPage;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
+import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionsOfTheDay;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
+import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -347,8 +350,8 @@ public class BpdWinningTransactionControllerImplTest {
         assertNotNull(contentString);
         assertFalse(Strings.isBlank(contentString));
 
-        WinningTransactionPage winningTransactionsObject = mapper.readValue(
-                contentString, new TypeReference<WinningTransactionPage>() {});
+        WinningTransactionPage<WinningTransactionsOfTheDay<FindWinningTransactionResource>>  winningTransactionsObject = mapper.readValue(
+                contentString, new TypeReference<WinningTransactionPage<WinningTransactionsOfTheDay<FindWinningTransactionResource>>>() {});
 
         assertNotNull(winningTransactionsObject);
         assertEquals(winningTransactionsObject.getTransactions().size(), 1);
@@ -356,8 +359,7 @@ public class BpdWinningTransactionControllerImplTest {
         BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
                 .getWinningTransactionsPage(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
         BDDMockito.verify(findWinningTransactionV2ResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
-                .toResource(Mockito.any(), Mockito.eq(0), Mockito.any());
-
+                .toResourceFindWinningTransactionResource(Mockito.any(), Mockito.eq(0), Mockito.anyList());
     }
 
 

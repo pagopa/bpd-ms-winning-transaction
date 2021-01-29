@@ -3,6 +3,8 @@ package it.gov.pagopa.bpd.winning_transaction.service;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionReplicaDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionByDateCount;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +72,23 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
         return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsByHpanPage(fiscalCode,awardPeriodId,hpan, pageable)
                 : winningTransactionReplicaDAO.findCitizenTransactionsPage(fiscalCode, awardPeriodId, pageable);
+    }
+
+    @Override
+    public Page<WinningTransactionMilestone> getWinningTransactionsMilestonePage(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable) {
+        if (log.isDebugEnabled()) {
+            log.debug("WinningTransactionServiceImpl.getWinningTransactions");
+            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
+        }
+
+        return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsMilestoneByHpanPage(fiscalCode,awardPeriodId,hpan, pageable)
+                : winningTransactionReplicaDAO.findCitizenTransactionsMilestonePage(fiscalCode, awardPeriodId, pageable);
+    }
+
+    @Override
+    public List<WinningTransactionByDateCount> getWinningTransactionByDateCount(String hpan, Long awardPeriodId, String fiscalCode) {
+        return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsByDateCountHpan(fiscalCode, awardPeriodId, hpan)
+                : winningTransactionReplicaDAO.findCitizenTransactionsByDateCount(fiscalCode, awardPeriodId);
     }
 
     @Override
