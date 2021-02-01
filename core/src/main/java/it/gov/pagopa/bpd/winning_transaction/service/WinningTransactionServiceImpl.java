@@ -66,8 +66,9 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
     @Override
     public Page<WinningTransaction> getWinningTransactionsPage(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable) {
         if (log.isDebugEnabled()) {
-            log.debug("WinningTransactionServiceImpl.getWinningTransactions");
-            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
+            log.debug("WinningTransactionServiceImpl.getWinningTransactionsPage");
+            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]," +
+                    " fiscalCode = [" + fiscalCode + "], page = [" + pageable.getPageNumber()+ "], size = [" + pageable.getPageSize() + "]");
         }
 
         return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsByHpanPage(fiscalCode,awardPeriodId,hpan, pageable)
@@ -77,8 +78,9 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
     @Override
     public Page<WinningTransactionMilestone> getWinningTransactionsMilestonePage(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable) {
         if (log.isDebugEnabled()) {
-            log.debug("WinningTransactionServiceImpl.getWinningTransactions");
-            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
+            log.debug("WinningTransactionServiceImpl.getWinningTransactionsMilestonePage");
+            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]," +
+                    " fiscalCode = [" + fiscalCode + "], page = [" + pageable.getPageNumber()+ "], size = [" + pageable.getPageSize() + "]");
         }
 
         return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsMilestoneByHpanPage(fiscalCode,awardPeriodId,hpan, pageable)
@@ -87,6 +89,9 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
     @Override
     public List<WinningTransactionByDateCount> getWinningTransactionByDateCount(String hpan, Long awardPeriodId, String fiscalCode) {
+        if (log.isDebugEnabled()) {
+            log.debug("WinningTransactionServiceImpl.getWinningTransactionByDateCount");
+        }
         return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsByDateCountHpan(fiscalCode, awardPeriodId, hpan)
                 : winningTransactionReplicaDAO.findCitizenTransactionsByDateCount(fiscalCode, awardPeriodId);
     }

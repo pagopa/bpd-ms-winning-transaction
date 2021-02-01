@@ -30,8 +30,7 @@ public class FindWinningTransactionV2ResourceAssembler {
             LocalDate trxDate = entry.getKey();
             if (trxDate != null){
                 resource.setDate(trxDate);
-                Optional<WinningTransactionByDateCount> opt = winningTransactionByDateCount.stream().filter(wdc -> new Date(wdc.getTrxDate().getTime()).equals(Date.valueOf(trxDate))).findFirst();
-                resource.setCount(opt.map(WinningTransactionByDateCount::getCount).orElse(null));
+                resource.setCount(getTransactionCountByDate(winningTransactionByDateCount, trxDate));
             }
 
             List<FindWinningTransactionResource> winningTransactions = entry.getValue();
@@ -54,8 +53,7 @@ public class FindWinningTransactionV2ResourceAssembler {
             LocalDate trxDate = entry.getKey();
             if (trxDate != null){
                 resource.setDate(trxDate);
-                Optional<WinningTransactionByDateCount> opt = winningTransactionByDateCount.stream().filter(wdc -> new Date(wdc.getTrxDate().getTime()).equals(Date.valueOf(trxDate))).findFirst();
-                resource.setCount(opt.map(WinningTransactionByDateCount::getCount).orElse(null));
+                resource.setCount(getTransactionCountByDate(winningTransactionByDateCount, trxDate));
             }
 
             List<WinningTransactionMilestoneResource> winningTransactions = entry.getValue();
@@ -95,5 +93,14 @@ public class FindWinningTransactionV2ResourceAssembler {
         }
 
         return resource;
+    }
+
+    private Integer getTransactionCountByDate(List<WinningTransactionByDateCount> winningTransactionByDateCounts, LocalDate trxDate){
+        Optional<WinningTransactionByDateCount> opt = Optional.empty();
+        if (winningTransactionByDateCounts != null && !winningTransactionByDateCounts.isEmpty()) {
+            opt = winningTransactionByDateCounts.stream().filter(wdc -> new Date(wdc.getTrxDate().getTime()).toLocalDate().equals(trxDate)).findFirst();
+        }
+
+        return opt.isPresent() ? opt.map(WinningTransactionByDateCount::getCount).orElse(null) : null;
     }
 }
