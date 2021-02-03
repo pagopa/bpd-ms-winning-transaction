@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class WinningTransactionPage<T> {
     @ApiModelProperty(value = "${swagger.winningTransaction.nextCursor}", required = true)
-    @JsonProperty(value = "next_cursor")
+    @JsonProperty(value = "nextCursor")
     private Integer nextCursor;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.WinningTransactionsOfTheDayList}", name = "WinningTransactionsOfTheDayList", required = true)
