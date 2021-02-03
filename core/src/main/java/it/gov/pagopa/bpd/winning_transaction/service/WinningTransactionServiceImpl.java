@@ -3,10 +3,14 @@ package it.gov.pagopa.bpd.winning_transaction.service;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionReplicaDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionByDateCount;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -57,6 +61,39 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
                 : winningTransactionReplicaDAO.findCitizenTransactions(fiscalCode, awardPeriodId);
 
         return winningTransactions;
+    }
+
+    @Override
+    public Page<WinningTransaction> getWinningTransactionsPage(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable) {
+        if (log.isDebugEnabled()) {
+            log.debug("WinningTransactionServiceImpl.getWinningTransactionsPage");
+            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]," +
+                    " fiscalCode = [" + fiscalCode + "], page = [" + pageable.getPageNumber()+ "], size = [" + pageable.getPageSize() + "]");
+        }
+
+        return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsByHpanPage(fiscalCode,awardPeriodId,hpan, pageable)
+                : winningTransactionReplicaDAO.findCitizenTransactionsPage(fiscalCode, awardPeriodId, pageable);
+    }
+
+    @Override
+    public Page<WinningTransactionMilestone> getWinningTransactionsMilestonePage(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable) {
+        if (log.isDebugEnabled()) {
+            log.debug("WinningTransactionServiceImpl.getWinningTransactionsMilestonePage");
+            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]," +
+                    " fiscalCode = [" + fiscalCode + "], page = [" + pageable.getPageNumber()+ "], size = [" + pageable.getPageSize() + "]");
+        }
+
+        return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsMilestoneByHpanPage(fiscalCode,awardPeriodId,hpan, pageable)
+                : winningTransactionReplicaDAO.findCitizenTransactionsMilestonePage(fiscalCode, awardPeriodId, pageable);
+    }
+
+    @Override
+    public List<WinningTransactionByDateCount> getWinningTransactionByDateCount(String hpan, Long awardPeriodId, String fiscalCode) {
+        if (log.isDebugEnabled()) {
+            log.debug("WinningTransactionServiceImpl.getWinningTransactionByDateCount");
+        }
+        return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsByDateCountHpan(fiscalCode, awardPeriodId, hpan)
+                : winningTransactionReplicaDAO.findCitizenTransactionsByDateCount(fiscalCode, awardPeriodId);
     }
 
     @Override
