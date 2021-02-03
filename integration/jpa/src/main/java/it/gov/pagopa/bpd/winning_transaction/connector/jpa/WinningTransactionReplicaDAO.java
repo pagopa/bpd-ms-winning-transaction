@@ -24,20 +24,9 @@ public interface WinningTransactionReplicaDAO extends CrudJpaDAO<WinningTransact
                                                      @Param("awardPeriodId") Long awardPeriodId,
                                                      @Param("hpan") String hpan);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM get_citizen_transactions( :fiscalCode, :awardPeriodId, :hpan)")
-    Page<WinningTransaction> findCitizenTransactionsByHpanPage(@Param("fiscalCode") String fiscalCode,
-                                                           @Param("awardPeriodId") Long awardPeriodId,
-                                                           @Param("hpan") String hpan,
-                                                               Pageable pageable);
-
     @Query(nativeQuery = true, value = "SELECT * FROM get_citizen_transactions( :fiscalCode, :awardPeriodId)")
     List<WinningTransaction> findCitizenTransactions(@Param("fiscalCode") String fiscalCode,
                                                      @Param("awardPeriodId") Long awardPeriodId);
-
-    @Query(nativeQuery = true, value = "SELECT * FROM get_citizen_transactions( :fiscalCode, :awardPeriodId)")
-    Page<WinningTransaction> findCitizenTransactionsPage(@Param("fiscalCode") String fiscalCode,
-                                                     @Param("awardPeriodId") Long awardPeriodId,
-                                                     Pageable pageable);
 
     @Query(nativeQuery = true, value = "SELECT id_trx as idTrx, " +
                                             "cashback_norm as cashbackNorm, " +

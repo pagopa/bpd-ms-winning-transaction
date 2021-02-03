@@ -14,7 +14,6 @@ import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransactionResource;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionPage;
 import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionResource;
-import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactionsOfTheDay;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
@@ -346,59 +345,6 @@ public class BpdWinningTransactionControllerImplTest {
     }
 
     @Test
-    public void findWinningTransactionsPage_OkWithElement() throws Exception {
-
-        String fiscalCode = "DSULTN82H03H904Q";
-        String hpan = "hpan";
-        Long awardPeriodId = 0L;
-        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.desc("trx_timestamp_t")));
-        WinningTransactionByDateCount winningTransactionByDateCount = Mockito.mock(WinningTransactionByDateCount.class);
-        Mockito.when(winningTransactionByDateCount.getTrxDate()).thenReturn(Timestamp.from(offsetDateTime.toInstant()));
-        Mockito.when(winningTransactionByDateCount.getCount()).thenReturn(1);
-
-        BDDMockito.doReturn(new PageImpl<>(Collections.singletonList(newTransaction)))
-                .when(winningTransactionServiceMock)
-                .getWinningTransactionsPage(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
-
-        BDDMockito.doReturn(Collections.singletonList(winningTransactionByDateCount))
-                .when(winningTransactionServiceMock)
-                .getWinningTransactionByDateCount(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode));
-
-        MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.get(BASE_URL+"/page")
-                        .param("hpan", hpan)
-                        .param("awardPeriodId", String.valueOf(awardPeriodId))
-                        .param("fiscalCode", fiscalCode)
-                        .param("next_cursor", "0")
-                        .param("limit", "1")
-                        .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andReturn();
-
-        String contentString = result.getResponse().getContentAsString();
-        assertNotNull(contentString);
-        assertFalse(Strings.isBlank(contentString));
-
-        WinningTransactionPage<WinningTransactionsOfTheDay<FindWinningTransactionResource>>  winningTransactionsObject = mapper.readValue(
-                contentString, new TypeReference<WinningTransactionPage<WinningTransactionsOfTheDay<FindWinningTransactionResource>>>() {});
-
-        assertNotNull(winningTransactionsObject);
-        assertEquals(winningTransactionsObject.getTransactions().size(), 1);
-
-        BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
-                .getWinningTransactionsPage(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
-        BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
-                .getWinningTransactionByDateCount(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode));
-        BDDMockito.verify(findWinningTransactionResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
-                .toResource(Mockito.any(WinningTransaction.class));
-        BDDMockito.verify(findWinningTransactionV2ResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
-                .toGroupingByDateAndCount(Mockito.any(), Mockito.anyList());
-        BDDMockito.verify(findWinningTransactionV2ResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
-                .toResourceFindWinningTransactionResource(Mockito.any(), Mockito.eq(0), Mockito.anyList());
-    }
-
-    @Test
     public void findWinningTransactionsMilestonePage_OkWithElement() throws Exception {
 
         String fiscalCode = "DSULTN82H03H904Q";
@@ -422,7 +368,7 @@ public class BpdWinningTransactionControllerImplTest {
                         .param("hpan", hpan)
                         .param("awardPeriodId", String.valueOf(awardPeriodId))
                         .param("fiscalCode", fiscalCode)
-                        .param("next_cursor", "0")
+                        .param("nextCursor", "0")
                         .param("limit", "1")
                         .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
@@ -433,8 +379,8 @@ public class BpdWinningTransactionControllerImplTest {
         assertNotNull(contentString);
         assertFalse(Strings.isBlank(contentString));
 
-        WinningTransactionPage<WinningTransactionsOfTheDay<FindWinningTransactionResource>>  winningTransactionsObject = mapper.readValue(
-                contentString, new TypeReference<WinningTransactionPage<WinningTransactionsOfTheDay<FindWinningTransactionResource>>>() {});
+        WinningTransactionPage  winningTransactionsObject = mapper.readValue(
+                contentString, new TypeReference<WinningTransactionPage>() {});
 
         assertNotNull(winningTransactionsObject);
         assertEquals(winningTransactionsObject.getTransactions().size(), 1);

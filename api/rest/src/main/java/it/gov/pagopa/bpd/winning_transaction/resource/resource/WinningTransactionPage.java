@@ -13,12 +13,12 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WinningTransactionPage<T> {
+public class WinningTransactionPage {
     @ApiModelProperty(value = "${swagger.winningTransaction.nextCursor}", required = true)
     @JsonProperty(value = "nextCursor")
     private Integer nextCursor;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.WinningTransactionsOfTheDayList}", name = "WinningTransactionsOfTheDayList", required = true)
+    @ApiModelProperty(name = "WinningTransactionOfTheDayList", required = true)
     @JsonProperty(required = true)
-    List<T> transactions;
+    List<WinningTransactionsOfTheDay> transactions;
 }

@@ -1,6 +1,7 @@
 package it.gov.pagopa.bpd.winning_transaction.resource.resource;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WinningTransactionsOfTheDay<T> {
+@ApiModel(value = "WinningTransactionsOfTheDay", description = "Oggetto che raggruppa le transazioni effettuate in una giornata")
+public class WinningTransactionsOfTheDay {
     @ApiModelProperty(value = "${swagger.winningTransaction.date}", required = true)
     @JsonProperty(required = true)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -25,7 +27,7 @@ public class WinningTransactionsOfTheDay<T> {
     @JsonProperty(required = true)
     private Integer count;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.transactions}", required = true)
+    @ApiModelProperty(value = "${swagger.winningTransaction.transactions}", name = "WinningTransactionResource", required = true)
     @JsonProperty(required = true)
-    List<T> transactions;
+    List<WinningTransactionMilestoneResource> transactions;
 }

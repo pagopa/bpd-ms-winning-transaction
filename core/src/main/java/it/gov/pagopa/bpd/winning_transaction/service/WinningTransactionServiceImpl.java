@@ -64,18 +64,6 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
     }
 
     @Override
-    public Page<WinningTransaction> getWinningTransactionsPage(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable) {
-        if (log.isDebugEnabled()) {
-            log.debug("WinningTransactionServiceImpl.getWinningTransactionsPage");
-            log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]," +
-                    " fiscalCode = [" + fiscalCode + "], page = [" + pageable.getPageNumber()+ "], size = [" + pageable.getPageSize() + "]");
-        }
-
-        return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsByHpanPage(fiscalCode,awardPeriodId,hpan, pageable)
-                : winningTransactionReplicaDAO.findCitizenTransactionsPage(fiscalCode, awardPeriodId, pageable);
-    }
-
-    @Override
     public Page<WinningTransactionMilestone> getWinningTransactionsMilestonePage(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable) {
         if (log.isDebugEnabled()) {
             log.debug("WinningTransactionServiceImpl.getWinningTransactionsMilestonePage");
