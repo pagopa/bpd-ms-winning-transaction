@@ -18,8 +18,6 @@ public interface WinningTransactionService {
 
     List<WinningTransaction> getWinningTransactions(String hpan, Long awardPeriodId, String fiscalCode);
 
-    Page<WinningTransaction> getWinningTransactionsPage(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable);
-
     Page<WinningTransactionMilestone> getWinningTransactionsMilestonePage(String hpan, Long awardPeriodId, String fiscalCode, Pageable pageable);
 
     List<WinningTransactionByDateCount> getWinningTransactionByDateCount(String hpan, Long awardPeriodId, String fiscalCode);

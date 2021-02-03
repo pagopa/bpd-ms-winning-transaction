@@ -87,33 +87,7 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
     }
 
     @Override
-    public WinningTransactionPage<WinningTransactionsOfTheDay<FindWinningTransactionResource>> findWinningTransactionsPage(String hpan, Long awardPeriodId, String fiscalCode, Integer currentPage, Integer size) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("BpdWinningTransactionControllerImpl.findWinningTransactions");
-            logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
-        }
-        Pageable pageable = PageRequest.of(currentPage, size, Sort.by(Sort.Order.desc("trx_timestamp_t")));
-
-        Page<WinningTransaction> winningTransactionsPage = winningTransactionService
-                .getWinningTransactionsPage(hpan, awardPeriodId, fiscalCode, pageable);
-
-        List<WinningTransactionByDateCount> winningTransactionByDateCounts = winningTransactionService.getWinningTransactionByDateCount(hpan, awardPeriodId, fiscalCode);
-
-        Map<LocalDate, List<FindWinningTransactionResource>> winningTransactionsByDate =
-                winningTransactionsPage.stream()
-                .map(findWinningTransactionResourceAssembler::toResource)
-                .collect(Collectors.groupingBy(resource -> resource.getTrxDate().toLocalDate()));
-
-        List<WinningTransactionsOfTheDay<FindWinningTransactionResource>> transactions =
-                winningTransactionsByDate.entrySet().stream()
-                        .map(entry -> findWinningTransactionV2ResourceAssembler.toGroupingByDateAndCount(entry, winningTransactionByDateCounts))
-                        .collect(Collectors.toList());
-
-        return findWinningTransactionV2ResourceAssembler.toResourceFindWinningTransactionResource(winningTransactionsPage.getTotalPages(), currentPage, transactions);
-    }
-
-    @Override
-    public WinningTransactionPage<WinningTransactionsOfTheDay<WinningTransactionMilestoneResource>> findWinningTransactionsMilestonePage(String hpan, Long awardPeriodId, String fiscalCode, Integer currentPage, Integer size) {
+    public WinningTransactionPage findWinningTransactionsMilestonePage(String hpan, Long awardPeriodId, String fiscalCode, Integer currentPage, Integer size) {
         if (logger.isDebugEnabled()) {
             logger.debug("BpdWinningTransactionControllerImpl.findWinningTransactions");
             logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
@@ -130,7 +104,7 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
                         .map(winningTransactionMilestoneResourceAssembler::toResource)
                         .collect(Collectors.groupingBy(resource -> resource.getTrxDate().toLocalDate()));
 
-        List<WinningTransactionsOfTheDay<WinningTransactionMilestoneResource>> transactions =
+        List<WinningTransactionsOfTheDay> transactions =
                 winningTransactionsByDate.entrySet().stream()
                         .map(entry -> findWinningTransactionV2ResourceAssembler
                                 .toMilestoneGroupingByDateAndCount(entry, winningTransactionByDateCounts))
