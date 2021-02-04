@@ -59,6 +59,9 @@ public class WinningTransactionJpaConfig /* extends BaseJpaConfig */ {
     @Value("${spring.datasource.hikari.readOnly}")
     private boolean readOnly;
 
+    @Value("${spring.datasource.hikari.pool-name}")
+    private String poolName;
+
     @Value("${spring.jpa.database-platform}")
     private String hibernateDialect;
 
@@ -77,6 +80,7 @@ public class WinningTransactionJpaConfig /* extends BaseJpaConfig */ {
         ds.setJdbcUrl(this.url);
         ds.setUsername(this.username);
         ds.setPassword(this.password);
+        ds.setPoolName(this.poolName);
         if(StringUtils.isNotBlank(this.schema)) {
             ds.setSchema(this.schema);
         }
