@@ -62,47 +62,17 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
 
         try {
 
-            OffsetDateTime exec_start = OffsetDateTime.now();
-
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss.SSSXXXXX");
-
             validateRequest(transaction);
 
             WinningTransaction winningTransaction = transactionMapper.map(transaction);
 
-            OffsetDateTime save_start = OffsetDateTime.now();
-
             winningTransactionService.create(winningTransaction);
-
-            OffsetDateTime save_end = OffsetDateTime.now();
-
-            log.info("Saved WinningTransaction for transaction: {}, {}, {} " +
-                            "- Started at {}, Ended at {} - Total exec time: {}",
-                    transaction.getIdTrxAcquirer(),
-                    transaction.getAcquirerCode(),
-                    transaction.getTrxDate(),
-                    dateTimeFormatter.format(save_start),
-                    dateTimeFormatter.format(save_end),
-                    ChronoUnit.MILLIS.between(save_start, save_end));
-
-            OffsetDateTime end_exec = OffsetDateTime.now();
-
-            log.info("Executed ProcessTransactionCommand for transaction: {}, {}, {} " +
-                            "- Started at {}, Ended at {} - Total exec time: {}",
-                    transaction.getIdTrxAcquirer(),
-                    transaction.getAcquirerCode(),
-                    transaction.getTrxDate(),
-                    dateTimeFormatter.format(exec_start),
-                    dateTimeFormatter.format(end_exec),
-                    ChronoUnit.MILLIS.between(exec_start, end_exec));
 
             return true;
 
         } catch (Exception e) {
 
             if (transaction != null) {
-
-                //TODO: publish to error topic
 
                 if (logger.isErrorEnabled()) {
                     logger.error("Error occured during processing for transaction: " +
