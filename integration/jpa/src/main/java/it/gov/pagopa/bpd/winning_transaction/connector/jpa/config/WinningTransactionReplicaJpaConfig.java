@@ -27,9 +27,6 @@ import java.util.Properties;
 
 @Configuration
 @PropertySource("classpath:config/replicaJpaConnectionConfig.properties")
-@EntityScan(
-        basePackages = {"it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionReplicaDAO"}
-)
 @EnableJpaRepositories(
         repositoryBaseClass = CustomJpaRepository.class,
         basePackages = {"it.gov.pagopa.bpd.winning_transaction.connector.jpa"},
@@ -63,6 +60,9 @@ public class WinningTransactionReplicaJpaConfig /* extends BaseJpaConfig */{
     @Value("${spring.replica.datasource.hikari.readOnly}")
     private boolean readOnly;
 
+    @Value("${spring.replica.datasource.hikari.pool-name}")
+    private String poolName;
+
     @Value("${spring.replica.jpa.database-platform}")
     private String hibernateDialect;
 
@@ -83,6 +83,7 @@ public class WinningTransactionReplicaJpaConfig /* extends BaseJpaConfig */{
         ds.setJdbcUrl(this.url);
         ds.setUsername(this.username);
         ds.setPassword(this.password);
+        ds.setPoolName(this.poolName);
         if(StringUtils.isNotBlank(this.schema)) {
             ds.setSchema(this.schema);
         }
