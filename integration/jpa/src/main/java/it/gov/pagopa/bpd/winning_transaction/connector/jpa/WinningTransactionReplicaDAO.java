@@ -28,38 +28,45 @@ public interface WinningTransactionReplicaDAO extends CrudJpaDAO<WinningTransact
     List<WinningTransaction> findCitizenTransactions(@Param("fiscalCode") String fiscalCode,
                                                      @Param("awardPeriodId") Long awardPeriodId);
 
-    @Query(nativeQuery = true, value = "SELECT id_trx as idTrx, " +
-                                            "cashback_norm as cashbackNorm, " +
-                                            "is_pivot as isPivot, " +
-                                            "hash_pan as hashPan, " +
-                                            "id_trx_acquirer as idTrxAcquirer, " +
-                                            "trx_date as trxDate, " +
-                                            "circuit_type as circuitType, " +
-                                            "id_trx_issuer as idTrxIssuer, " +
-                                            "amount as amount, " +
-                                            "cashback as cashback, " +
-                                            "award_period_id as awardPeriodId " +
-                                        "FROM get_citizen_transaction_with_milestones( :fiscalCode, :awardPeriodId, :hpan)")
+    @Query(value = "SELECT idTrxAcquirer as idTrxAcquirer, "+
+                        "trxDate as trxDate, " +
+                        "acquirerCode as acquirerCode, " +
+                        "acquirerId as acquirerId, " +
+                        "operationType as operationType, " +
+                        "hpan as hashPan, " +
+                        "circuitType as circuitType, " +
+                        "amount as amount, " +
+                        "score as cashback, " +
+                        "awardPeriodId as awardPeriodId, " +
+                        "idTrxIssuer as idTrxIssuer " +
+                    "FROM WinningTransaction w " +
+                    "WHERE fiscalCode = :fiscalCode " +
+                    "AND awardPeriodId = :awardPeriodId " +
+                    "AND hpan = :hpan " +
+                    "AND elabRanking = true")
     Page<WinningTransactionMilestone> findCitizenTransactionsMilestoneByHpanPage(@Param("fiscalCode") String fiscalCode,
                                                                                  @Param("awardPeriodId") Long awardPeriodId,
                                                                                  @Param("hpan") String hpan,
                                                                                  Pageable pageable);
 
-    @Query(nativeQuery = true, value = "SELECT id_trx as idTrx, " +
-            "cashback_norm as cashbackNorm, " +
-            "is_pivot as isPivot, " +
-            "hash_pan as hashPan, " +
-            "id_trx_acquirer as idTrxAcquirer, " +
-            "trx_date as trxDate, " +
-            "circuit_type as circuitType, " +
-            "id_trx_issuer as idTrxIssuer, " +
-            "amount as amount, " +
-            "cashback as cashback, " +
-            "award_period_id as awardPeriodId " +
-            "FROM get_citizen_transaction_with_milestones( :fiscalCode, :awardPeriodId)")
+    @Query(value = "SELECT idTrxAcquirer as idTrxAcquirer, "+
+                        "trxDate as trxDate, " +
+                        "acquirerCode as acquirerCode, " +
+                        "acquirerId as acquirerId, " +
+                        "operationType as operationType, " +
+                        "hpan as hashPan, " +
+                        "circuitType as circuitType, " +
+                        "amount as amount, " +
+                        "score as cashback, " +
+                        "awardPeriodId as awardPeriodId, " +
+                        "idTrxIssuer as idTrxIssuer " +
+                    "FROM WinningTransaction w " +
+                    "WHERE fiscalCode = :fiscalCode " +
+                    "AND awardPeriodId = :awardPeriodId " +
+                    "AND elabRanking = true")
     Page<WinningTransactionMilestone> findCitizenTransactionsMilestonePage(@Param("fiscalCode") String fiscalCode,
-                                                                                 @Param("awardPeriodId") Long awardPeriodId,
-                                                                                 Pageable pageable);
+                                                                           @Param("awardPeriodId") Long awardPeriodId,
+                                                                           Pageable pageable);
 
     @Query(value = "SELECT " +
                         "date_trunc('day', trx_timestamp_t) as trxDate, " +

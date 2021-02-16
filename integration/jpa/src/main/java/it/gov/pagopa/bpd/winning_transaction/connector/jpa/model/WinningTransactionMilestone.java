@@ -1,18 +1,19 @@
 package it.gov.pagopa.bpd.winning_transaction.connector.jpa.model;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
 public interface WinningTransactionMilestone {
-    Long getIdTrx();
-    BigDecimal getCashbackNorm();
-    Boolean getIsPivot();
-    String getHashPan();
     String getIdTrxAcquirer();
-    Timestamp getTrxDate();
+    OffsetDateTime getTrxDate();
+    String getAcquirerCode();
+    String getAcquirerId();
+    String getOperationType();
+    String getHashPan();
     String getCircuitType();
-    String getIdTrxIssuer();
     BigDecimal getAmount();
     BigDecimal getCashback();
     Long getAwardPeriodId();
+    String getIdTrxIssuer();
+
 }

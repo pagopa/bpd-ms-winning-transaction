@@ -19,32 +19,29 @@ import java.util.Optional;
 public class FindWinningTransactionV2ResourceAssembler {
 
     public WinningTransactionsOfTheDay
-        toMilestoneGroupingByDateAndCount(Map.Entry<LocalDate, List<WinningTransactionMilestoneResource>> entry,
-                                  List<WinningTransactionByDateCount> winningTransactionByDateCount) {
+    toWinningTransactionsOfTheDayResource(Map.Entry<LocalDate, List<WinningTransactionMilestoneResource>> entry) {
         WinningTransactionsOfTheDay resource = null;
 
         if (entry != null) {
             resource = WinningTransactionsOfTheDay.builder().build();
-
-            LocalDate trxDate = entry.getKey();
-            if (trxDate != null){
-                resource.setDate(trxDate);
-                resource.setCount(getTransactionCountByDate(winningTransactionByDateCount, trxDate));
-            }
-
-            List<WinningTransactionMilestoneResource> winningTransactions = entry.getValue();
-            if (winningTransactions != null && !winningTransactions.isEmpty()) {
-                resource.setTransactions(winningTransactions);
-            }
+            resource.setDate(entry.getKey());
+            resource.setTransactions(entry.getValue());
         }
 
         return resource;
     }
 
-    public WinningTransactionPage toResourceWinningTransactionMilestoneResource(Integer totalPages, Integer currentPage, List<WinningTransactionsOfTheDay> model){
+    public WinningTransactionPage toWinningTransactionPageResource(Integer totalPages, Integer currentPage, List<WinningTransactionsOfTheDay> model){
         WinningTransactionPage resource = null;
         if (model != null) {
             resource = WinningTransactionPage.builder().build();
+
+            if (currentPage != null && currentPage > 0 && currentPage < totalPages) {
+                resource.setPrevCursor(currentPage-1);
+            } else {
+                resource.setPrevCursor(null);
+            }
+
             if (currentPage != null && totalPages > currentPage+1) {
                 resource.setNextCursor(currentPage+1);
             } else {

@@ -6,7 +6,6 @@ import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionV2R
 import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionMilestoneResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourceAssembler;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionByDateCount;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
 import it.gov.pagopa.bpd.winning_transaction.factory.ModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
@@ -22,10 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityExistsException;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -97,20 +94,16 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
         Page<WinningTransactionMilestone> winningTransactionsMilestonePage = winningTransactionService
                 .getWinningTransactionsMilestonePage(hpan, awardPeriodId, fiscalCode, pageable);
 
-        List<WinningTransactionByDateCount> winningTransactionByDateCounts = winningTransactionService.getWinningTransactionByDateCount(hpan, awardPeriodId, fiscalCode);
-
-        Map<LocalDate, List<WinningTransactionMilestoneResource>> winningTransactionsByDate =
-                winningTransactionsMilestonePage.stream()
-                        .map(winningTransactionMilestoneResourceAssembler::toResource)
-                        .collect(Collectors.groupingBy(resource -> resource.getTrxDate().toLocalDate()));
-
         List<WinningTransactionsOfTheDay> transactions =
-                winningTransactionsByDate.entrySet().stream()
-                        .map(entry -> findWinningTransactionV2ResourceAssembler
-                                .toMilestoneGroupingByDateAndCount(entry, winningTransactionByDateCounts))
+                winningTransactionsMilestonePage.stream()
+                        .map(winningTransactionMilestoneResourceAssembler::toWinningTransactionMilestoneResource)
+                        .collect(Collectors.groupingBy(resource -> resource.getTrxDate().toLocalDate()))
+                        .entrySet().stream()
+                        .sorted(Collections.reverseOrder(Map.Entry.comparingByKey()))
+                        .map(findWinningTransactionV2ResourceAssembler::toWinningTransactionsOfTheDayResource)
                         .collect(Collectors.toList());
 
-        return findWinningTransactionV2ResourceAssembler.toResourceWinningTransactionMilestoneResource(winningTransactionsMilestonePage.getTotalPages(), currentPage, transactions);
+        return findWinningTransactionV2ResourceAssembler.toWinningTransactionPageResource(winningTransactionsMilestonePage.getTotalPages(), currentPage, transactions);
     }
 
     @Override
@@ -130,5 +123,4 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
         }
         winningTransactionService.reactivateForRollback(fiscalCode, requestTimestamp);
     }
-
 }
