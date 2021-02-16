@@ -84,17 +84,17 @@ public class WinningTransactionServiceImplTest {
                 .when(winningTransactionDAOMock)
                 .save(Mockito.eq(newTransaction));
 
-        Mockito.when(newTransactionMilestone.getAmount()).thenReturn(BigDecimal.valueOf(1313.3));
+        Mockito.when(newTransactionMilestone.getAmount()).thenReturn(BigDecimal.valueOf(10.0));
         Mockito.when(newTransactionMilestone.getAwardPeriodId()).thenReturn(0L);
-        Mockito.when(newTransactionMilestone.getCashback()).thenReturn(BigDecimal.valueOf(1313.3));
-        Mockito.when(newTransactionMilestone.getTrxDate()).thenReturn(Timestamp.from(offsetDateTime.toInstant()));
-        Mockito.when(newTransactionMilestone.getCashbackNorm()).thenReturn(BigDecimal.valueOf(1313.3));
-        Mockito.when(newTransactionMilestone.getCircuitType()).thenReturn("00");
+        Mockito.when(newTransactionMilestone.getCashback()).thenReturn(BigDecimal.valueOf(1.0));
+        Mockito.when(newTransactionMilestone.getTrxDate()).thenReturn(offsetDateTime);
+        Mockito.when(newTransactionMilestone.getCircuitType()).thenReturn("circuitType");
         Mockito.when(newTransactionMilestone.getHashPan()).thenReturn("hpan");
-        Mockito.when(newTransactionMilestone.getIdTrx()).thenReturn(1L);
-        Mockito.when(newTransactionMilestone.getIdTrxAcquirer()).thenReturn("0");
-        Mockito.when(newTransactionMilestone.getIdTrxIssuer()).thenReturn("0");
-        Mockito.when(newTransactionMilestone.getIsPivot()).thenReturn(false);
+        Mockito.when(newTransactionMilestone.getIdTrxAcquirer()).thenReturn("idTrxAcquirer");
+        Mockito.when(newTransactionMilestone.getIdTrxIssuer()).thenReturn("idTrxIssuer");
+        Mockito.when(newTransactionMilestone.getAcquirerCode()).thenReturn("acquirerCode");
+        Mockito.when(newTransactionMilestone.getAcquirerId()).thenReturn("acquirerId");
+        Mockito.when(newTransactionMilestone.getOperationType()).thenReturn("operationType");
     }
 
     @Test
@@ -226,7 +226,7 @@ public class WinningTransactionServiceImplTest {
         String fiscalCode = "fiscalCode";
         Long awardPeriodId = 0L;
         String hpan = "hpan";
-        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.desc("trx_timestamp_t")));
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.desc("trxDate")));
 
         Page<WinningTransactionMilestone> winningTransactions = new PageImpl<>(Collections.singletonList(newTransactionMilestone));
 

@@ -113,17 +113,17 @@ public class BpdWinningTransactionControllerImplTest {
                 winningTransactionMilestoneResourceAssemblerSpy,
                 winningTransactionServiceMock);
 
-        Mockito.when(newTransactionMilestone.getAmount()).thenReturn(BigDecimal.valueOf(1313.3));
+        Mockito.when(newTransactionMilestone.getAmount()).thenReturn(BigDecimal.valueOf(10.0));
         Mockito.when(newTransactionMilestone.getAwardPeriodId()).thenReturn(0L);
-        Mockito.when(newTransactionMilestone.getCashback()).thenReturn(BigDecimal.valueOf(1313.3));
-        Mockito.when(newTransactionMilestone.getTrxDate()).thenReturn(Timestamp.from(offsetDateTime.toInstant()));
-        Mockito.when(newTransactionMilestone.getCashbackNorm()).thenReturn(BigDecimal.valueOf(1313.3));
-        Mockito.when(newTransactionMilestone.getCircuitType()).thenReturn("00");
+        Mockito.when(newTransactionMilestone.getCashback()).thenReturn(BigDecimal.valueOf(1.0));
+        Mockito.when(newTransactionMilestone.getTrxDate()).thenReturn(offsetDateTime);
+        Mockito.when(newTransactionMilestone.getCircuitType()).thenReturn("circuitType");
         Mockito.when(newTransactionMilestone.getHashPan()).thenReturn("hpan");
-        Mockito.when(newTransactionMilestone.getIdTrx()).thenReturn(1L);
-        Mockito.when(newTransactionMilestone.getIdTrxAcquirer()).thenReturn("0");
-        Mockito.when(newTransactionMilestone.getIdTrxIssuer()).thenReturn("0");
-        Mockito.when(newTransactionMilestone.getIsPivot()).thenReturn(false);
+        Mockito.when(newTransactionMilestone.getIdTrxAcquirer()).thenReturn("idTrxAcquirer");
+        Mockito.when(newTransactionMilestone.getIdTrxIssuer()).thenReturn("idTrxIssuer");
+        Mockito.when(newTransactionMilestone.getAcquirerCode()).thenReturn("acquirerCode");
+        Mockito.when(newTransactionMilestone.getAcquirerId()).thenReturn("acquirerId");
+        Mockito.when(newTransactionMilestone.getOperationType()).thenReturn("operationType");
     }
 
     @Test
@@ -351,6 +351,8 @@ public class BpdWinningTransactionControllerImplTest {
         String hpan = "hpan";
         Long awardPeriodId = 0L;
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.desc("trxDate")));
+        String idTrxExpected = "idTrxAcquirer" + "2020-04-09T16:22:45.304Z" + "acquirerCode" + "operationType";
+
         WinningTransactionByDateCount winningTransactionByDateCount = Mockito.mock(WinningTransactionByDateCount.class);
         Mockito.when(winningTransactionByDateCount.getTrxDate()).thenReturn(Timestamp.from(offsetDateTime.toInstant()));
         Mockito.when(winningTransactionByDateCount.getCount()).thenReturn(1);
@@ -384,17 +386,16 @@ public class BpdWinningTransactionControllerImplTest {
 
         assertNotNull(winningTransactionsObject);
         assertEquals(winningTransactionsObject.getTransactions().size(), 1);
+        assertEquals(idTrxExpected, winningTransactionsObject.getTransactions().get(0).getTransactions().get(0).getIdTrx());
 
         BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
                 .getWinningTransactionsMilestonePage(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
-        BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
-                .getWinningTransactionByDateCount(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode));
         BDDMockito.verify(winningTransactionMilestoneResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
-                .toResource(Mockito.any(WinningTransactionMilestone.class));
+                .toWinningTransactionMilestoneResource(Mockito.any(WinningTransactionMilestone.class));
         BDDMockito.verify(findWinningTransactionV2ResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
-                .toMilestoneGroupingByDateAndCount(Mockito.any(), Mockito.anyList());
+                .toWinningTransactionsOfTheDayResource(Mockito.any());
         BDDMockito.verify(findWinningTransactionV2ResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
-                .toResourceWinningTransactionMilestoneResource(Mockito.any(), Mockito.eq(0), Mockito.anyList());
+                .toWinningTransactionPageResource(Mockito.any(), Mockito.eq(0), Mockito.anyList());
     }
 
     @Test
