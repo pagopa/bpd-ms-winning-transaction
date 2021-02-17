@@ -2,12 +2,9 @@ package it.gov.pagopa.bpd.winning_transaction.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionResourceAssembler;
-import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionV2ResourceAssembler;
-import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionMilestoneResourceAssembler;
-import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourceAssembler;
+import it.gov.pagopa.bpd.winning_transaction.assembler.*;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TrxCountByDay;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionByDateCount;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
 import it.gov.pagopa.bpd.winning_transaction.factory.WinningTransactionModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
@@ -72,10 +69,13 @@ public class BpdWinningTransactionControllerImplTest {
     private FindWinningTransactionResourceAssembler findWinningTransactionResourceAssemblerSpy;
 
     @SpyBean
-    private FindWinningTransactionV2ResourceAssembler findWinningTransactionV2ResourceAssemblerSpy;
+    private WinningTransactionPageResourceAssembler winningTransactionPageResourceAssemblerSpy;
 
     @SpyBean
     private WinningTransactionMilestoneResourceAssembler winningTransactionMilestoneResourceAssemblerSpy;
+
+    @SpyBean
+    private TrxCountByDayResourceAssembler trxCountByDayResourceAssemblerSpy;
 
     private final WinningTransaction newTransaction =
             WinningTransaction.builder().acquirerCode("0").acquirerId("0").amount(BigDecimal.valueOf(1313.3))
@@ -85,6 +85,7 @@ public class BpdWinningTransactionControllerImplTest {
                     .trxDate(offsetDateTime).bin("000011").terminalId("01301313").build();
 
     private final WinningTransactionMilestone newTransactionMilestone = Mockito.mock(WinningTransactionMilestone.class);
+    private final TrxCountByDay newTrxCountByDay = Mockito.mock(TrxCountByDay.class);
 
     @MockBean
     private WinningTransactionService winningTransactionServiceMock;
@@ -109,8 +110,9 @@ public class BpdWinningTransactionControllerImplTest {
         Mockito.reset(
                 winningTransactionFactorySpy,
                 winningTransactionResourceAssemblerSpy,
-                findWinningTransactionV2ResourceAssemblerSpy,
+                winningTransactionPageResourceAssemblerSpy,
                 winningTransactionMilestoneResourceAssemblerSpy,
+                trxCountByDayResourceAssemblerSpy,
                 winningTransactionServiceMock);
 
         Mockito.when(newTransactionMilestone.getAmount()).thenReturn(BigDecimal.valueOf(10.0));
@@ -124,6 +126,9 @@ public class BpdWinningTransactionControllerImplTest {
         Mockito.when(newTransactionMilestone.getAcquirerCode()).thenReturn("acquirerCode");
         Mockito.when(newTransactionMilestone.getAcquirerId()).thenReturn("acquirerId");
         Mockito.when(newTransactionMilestone.getOperationType()).thenReturn("operationType");
+
+        Mockito.when(newTrxCountByDay.getCount()).thenReturn(1L);
+        Mockito.when(newTrxCountByDay.getTrxDate()).thenReturn(Timestamp.valueOf(offsetDateTime.toLocalDateTime()));
     }
 
     @Test
@@ -353,17 +358,9 @@ public class BpdWinningTransactionControllerImplTest {
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.desc("trxDate")));
         String idTrxExpected = "idTrxAcquirer" + "2020-04-09T16:22:45.304Z" + "acquirerCode" + "operationType";
 
-        WinningTransactionByDateCount winningTransactionByDateCount = Mockito.mock(WinningTransactionByDateCount.class);
-        Mockito.when(winningTransactionByDateCount.getTrxDate()).thenReturn(Timestamp.from(offsetDateTime.toInstant()));
-        Mockito.when(winningTransactionByDateCount.getCount()).thenReturn(1);
-
         BDDMockito.doReturn(new PageImpl<>(Collections.singletonList(newTransactionMilestone)))
                 .when(winningTransactionServiceMock)
                 .getWinningTransactionsMilestonePage(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
-
-        BDDMockito.doReturn(Collections.singletonList(winningTransactionByDateCount))
-                .when(winningTransactionServiceMock)
-                .getWinningTransactionByDateCount(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode));
 
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders.get(BASE_URL+"/milestone/page")
@@ -392,10 +389,40 @@ public class BpdWinningTransactionControllerImplTest {
                 .getWinningTransactionsMilestonePage(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode), Mockito.eq(pageable));
         BDDMockito.verify(winningTransactionMilestoneResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
                 .toWinningTransactionMilestoneResource(Mockito.any(WinningTransactionMilestone.class));
-        BDDMockito.verify(findWinningTransactionV2ResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
+        BDDMockito.verify(winningTransactionPageResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
                 .toWinningTransactionsOfTheDayResource(Mockito.any());
-        BDDMockito.verify(findWinningTransactionV2ResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
+        BDDMockito.verify(winningTransactionPageResourceAssemblerSpy, Mockito.times(winningTransactionsObject.getTransactions().size()))
                 .toWinningTransactionPageResource(Mockito.any(), Mockito.eq(0), Mockito.anyList());
+    }
+
+    @Test
+    public void getCountByDay_OkWithElement() throws Exception {
+        String fiscalCode = "DSULTN82H03H904Q";
+        String hpan = "hpan";
+        Long awardPeriodId = 0L;
+
+        BDDMockito.doReturn(Collections.singletonList(newTrxCountByDay))
+                .when(winningTransactionServiceMock)
+                .getWinningTransactionByDateCount(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode));
+
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.get(BASE_URL+"/countbyday")
+                        .param("hpan", hpan)
+                        .param("awardPeriodId", String.valueOf(awardPeriodId))
+                        .param("fiscalCode", fiscalCode)
+                        .accept(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andReturn();
+
+        String contentString = result.getResponse().getContentAsString();
+        assertNotNull(contentString);
+        assertFalse(Strings.isBlank(contentString));
+
+        BDDMockito.verify(winningTransactionServiceMock, Mockito.atLeastOnce())
+                .getWinningTransactionByDateCount(Mockito.eq(hpan), Mockito.eq(awardPeriodId), Mockito.eq(fiscalCode));
+        BDDMockito.verify(trxCountByDayResourceAssemblerSpy, Mockito.times(1))
+                .toTrxCountByDayResource(Mockito.any(TrxCountByDay.class));
     }
 
     @Test

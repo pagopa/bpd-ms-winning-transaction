@@ -1,10 +1,9 @@
 package it.gov.pagopa.bpd.winning_transaction.service;
 
-import eu.sia.meda.util.TestUtils;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionReplicaDAO;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TrxCountByDay;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionByDateCount;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
 import org.junit.Before;
@@ -57,7 +56,7 @@ public class WinningTransactionServiceImplTest {
 
     private final WinningTransactionMilestone newTransactionMilestone = Mockito.mock(WinningTransactionMilestone.class);
 
-    private final WinningTransactionByDateCount winningTransactionByDateCount = TestUtils.mockInstance(Mockito.mock(WinningTransactionByDateCount.class));
+    private final TrxCountByDay newTrxCountByDay = Mockito.mock(TrxCountByDay.class);
 
     @Autowired
     private WinningTransactionService winningTransactionService;
@@ -95,6 +94,9 @@ public class WinningTransactionServiceImplTest {
         Mockito.when(newTransactionMilestone.getAcquirerCode()).thenReturn("acquirerCode");
         Mockito.when(newTransactionMilestone.getAcquirerId()).thenReturn("acquirerId");
         Mockito.when(newTransactionMilestone.getOperationType()).thenReturn("operationType");
+
+        Mockito.when(newTrxCountByDay.getCount()).thenReturn(1L);
+        Mockito.when(newTrxCountByDay.getTrxDate()).thenReturn(Timestamp.valueOf(offsetDateTime.toLocalDateTime()));
     }
 
     @Test
@@ -256,16 +258,16 @@ public class WinningTransactionServiceImplTest {
         String fiscalCode = "fiscalCode";
         Long awardPeriodId = 0L;
 
-        BDDMockito.doReturn(Collections.singletonList(winningTransactionByDateCount))
+        BDDMockito.doReturn(Collections.singletonList(newTrxCountByDay))
                 .when(winningTransactionReplicaDAOMock)
                 .findCitizenTransactionsByDateCount( Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId));
 
-        List<WinningTransactionByDateCount> winningTransactionByDateCounts = winningTransactionService
+        List<TrxCountByDay> trxCountByDays = winningTransactionService
                 .getWinningTransactionByDateCount(null, awardPeriodId, fiscalCode);
 
-        assertNotNull(winningTransactionByDateCounts);
-        assertEquals(winningTransactionByDateCounts.stream().findFirst().isPresent() ?
-                winningTransactionByDateCounts.stream().findFirst().get() : null, winningTransactionByDateCount);
+        assertNotNull(trxCountByDays);
+        assertEquals(trxCountByDays.stream().findFirst().isPresent() ?
+                trxCountByDays.stream().findFirst().get() : null, newTrxCountByDay);
 
         BDDMockito.verify(winningTransactionReplicaDAOMock, Mockito.atLeastOnce())
                 .findCitizenTransactionsByDateCount(
@@ -279,16 +281,16 @@ public class WinningTransactionServiceImplTest {
         Long awardPeriodId = 0L;
         String hpan = "hpan";
 
-        BDDMockito.doReturn(Collections.singletonList(winningTransactionByDateCount))
+        BDDMockito.doReturn(Collections.singletonList(newTrxCountByDay))
                 .when(winningTransactionReplicaDAOMock)
                 .findCitizenTransactionsByDateCountHpan( Mockito.eq(fiscalCode), Mockito.eq(awardPeriodId), Mockito.eq(hpan));
 
-        List<WinningTransactionByDateCount> winningTransactionByDateCounts = winningTransactionService
+        List<TrxCountByDay> trxCountByDays = winningTransactionService
                 .getWinningTransactionByDateCount(hpan, awardPeriodId, fiscalCode);
 
-        assertNotNull(winningTransactionByDateCounts);
-        assertEquals(winningTransactionByDateCounts.stream().findFirst().isPresent() ?
-                winningTransactionByDateCounts.stream().findFirst().get() : null, winningTransactionByDateCount);
+        assertNotNull(trxCountByDays);
+        assertEquals(trxCountByDays.stream().findFirst().isPresent() ?
+                trxCountByDays.stream().findFirst().get() : null, newTrxCountByDay);
 
         BDDMockito.verify(winningTransactionReplicaDAOMock, Mockito.atLeastOnce())
                 .findCitizenTransactionsByDateCountHpan(
