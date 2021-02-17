@@ -21,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.persistence.EntityExistsException;
 import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -119,6 +120,7 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
 
         return trxCountByDays.stream()
                 .map(trxCountByDayResourceAssembler::toTrxCountByDayResource)
+                .sorted(Comparator.comparing(TrxCountByDayResource::getTrxDate, Collections.reverseOrder()))
                 .collect(Collectors.toList());
     }
 
