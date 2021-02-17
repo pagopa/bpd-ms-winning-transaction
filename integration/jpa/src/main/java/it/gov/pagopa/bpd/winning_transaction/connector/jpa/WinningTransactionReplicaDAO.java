@@ -3,7 +3,7 @@ package it.gov.pagopa.bpd.winning_transaction.connector.jpa;
 import it.gov.pagopa.bpd.common.connector.jpa.CrudJpaDAO;
 import it.gov.pagopa.bpd.common.connector.jpa.ReadOnlyRepository;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionByDateCount;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TrxCountByDay;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
 import org.springframework.data.domain.Page;
@@ -73,14 +73,14 @@ public interface WinningTransactionReplicaDAO extends CrudJpaDAO<WinningTransact
                         "count(*) as count " +
                     "FROM bpd_winning_transaction  " +
                     "WHERE fiscal_code_s = :fiscalCode " +
-                        "AND award_period_id_n = :awardPeriodId " +
-                        "AND enabled_b " +
-                        "AND (:hpan is null or :hpan=hpan_s ) " +
-                        "AND elab_ranking_b = true " +
+                    "AND award_period_id_n = :awardPeriodId " +
+                    "AND enabled_b " +
+                    "AND elab_ranking_b = true " +
+                    "AND hpan_s = :hpan " +
                     "GROUP BY date_trunc('day', trx_timestamp_t)", nativeQuery = true)
-    List<WinningTransactionByDateCount> findCitizenTransactionsByDateCountHpan(@Param("fiscalCode") String fiscalCode,
-                                                                               @Param("awardPeriodId") Long awardPeriodId,
-                                                                               @Param("hpan") String hpan);
+    List<TrxCountByDay> findCitizenTransactionsByDateCountHpan(@Param("fiscalCode") String fiscalCode,
+                                                               @Param("awardPeriodId") Long awardPeriodId,
+                                                               @Param("hpan") String hpan);
 
     @Query(value = "SELECT " +
             "date_trunc('day', trx_timestamp_t) as trxDate, " +
@@ -91,7 +91,7 @@ public interface WinningTransactionReplicaDAO extends CrudJpaDAO<WinningTransact
             "AND enabled_b " +
             "AND elab_ranking_b = true " +
             "GROUP BY date_trunc('day', trx_timestamp_t)", nativeQuery = true)
-    List<WinningTransactionByDateCount> findCitizenTransactionsByDateCount(@Param("fiscalCode") String fiscalCode,
-                                                                               @Param("awardPeriodId") Long awardPeriodId);
+    List<TrxCountByDay> findCitizenTransactionsByDateCount(@Param("fiscalCode") String fiscalCode,
+                                                           @Param("awardPeriodId") Long awardPeriodId);
 
 }
