@@ -6,9 +6,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
 @Service
 public class WinningTransactionMilestoneResourceAssembler {
+    DateTimeFormatter formatter = new DateTimeFormatterBuilder().appendInstant(3).toFormatter();
 
     public WinningTransactionMilestoneResource toWinningTransactionMilestoneResource(WinningTransactionMilestone model) {
         WinningTransactionMilestoneResource resource = null;
@@ -19,7 +21,7 @@ public class WinningTransactionMilestoneResourceAssembler {
 
             StringBuilder idTrxBuilder = new StringBuilder();
             idTrxBuilder.append(model.getIdTrxAcquirer())
-                        .append(model.getTrxDate().format(DateTimeFormatter.ISO_INSTANT))
+                        .append(model.getTrxDate().format(formatter))
                         .append(model.getAcquirerCode())
                         .append(model.getAcquirerId())
                         .append(model.getOperationType());
