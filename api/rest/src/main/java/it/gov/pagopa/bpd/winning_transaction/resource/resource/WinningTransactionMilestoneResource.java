@@ -12,19 +12,8 @@ import java.time.OffsetDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = {"trxDate", "idTrxAcquirer"}, callSuper = false)
+@EqualsAndHashCode(of = {"trxDate", "idTrxAcquirer", "idTrx"}, callSuper = false)
 public class WinningTransactionMilestoneResource {
-
-    @ApiModelProperty(value = "${swagger.winningTransaction.idTrx}", required = true)
-    private Long idTrx;
-
-    @ApiModelProperty(value = "${swagger.winningTransaction.cashbackNorm}", required = true)
-    @JsonProperty(required = true)
-    private BigDecimal cashbackNorm;
-
-    @ApiModelProperty(value = "${swagger.winningTransaction.isPivot}", required = true)
-    @JsonProperty(required = true)
-    private Boolean isPivot;
 
     @ApiModelProperty(value = "${swagger.winningTransaction.hashPan}", required = true)
     @JsonProperty(required = true)
@@ -58,4 +47,7 @@ public class WinningTransactionMilestoneResource {
     @ApiModelProperty(value = "${swagger.winningTransaction.awardPeriodId}", required = true)
     @JsonProperty(required = true)
     private Long awardPeriodId;
+
+    @ApiModelProperty(value = "${swagger.winningTransaction.idTrx}", required = true)
+    private String idTrx;
 }

@@ -14,6 +14,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WinningTransactionPage {
+
+    @ApiModelProperty(value = "${swagger.winningTransaction.prevCursor}", required = true)
+    @JsonProperty(value = "prevCursor")
+    private Integer prevCursor;
+
     @ApiModelProperty(value = "${swagger.winningTransaction.nextCursor}", required = true)
     @JsonProperty(value = "nextCursor")
     private Integer nextCursor;

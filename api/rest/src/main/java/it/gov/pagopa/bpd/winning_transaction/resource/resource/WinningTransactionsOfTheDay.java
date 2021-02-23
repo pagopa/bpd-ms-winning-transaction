@@ -23,10 +23,6 @@ public class WinningTransactionsOfTheDay {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate date;
 
-    @ApiModelProperty(value = "${swagger.winningTransaction.count}", required = true)
-    @JsonProperty(required = true)
-    private Integer count;
-
     @ApiModelProperty(value = "${swagger.winningTransaction.transactions}", name = "WinningTransactionResource", required = true)
     @JsonProperty(required = true)
     List<WinningTransactionMilestoneResource> transactions;

@@ -1,12 +1,9 @@
 package it.gov.pagopa.bpd.winning_transaction.controller;
 
 import eu.sia.meda.core.controller.StatelessController;
-import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionResourceAssembler;
-import it.gov.pagopa.bpd.winning_transaction.assembler.FindWinningTransactionV2ResourceAssembler;
-import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionMilestoneResourceAssembler;
-import it.gov.pagopa.bpd.winning_transaction.assembler.WinningTransactionResourceAssembler;
+import it.gov.pagopa.bpd.winning_transaction.assembler.*;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TrxCountByDay;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionByDateCount;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
 import it.gov.pagopa.bpd.winning_transaction.factory.ModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.resource.dto.WinningTransactionDTO;
@@ -22,8 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityExistsException;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +36,8 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
     private final WinningTransactionResourceAssembler winningTransactionResourceAssembler;
     private final FindWinningTransactionResourceAssembler findWinningTransactionResourceAssembler;
     private final WinningTransactionMilestoneResourceAssembler winningTransactionMilestoneResourceAssembler;
-    private final FindWinningTransactionV2ResourceAssembler findWinningTransactionV2ResourceAssembler;
+    private final WinningTransactionPageResourceAssembler winningTransactionPageResourceAssembler;
+    private final TrxCountByDayResourceAssembler trxCountByDayResourceAssembler;
     private final WinningTransactionService winningTransactionService;
 
     @Autowired
@@ -46,12 +45,13 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
             ModelFactory<WinningTransactionDTO, WinningTransaction> winningTransactionFactory,
             WinningTransactionResourceAssembler winningTransactionResourceAssembler,
             FindWinningTransactionResourceAssembler findWinningTransactionResourceAssembler,
-            WinningTransactionMilestoneResourceAssembler winningTransactionMilestoneResourceAssembler, FindWinningTransactionV2ResourceAssembler findWinningTransactionV2ResourceAssembler, WinningTransactionService winningTransactionService) {
+            WinningTransactionMilestoneResourceAssembler winningTransactionMilestoneResourceAssembler, WinningTransactionPageResourceAssembler winningTransactionPageResourceAssembler, TrxCountByDayResourceAssembler trxCountByDayResourceAssembler, WinningTransactionService winningTransactionService) {
         this.winningTransactionFactory = winningTransactionFactory;
         this.winningTransactionResourceAssembler = winningTransactionResourceAssembler;
         this.findWinningTransactionResourceAssembler = findWinningTransactionResourceAssembler;
         this.winningTransactionMilestoneResourceAssembler = winningTransactionMilestoneResourceAssembler;
-        this.findWinningTransactionV2ResourceAssembler = findWinningTransactionV2ResourceAssembler;
+        this.winningTransactionPageResourceAssembler = winningTransactionPageResourceAssembler;
+        this.trxCountByDayResourceAssembler = trxCountByDayResourceAssembler;
         this.winningTransactionService = winningTransactionService;
     }
 
@@ -97,20 +97,31 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
         Page<WinningTransactionMilestone> winningTransactionsMilestonePage = winningTransactionService
                 .getWinningTransactionsMilestonePage(hpan, awardPeriodId, fiscalCode, pageable);
 
-        List<WinningTransactionByDateCount> winningTransactionByDateCounts = winningTransactionService.getWinningTransactionByDateCount(hpan, awardPeriodId, fiscalCode);
-
-        Map<LocalDate, List<WinningTransactionMilestoneResource>> winningTransactionsByDate =
-                winningTransactionsMilestonePage.stream()
-                        .map(winningTransactionMilestoneResourceAssembler::toResource)
-                        .collect(Collectors.groupingBy(resource -> resource.getTrxDate().toLocalDate()));
-
         List<WinningTransactionsOfTheDay> transactions =
-                winningTransactionsByDate.entrySet().stream()
-                        .map(entry -> findWinningTransactionV2ResourceAssembler
-                                .toMilestoneGroupingByDateAndCount(entry, winningTransactionByDateCounts))
+                winningTransactionsMilestonePage.stream()
+                        .map(winningTransactionMilestoneResourceAssembler::toWinningTransactionMilestoneResource)
+                        .collect(Collectors.groupingBy(resource -> resource.getTrxDate().toLocalDate()))
+                        .entrySet().stream()
+                        .sorted(Collections.reverseOrder(Map.Entry.comparingByKey()))
+                        .map(winningTransactionPageResourceAssembler::toWinningTransactionsOfTheDayResource)
                         .collect(Collectors.toList());
 
-        return findWinningTransactionV2ResourceAssembler.toResourceWinningTransactionMilestoneResource(winningTransactionsMilestonePage.getTotalPages(), currentPage, transactions);
+        return winningTransactionPageResourceAssembler.toWinningTransactionPageResource(winningTransactionsMilestonePage.getTotalPages(), currentPage, transactions);
+    }
+
+    @Override
+    public List<TrxCountByDayResource> getCountByDay(String hpan, Long awardPeriodId, String fiscalCode) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("BpdWinningTransactionControllerImpl.getCountByDay");
+            logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
+        }
+        List<TrxCountByDay> trxCountByDays =
+                winningTransactionService.getWinningTransactionByDateCount(hpan, awardPeriodId, fiscalCode);
+
+        return trxCountByDays.stream()
+                .map(trxCountByDayResourceAssembler::toTrxCountByDayResource)
+                .sorted(Comparator.comparing(TrxCountByDayResource::getTrxDate, Collections.reverseOrder()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -130,5 +141,4 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
         }
         winningTransactionService.reactivateForRollback(fiscalCode, requestTimestamp);
     }
-
 }
