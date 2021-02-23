@@ -3,7 +3,7 @@ package it.gov.pagopa.bpd.winning_transaction.service;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionReplicaDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionByDateCount;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TrxCountByDay;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +76,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
     }
 
     @Override
-    public List<WinningTransactionByDateCount> getWinningTransactionByDateCount(String hpan, Long awardPeriodId, String fiscalCode) {
+    public List<TrxCountByDay> getWinningTransactionByDateCount(String hpan, Long awardPeriodId, String fiscalCode) {
         if (log.isDebugEnabled()) {
             log.debug("WinningTransactionServiceImpl.getWinningTransactionByDateCount");
         }

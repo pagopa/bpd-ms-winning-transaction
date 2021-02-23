@@ -91,6 +91,9 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @Column(name="fiscal_code_s")
     String fiscalCode;
 
+    @Column(name="elab_ranking_b", insertable = false, updatable = false, columnDefinition = "boolean default false")
+    boolean elabRanking;
+
     @Override
     public WinningTransactionId getId() {
         return WinningTransactionId
