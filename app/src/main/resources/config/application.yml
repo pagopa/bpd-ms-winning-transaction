@@ -34,3 +34,7 @@ meda:
 logging:
   level:
     it.gov.pagopa.bpd.winning_transaction: ${LOG_LEVEL_BPD_WINNING_TRANSACTION:DEBUG}
+    com.zaxxer.hikari: ${LOG_LEVEL_BPD_WINNING_TRANSACTION_DATASOURCE_POOL_CONFIG:INFO}
+
+
+
