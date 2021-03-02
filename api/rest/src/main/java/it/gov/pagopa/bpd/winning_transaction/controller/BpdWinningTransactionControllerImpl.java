@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityExistsException;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -97,12 +99,17 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
         Page<WinningTransactionMilestone> winningTransactionsMilestonePage = winningTransactionService
                 .getWinningTransactionsMilestonePage(hpan, awardPeriodId, fiscalCode, pageable);
 
+        Supplier<TreeMap<LocalDate, List<WinningTransactionMilestoneResource>>> treeMapSupplier = () -> new TreeMap<>(Comparator.reverseOrder());
+
+        TreeMap<LocalDate, List<WinningTransactionMilestoneResource>> localDateListTreeMap = winningTransactionsMilestonePage.stream()
+                .map(winningTransactionMilestoneResourceAssembler::toWinningTransactionMilestoneResource)
+                .collect(Collectors.groupingBy(resource -> resource.getTrxDate().toLocalDate(),
+                        treeMapSupplier,
+                        Collectors.toList()));
+
         List<WinningTransactionsOfTheDay> transactions =
-                winningTransactionsMilestonePage.stream()
-                        .map(winningTransactionMilestoneResourceAssembler::toWinningTransactionMilestoneResource)
-                        .collect(Collectors.groupingBy(resource -> resource.getTrxDate().toLocalDate()))
+                localDateListTreeMap
                         .entrySet().stream()
-                        .sorted(Collections.reverseOrder(Map.Entry.comparingByKey()))
                         .map(winningTransactionPageResourceAssembler::toWinningTransactionsOfTheDayResource)
                         .collect(Collectors.toList());
 
