@@ -78,6 +78,7 @@ public class WinningTransactionJpaConfig {
                 .forEach((customizer) -> customizer.customize(builder));
         return builder
                 .dataSource(dataSource)
+                .persistenceUnit("master")
                 .packages("it.gov.pagopa.bpd.winning_transaction.connector.jpa.model")
                 .build();
     }
