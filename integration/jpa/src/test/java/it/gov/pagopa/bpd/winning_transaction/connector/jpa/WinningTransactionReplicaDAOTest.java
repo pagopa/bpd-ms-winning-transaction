@@ -77,7 +77,7 @@ public class WinningTransactionReplicaDAOTest extends
 
     @Override
     protected void compare(WinningTransaction entityToSave, WinningTransaction saved) {
-        TestUtils.reflectionEqualsByName(entityToSave, saved, new String[]{"insertDate", "insertUser", "updateDate", "updateUser", "enabled", "updatable", "new", "isNew"});
+        TestUtils.reflectionEqualsByName(entityToSave, saved, new String[]{"insertDate", "insertUser", "updateDate", "updateUser", "enabled", "updatable", "new", "isNew", "elabRanking"});
     }
 
     @Override
