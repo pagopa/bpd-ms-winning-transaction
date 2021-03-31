@@ -2,11 +2,12 @@ package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionReplicaDAO;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TrxCountByDay;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
 import it.gov.pagopa.bpd.winning_transaction.exception.WinningTransactionExistsException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -29,10 +30,10 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
     @Autowired
     public WinningTransactionServiceImpl(
-            WinningTransactionDAO winningTransactionDAO,
-            WinningTransactionReplicaDAO winningTransactionReplicaDAO) {
-        this.winningTransactionDAO = winningTransactionDAO;
-        this.winningTransactionReplicaDAO = winningTransactionReplicaDAO;
+            ObjectProvider<WinningTransactionDAO> winningTransactionDAO,
+            ObjectProvider<WinningTransactionReplicaDAO> winningTransactionReplicaDAO) {
+        this.winningTransactionDAO = winningTransactionDAO.getIfAvailable();
+        this.winningTransactionReplicaDAO = winningTransactionReplicaDAO.getIfAvailable();
     }
 
     @Override

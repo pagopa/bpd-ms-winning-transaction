@@ -9,13 +9,11 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.orm.jpa.EntityManagerFactoryBuilderCustomizer;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -29,39 +27,46 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource("classpath:config/jpaConnectionConfig.properties")
+@PropertySource("classpath:config/WinningTransactionPrimaryJpaConnectionConfig.properties")
+@Conditional(PrimaryDataSourceEnabledCondition.class)
 @EnableJpaRepositories(
         repositoryBaseClass = CustomJpaRepository.class,
         basePackages = {"it.gov.pagopa.bpd.winning_transaction.connector.jpa"},
         excludeFilters = @ComponentScan.Filter(ReadOnlyRepository.class),
         includeFilters = @ComponentScan.Filter(Repository.class),
-        entityManagerFactoryRef = "entityManagerFactoryMaster",
-        transactionManagerRef = "transactionManagerMaster"
+        entityManagerFactoryRef = "entityManagerFactoryPrimary",
+        transactionManagerRef = "transactionManagerPrimary"
 )
 @EntityScan(
         basePackages = {"it.gov.pagopa.bpd.winning_transaction.connector.jpa"}
 )
-@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
-public class WinningTransactionJpaConfig {
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+public class WinningTransactionPrimaryJpaConfig {
 
-    @Bean("dataSourceMasterProperties")
-    @ConfigurationProperties("spring.datasource")
+    @Bean("dataSourcePrimaryProperties")
+    @ConfigurationProperties("spring.primary.datasource")
     public DataSourceProperties dataSourceProperties() {
         return new DataSourceProperties();
     }
 
-    @Bean("dataSourceMaster")
-    @ConfigurationProperties(prefix = "spring.datasource.hikari")
-    public DataSource dataSource(@Qualifier("dataSourceMasterProperties") DataSourceProperties dataSourceProperties) {
+    @Bean("dataSourcePrimary")
+    @ConfigurationProperties(prefix = "spring.primary.datasource.hikari")
+    public DataSource dataSource(@Qualifier("dataSourcePrimaryProperties") DataSourceProperties dataSourceProperties) {
         return dataSourceProperties.initializeDataSourceBuilder().build();
     }
 
+    @Bean("jpaPrimaryProperties")
+    @ConfigurationProperties("spring.primary.jpa")
+    public JpaProperties jpaProperties() {
+        return new JpaProperties();
+    }
 
-    @Bean("entityManagerFactoryMaster")
-    @ConfigurationProperties("spring.jpa")
+
+    @Bean("entityManagerFactoryPrimary")
+    @ConfigurationProperties("spring.primary.jpa")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            JpaProperties properties,
-            @Qualifier("dataSourceMaster") DataSource dataSource,
+            @Qualifier("jpaPrimaryProperties") JpaProperties properties,
+            @Qualifier("dataSourcePrimary") DataSource dataSource,
             ObjectProvider<PersistenceUnitManager> persistenceUnitManager,
             ObjectProvider<EntityManagerFactoryBuilderCustomizer> customizers) {
         AbstractJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
@@ -78,13 +83,13 @@ public class WinningTransactionJpaConfig {
                 .forEach((customizer) -> customizer.customize(builder));
         return builder
                 .dataSource(dataSource)
-                .persistenceUnit("master")
+                .persistenceUnit("primary")
                 .packages("it.gov.pagopa.bpd.winning_transaction.connector.jpa.model")
                 .build();
     }
 
-    @Bean("transactionManagerMaster")
-    public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactoryMaster")
+    @Bean("transactionManagerPrimary")
+    public PlatformTransactionManager transactionManager(@Qualifier("entityManagerFactoryPrimary")
                                                                  EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }

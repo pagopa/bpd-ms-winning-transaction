@@ -74,8 +74,8 @@ stages:
           - task: Maven@3
             inputs:
               mavenPomFile: 'pom.xml'
-              goals: 'test'
-              options: '-B -s $(settingsxml.secureFilePath)'
+              goals: 'package'
+              options: '-B -s $(settingsxml.secureFilePath) -DskipTests=false'
               javaHomeOption: 'JDKVersion'
               jdkVersionOption: '1.8'
               mavenVersionOption: 'Default'
@@ -132,7 +132,7 @@ stages:
           - task: Maven@3
             inputs:
               mavenPomFile: 'pom.xml'
-              goals: 'deploy'
+              goals: 'package'
               options: '-B -s $(settingsxml.secureFilePath) -DskipTests=false'
               javaHomeOption: 'JDKVersion'
               jdkVersionOption: '1.8'
