@@ -86,14 +86,17 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @Column(name="bin_s")
     String bin;
 
-    @Column(name="terminal_id_s")
+    @Column(name = "terminal_id_s")
     String terminalId;
 
-    @Column(name="fiscal_code_s")
+    @Column(name = "fiscal_code_s")
     String fiscalCode;
 
-    @Column(name="elab_ranking_b", insertable = false, updatable = false, columnDefinition = "boolean default false")
+    @Column(name = "elab_ranking_b", insertable = false, updatable = false, columnDefinition = "boolean default false")
     boolean elabRanking;
+
+    @Column(name = "par_s")
+    String par;
 
     @Override
     public WinningTransactionId getId() {
