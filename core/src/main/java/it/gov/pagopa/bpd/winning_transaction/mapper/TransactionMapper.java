@@ -40,6 +40,7 @@ public class TransactionMapper {
             winningTransaction.setFiscalCode(transaction.getFiscalCode());
             winningTransaction.setAmount(transaction.getAmount());
             winningTransaction.setOperationType(transaction.getOperationType().getCode());
+//            winningTransaction.setPar(transaction.getPar());
         }
 
         return winningTransaction;
