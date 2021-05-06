@@ -25,7 +25,6 @@ public class TransactionMapper {
             winningTransaction = WinningTransaction.builder().build();
             BeanUtils.copyProperties(transaction, winningTransaction);
             winningTransaction.setOperationType(transaction.getOperationType().getCode());
-//            winningTransaction.setPar(transaction.getPar());
         }
 
         return winningTransaction;
