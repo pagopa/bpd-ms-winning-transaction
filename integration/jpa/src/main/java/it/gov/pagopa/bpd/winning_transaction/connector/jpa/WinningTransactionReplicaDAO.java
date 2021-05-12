@@ -41,11 +41,11 @@ public interface WinningTransactionReplicaDAO extends CrudJpaDAO<WinningTransact
     List<WinningTransaction> findCitizenTransactions(@Param("fiscalCode") String fiscalCode,
                                                      @Param("awardPeriodId") Long awardPeriodId);
 
-    @Query(value = "SELECT idTrxAcquirer as idTrxAcquirer, "+
-                        "trxDate as trxDate, " +
-                        "acquirerCode as acquirerCode, " +
-                        "acquirerId as acquirerId, " +
-                        "operationType as operationType, " +
+    @Query(value = "SELECT idTrxAcquirer as idTrxAcquirer, " +
+            "trxDate as trxDate, " +
+            "acquirerCode as acquirerCode, " +
+            "acquirerId as acquirerId, " +
+            "operationType as operationType, " +
             "hpan as hashPan, " +
             "circuitType as circuitType, " +
             "amount as amount, " +
