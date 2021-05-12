@@ -63,8 +63,11 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
 
             WinningTransaction winningTransaction = transactionMapper.map(transaction);
 
-            if ((!winningTransaction.getValid() || winningTransaction.getValid() != null)
-                    && winningTransaction.getOperationType().equals("01")) {
+            if (winningTransaction.getValid() == null) {
+                winningTransactionService.create(winningTransaction);
+
+                return true;
+            } else if (!winningTransaction.getValid() && !winningTransaction.getOperationType().equals("01")) {
                 winningTransaction.setElabRanking(true);
             }
 

@@ -16,4 +16,6 @@ public interface WinningTransactionMilestone {
     Long getAwardPeriodId();
     String getIdTrxIssuer();
 
+    Boolean getValid();
+
 }
