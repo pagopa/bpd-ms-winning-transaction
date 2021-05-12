@@ -20,98 +20,98 @@ import java.util.List;
 public interface WinningTransactionReplicaDAO extends CrudJpaDAO<WinningTransaction, WinningTransactionId> {
 
     @Query(value = "SELECT w " +
-            " FROM WinningTransaction w " +
-            " WHERE fiscalCode = :fiscalCode " +
-            " AND awardPeriodId = :awardPeriodId " +
-            " AND elabRanking is TRUE " +
-            " AND hpan = :hpan " +
-            " AND (valid is TRUE " +
-            " OR valid is null) ")
+                    " FROM WinningTransaction w " +
+                    " WHERE fiscalCode = :fiscalCode " +
+                    " AND awardPeriodId = :awardPeriodId " +
+                    " AND elabRanking is TRUE " +
+                    " AND hpan = :hpan " +
+                    " AND (valid is TRUE " +
+                    " OR valid is null) ")
     List<WinningTransaction> findCitizenTransactionsByHpan(@Param("fiscalCode") String fiscalCode,
                                                      @Param("awardPeriodId") Long awardPeriodId,
                                                      @Param("hpan") String hpan);
 
     @Query(value = "SELECT w " +
-            " FROM WinningTransaction w " +
-            " WHERE fiscalCode = :fiscalCode " +
-            " AND awardPeriodId = :awardPeriodId " +
-            " AND elabRanking is TRUE " +
-            " AND (valid is TRUE " +
-            " OR valid is null) ")
+                    " FROM WinningTransaction w " +
+                    " WHERE fiscalCode = :fiscalCode " +
+                    " AND awardPeriodId = :awardPeriodId " +
+                    " AND elabRanking is TRUE " +
+                    " AND (valid is TRUE " +
+                    " OR valid is null) ")
     List<WinningTransaction> findCitizenTransactions(@Param("fiscalCode") String fiscalCode,
                                                      @Param("awardPeriodId") Long awardPeriodId);
 
     @Query(value = "SELECT idTrxAcquirer as idTrxAcquirer, " +
-            "trxDate as trxDate, " +
-            "acquirerCode as acquirerCode, " +
-            "acquirerId as acquirerId, " +
-            "operationType as operationType, " +
-            "hpan as hashPan, " +
-            "circuitType as circuitType, " +
-            "amount as amount, " +
-            "score as cashback, " +
-            "awardPeriodId as awardPeriodId, " +
-            "idTrxIssuer as idTrxIssuer " +
-            "FROM WinningTransaction w " +
-            "WHERE fiscalCode = :fiscalCode " +
-            "AND awardPeriodId = :awardPeriodId " +
-            "AND hpan = :hpan " +
-            "AND elabRanking = true " +
-            " AND (valid is TRUE " +
-            " OR valid is null) ")
+                        "trxDate as trxDate, " +
+                        "acquirerCode as acquirerCode, " +
+                        "acquirerId as acquirerId, " +
+                        "operationType as operationType, " +
+                        "hpan as hashPan, " +
+                        "circuitType as circuitType, " +
+                        "amount as amount, " +
+                        "score as cashback, " +
+                        "awardPeriodId as awardPeriodId, " +
+                        "idTrxIssuer as idTrxIssuer " +
+                    "FROM WinningTransaction w " +
+                    "WHERE fiscalCode = :fiscalCode " +
+                    "AND awardPeriodId = :awardPeriodId " +
+                    "AND hpan = :hpan " +
+                    "AND elabRanking = true " +
+                    " AND (valid is TRUE " +
+                    " OR valid is null) ")
     Page<WinningTransactionMilestone> findCitizenTransactionsMilestoneByHpanPage(@Param("fiscalCode") String fiscalCode,
                                                                                  @Param("awardPeriodId") Long awardPeriodId,
                                                                                  @Param("hpan") String hpan,
                                                                                  Pageable pageable);
 
     @Query(value = "SELECT idTrxAcquirer as idTrxAcquirer, " +
-            "trxDate as trxDate, " +
-            "acquirerCode as acquirerCode, " +
-            "acquirerId as acquirerId, " +
-            "operationType as operationType, " +
-            "hpan as hashPan, " +
-            "circuitType as circuitType, " +
-            "amount as amount, " +
-            "score as cashback, " +
-            "awardPeriodId as awardPeriodId, " +
-            "idTrxIssuer as idTrxIssuerx " +
-            "FROM WinningTransaction w " +
-            "WHERE fiscalCode = :fiscalCode " +
-            "AND awardPeriodId = :awardPeriodId " +
-            "AND elabRanking = true " +
-            " AND (valid is TRUE " +
-            " OR valid is null) ")
+                        "trxDate as trxDate, " +
+                        "acquirerCode as acquirerCode, " +
+                        "acquirerId as acquirerId, " +
+                        "operationType as operationType, " +
+                        "hpan as hashPan, " +
+                        "circuitType as circuitType, " +
+                        "amount as amount, " +
+                        "score as cashback, " +
+                        "awardPeriodId as awardPeriodId, " +
+                        "idTrxIssuer as idTrxIssuerx " +
+                    "FROM WinningTransaction w " +
+                    "WHERE fiscalCode = :fiscalCode " +
+                    "AND awardPeriodId = :awardPeriodId " +
+                    "AND elabRanking = true " +
+                    " AND (valid is TRUE " +
+                    " OR valid is null) ")
     Page<WinningTransactionMilestone> findCitizenTransactionsMilestonePage(@Param("fiscalCode") String fiscalCode,
                                                                            @Param("awardPeriodId") Long awardPeriodId,
                                                                            Pageable pageable);
 
     @Query(value = "SELECT " +
-            "date_trunc('day', trx_timestamp_t) as trxDate, " +
-            "count(*) as count " +
-            "FROM bpd_winning_transaction  " +
-            "WHERE fiscal_code_s = :fiscalCode " +
-            "AND award_period_id_n = :awardPeriodId " +
-            "AND enabled_b " +
-            "AND elab_ranking_b = true " +
-            "AND hpan_s = :hpan " +
-            " AND (valid_b is TRUE " +
-            " OR valid_b is null) " +
-            "GROUP BY date_trunc('day', trx_timestamp_t) ", nativeQuery = true)
+                        "date_trunc('day', trx_timestamp_t) as trxDate, " +
+                        "count(*) as count " +
+                    "FROM bpd_winning_transaction  " +
+                    "WHERE fiscal_code_s = :fiscalCode " +
+                    "AND award_period_id_n = :awardPeriodId " +
+                    "AND enabled_b " +
+                    "AND elab_ranking_b = true " +
+                    "AND hpan_s = :hpan " +
+                    " AND (valid_b is TRUE " +
+                    " OR valid_b is null) " +
+                    "GROUP BY date_trunc('day', trx_timestamp_t) ", nativeQuery = true)
     List<TrxCountByDay> findCitizenTransactionsByDateCountHpan(@Param("fiscalCode") String fiscalCode,
                                                                @Param("awardPeriodId") Long awardPeriodId,
                                                                @Param("hpan") String hpan);
 
     @Query(value = "SELECT " +
-            "date_trunc('day', trx_timestamp_t) as trxDate, " +
-            "count(*) as count " +
-            "FROM bpd_winning_transaction  " +
-            "WHERE fiscal_code_s = :fiscalCode " +
-            "AND award_period_id_n = :awardPeriodId " +
-            "AND enabled_b " +
-            "AND elab_ranking_b = true " +
-            " AND (valid_b is TRUE " +
-            " OR valid_b is null) " +
-            "GROUP BY date_trunc('day', trx_timestamp_t)", nativeQuery = true)
+                        "date_trunc('day', trx_timestamp_t) as trxDate, " +
+                        "count(*) as count " +
+                    "FROM bpd_winning_transaction  " +
+                    "WHERE fiscal_code_s = :fiscalCode " +
+                    "AND award_period_id_n = :awardPeriodId " +
+                    "AND enabled_b " +
+                    "AND elab_ranking_b = true " +
+                    " AND (valid_b is TRUE " +
+                    " OR valid_b is null) " +
+                    "GROUP BY date_trunc('day', trx_timestamp_t)", nativeQuery = true)
     List<TrxCountByDay> findCitizenTransactionsByDateCount(@Param("fiscalCode") String fiscalCode,
                                                            @Param("awardPeriodId") Long awardPeriodId);
 
