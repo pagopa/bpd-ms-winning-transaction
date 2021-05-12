@@ -15,9 +15,6 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.*;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Set;
 
 
@@ -37,7 +34,7 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
     private final SaveTransactionCommandModel saveTransactionCommandModel;
     private TransactionMapper transactionMapper;
     private WinningTransactionService winningTransactionService;
-    private LocalDate processDateTime;
+    private final LocalDate processDateTime;
 
     public SaveTransactionCommandImpl(SaveTransactionCommandModel saveTransactionCommandModel) {
         this.saveTransactionCommandModel = saveTransactionCommandModel;
@@ -65,6 +62,11 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
             validateRequest(transaction);
 
             WinningTransaction winningTransaction = transactionMapper.map(transaction);
+
+            if ((!winningTransaction.getValid() || winningTransaction.getValid() != null)
+                    && winningTransaction.getOperationType().equals("01")) {
+                winningTransaction.setElabRanking(true);
+            }
 
             winningTransactionService.create(winningTransaction);
 

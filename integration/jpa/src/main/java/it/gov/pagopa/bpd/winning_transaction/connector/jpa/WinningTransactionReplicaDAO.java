@@ -2,8 +2,8 @@ package it.gov.pagopa.bpd.winning_transaction.connector.jpa;
 
 import it.gov.pagopa.bpd.common.connector.jpa.CrudJpaDAO;
 import it.gov.pagopa.bpd.common.connector.jpa.ReadOnlyRepository;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TrxCountByDay;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
 import org.springframework.data.domain.Page;
@@ -24,7 +24,8 @@ public interface WinningTransactionReplicaDAO extends CrudJpaDAO<WinningTransact
             " WHERE fiscalCode = :fiscalCode " +
             " AND awardPeriodId = :awardPeriodId " +
             " AND elabRanking is TRUE " +
-            " AND hpan = :hpan")
+            " AND hpan = :hpan" +
+            " AND valid is TRUE ")
     List<WinningTransaction> findCitizenTransactionsByHpan(@Param("fiscalCode") String fiscalCode,
                                                      @Param("awardPeriodId") Long awardPeriodId,
                                                      @Param("hpan") String hpan);
@@ -33,7 +34,8 @@ public interface WinningTransactionReplicaDAO extends CrudJpaDAO<WinningTransact
             " FROM WinningTransaction w " +
             " WHERE fiscalCode = :fiscalCode " +
             " AND awardPeriodId = :awardPeriodId " +
-            " AND elabRanking is TRUE ")
+            " AND elabRanking is TRUE " +
+            " AND valid is TRUE ")
     List<WinningTransaction> findCitizenTransactions(@Param("fiscalCode") String fiscalCode,
                                                      @Param("awardPeriodId") Long awardPeriodId);
 

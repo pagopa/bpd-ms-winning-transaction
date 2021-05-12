@@ -52,7 +52,7 @@ public class WinningTransactionServiceImplTest {
                     .amountCurrency("833").awardPeriodId(0L).circuitType("00")
                     .correlationId("0").hpan("hpan").idTrxAcquirer("0").idTrxIssuer("0").mcc("00")
                     .mccDescription("test").merchantId("0").operationType("00").score(BigDecimal.valueOf(1313.3))
-                    .trxDate(offsetDateTime).build();
+                    .trxDate(offsetDateTime).valid(true).build();
 
     private final WinningTransactionMilestone newTransactionMilestone = Mockito.mock(WinningTransactionMilestone.class);
 
