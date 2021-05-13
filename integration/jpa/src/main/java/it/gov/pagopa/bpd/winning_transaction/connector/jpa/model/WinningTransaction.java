@@ -92,7 +92,7 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @Column(name = "fiscal_code_s")
     String fiscalCode;
 
-    @Column(name = "elab_ranking_b", insertable = false, updatable = false, columnDefinition = "boolean default false")
+    @Column(name = "elab_ranking_b", updatable = false, columnDefinition = "boolean default false")
     boolean elabRanking;
 
     @Column(name = "valid_b")
