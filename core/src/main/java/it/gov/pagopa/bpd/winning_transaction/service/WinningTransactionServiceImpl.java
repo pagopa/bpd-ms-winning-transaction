@@ -95,6 +95,15 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
     }
 
     @Override
+    public void deleteByFiscalCodeIfNotUpdated(String fiscalCode, OffsetDateTime updateTime) {
+        if (log.isDebugEnabled()) {
+            log.debug("WinningTransactionServiceImpl.deleteByFiscalCodeIfNotUpdated");
+            log.debug("fiscalCode = [" + fiscalCode + "]");
+        }
+        winningTransactionDAO.deactivateCitizenTransactionsIfNotUpdated(fiscalCode, updateTime, OffsetDateTime.now());
+    }
+
+    @Override
     public void reactivateForRollback(String fiscalCode, OffsetDateTime requestTimestamp) {
         if (log.isDebugEnabled()) {
             log.debug("WinningTransactionServiceImpl.reactivateForRollback");

@@ -1,10 +1,13 @@
 package it.gov.pagopa.bpd.winning_transaction.command;
 
 import eu.sia.meda.core.command.BaseCommand;
+import it.gov.pagopa.bpd.winning_transaction.command.model.InboundCitizenStatusData;
+import it.gov.pagopa.bpd.winning_transaction.command.model.ProcessCitizenUpdateEventCommandModel;
 import it.gov.pagopa.bpd.winning_transaction.command.model.SaveTransactionCommandModel;
 import it.gov.pagopa.bpd.winning_transaction.command.model.Transaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.CitizenStatusData;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
+import it.gov.pagopa.bpd.winning_transaction.mapper.CitizenStatusDataMapper;
 import it.gov.pagopa.bpd.winning_transaction.mapper.TransactionMapper;
 import it.gov.pagopa.bpd.winning_transaction.service.CitizenStatusDataService;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
@@ -22,40 +25,40 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.Set;
 
-
 /**
- * Class extending {@link BaseCommand<Boolean>}, implementation of {@link SaveTransactionCommand}.
- * The command defines the execution of the whole {@link Transaction} save processing, aggregating and hiding the
+ * Class extending {@link BaseCommand<Boolean>}, implementation of {@link ProcessCitizenUpdateEventCommand}.
+ * The command defines the execution of the whole {@link CitizenStatusData} save processing, aggregating and hiding the
  * services used to call on the services and commands involved in the process
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Slf4j
-class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTransactionCommand {
+public class ProcessCitizenUpdateEventCommandImpl extends BaseCommand<Boolean> implements ProcessCitizenUpdateEventCommand {
 
     private static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private static final Validator validator = factory.getValidator();
 
-    private final SaveTransactionCommandModel saveTransactionCommandModel;
-    private TransactionMapper transactionMapper;
+    private final ProcessCitizenUpdateEventCommandModel processCitizenUpdateEventCommandModel;
+    private CitizenStatusDataMapper citizenStatusDataMapper;
     private WinningTransactionService winningTransactionService;
     private CitizenStatusDataService statusDataService;
     private LocalDate processDateTime;
 
-    public SaveTransactionCommandImpl(SaveTransactionCommandModel saveTransactionCommandModel) {
-        this.saveTransactionCommandModel = saveTransactionCommandModel;
+    public ProcessCitizenUpdateEventCommandImpl(ProcessCitizenUpdateEventCommandModel processCitizenUpdateEventCommandModel) {
+        this.processCitizenUpdateEventCommandModel = processCitizenUpdateEventCommandModel;
         this.processDateTime = LocalDate.now();
     }
 
-    public SaveTransactionCommandImpl(SaveTransactionCommandModel saveTransactionCommandModel,
+    public ProcessCitizenUpdateEventCommandImpl(
+                                      ProcessCitizenUpdateEventCommandModel processCitizenUpdateEventCommandModel,
                                       CitizenStatusDataService citizenStatusDataService,
                                       WinningTransactionService winningTransactionService,
-                                      TransactionMapper transactionMapper) {
-        this.saveTransactionCommandModel = saveTransactionCommandModel;
+                                      CitizenStatusDataMapper citizenStatusDataMapper) {
+        this.processCitizenUpdateEventCommandModel = processCitizenUpdateEventCommandModel;
         this.statusDataService = citizenStatusDataService;
         this.processDateTime = LocalDate.now();
         this.winningTransactionService = winningTransactionService;
-        this.transactionMapper = transactionMapper;
+        this.citizenStatusDataMapper = citizenStatusDataMapper;
     }
 
 
@@ -63,43 +66,28 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
     @Override
     public Boolean doExecute() {
 
-        Transaction transaction = saveTransactionCommandModel.getPayload();
+        InboundCitizenStatusData inboundCitizenStatusData = processCitizenUpdateEventCommandModel.getPayload();
 
         try {
 
-            validateRequest(transaction);
+            validateRequest(inboundCitizenStatusData);
 
-            WinningTransaction winningTransaction = transactionMapper.map(transaction);
+            CitizenStatusData citizenStatusData = citizenStatusDataMapper.map(inboundCitizenStatusData);
+            Boolean statusUpdated = statusDataService.checkAndCreate(citizenStatusData);
 
-            Header validationTimeHeader = saveTransactionCommandModel.getHeaders() != null ?
-                    saveTransactionCommandModel.getHeaders().lastHeader("CITIZEN_VALIDATION_DATETIME") : null;
-
-            if (validationTimeHeader != null) {
-                OffsetDateTime validationDateTime =  OffsetDateTime.parse(
-                        new String(validationTimeHeader.value()));
-                Optional<CitizenStatusData> citizenStatusDataOptional = statusDataService
-                        .findCitizenStatusData(transaction.getFiscalCode());
-                if (citizenStatusDataOptional.isPresent() &&
-                        !citizenStatusDataOptional.get().getEnabled() &&
-                        citizenStatusDataOptional.get().getUpdateTimestamp()
-                                .compareTo(validationDateTime) >= 0) {
-                    winningTransaction.setEnabled(false);
-                }
+            if (statusUpdated && !inboundCitizenStatusData.getEnabled()) {
+                winningTransactionService.deleteByFiscalCodeIfNotUpdated(
+                        inboundCitizenStatusData.getFiscalCode(), inboundCitizenStatusData.getUpdateDateTime());
             }
-
-            winningTransactionService.create(winningTransaction);
 
             return true;
 
         } catch (Exception e) {
 
-            if (transaction != null) {
+            if (inboundCitizenStatusData != null) {
 
                 if (logger.isErrorEnabled()) {
-                    logger.error("Error occured during processing for transaction: " +
-                            transaction.getIdTrxAcquirer() + ", " +
-                            transaction.getAcquirerCode() + ", " +
-                            transaction.getTrxDate());
+                    logger.error("Error occured during processing");
                     logger.error(e.getMessage(), e);
                 }
 
@@ -114,19 +102,19 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
     /**
      * Method to process a validation check for the parsed Transaction request
      *
-     * @param request instance of Transaction, parsed from the inbound byte[] payload
+     * @param citizenStatusData instance of CitizenStatusData, parsed from the inbound byte[] payload
      * @throws ConstraintViolationException
      */
-    private void validateRequest(Transaction request) {
-        Set<ConstraintViolation<Object>> constraintViolations = validator.validate(request);
+    private void validateRequest(InboundCitizenStatusData citizenStatusData) {
+        Set<ConstraintViolation<Object>> constraintViolations = validator.validate(citizenStatusData);
         if (constraintViolations.size() > 0) {
             throw new ConstraintViolationException(constraintViolations);
         }
     }
 
     @Autowired
-    public void setTransactionMapper(TransactionMapper transactionMapper) {
-        this.transactionMapper = transactionMapper;
+    public void setCitizenStatusDataMapper(CitizenStatusDataMapper citizenStatusDataMapper) {
+        this.citizenStatusDataMapper = citizenStatusDataMapper;
     }
 
     @Autowired

@@ -1,15 +1,17 @@
 package it.gov.pagopa.bpd.winning_transaction.listener;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.sia.meda.eventlistener.BaseConsumerAwareEventListener;
 import eu.sia.meda.eventlistener.BaseEventListener;
+import it.gov.pagopa.bpd.winning_transaction.command.ProcessCitizenUpdateEventCommand;
 import it.gov.pagopa.bpd.winning_transaction.command.SaveTransactionCommand;
+import it.gov.pagopa.bpd.winning_transaction.command.model.ProcessCitizenUpdateEventCommandModel;
 import it.gov.pagopa.bpd.winning_transaction.command.model.SaveTransactionCommandModel;
 import it.gov.pagopa.bpd.winning_transaction.listener.factory.ModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.service.TransactionErrorPublisherService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +30,19 @@ public class OnTransactionSaveRequestListener extends BaseConsumerAwareEventList
 
     private final ModelFactory<Pair<byte[], Headers>, SaveTransactionCommandModel>
             saveTransactionCommandModelModelFactory;
+    private final ModelFactory<Pair<byte[], Headers>, ProcessCitizenUpdateEventCommandModel>
+            processCitizenUpdateEventCommandModelModelFactory;
     private final BeanFactory beanFactory;
     private final TransactionErrorPublisherService transactionErrorPublisherService;
 
     @Autowired
     public OnTransactionSaveRequestListener(
             ModelFactory<Pair<byte[], Headers>, SaveTransactionCommandModel> saveTransactionCommandModelModelFactory,
+            ModelFactory<Pair<byte[], Headers>, ProcessCitizenUpdateEventCommandModel> processCitizenUpdateEventCommandModelModelFactory,
             BeanFactory beanFactory,
             TransactionErrorPublisherService transactionErrorPublisherService) {
         this.saveTransactionCommandModelModelFactory = saveTransactionCommandModelModelFactory;
+        this.processCitizenUpdateEventCommandModelModelFactory = processCitizenUpdateEventCommandModelModelFactory;
         this.beanFactory = beanFactory;
         this.transactionErrorPublisherService = transactionErrorPublisherService;
     }
@@ -55,6 +61,18 @@ public class OnTransactionSaveRequestListener extends BaseConsumerAwareEventList
     @Override
     public void onReceived(byte[] payload, Headers headers) {
 
+        Header statusUpdateHeader = headers.lastHeader("CITIZEN_STATUS_UPDATE");
+        if (statusUpdateHeader == null ||
+                !new String(statusUpdateHeader.value()).equals("true")) {
+            onReceivedTransaction(payload, headers);
+        } else {
+            onReceivedStatusUpdate(payload, headers);
+        }
+
+    }
+
+    @SneakyThrows
+    public void onReceivedTransaction(byte[] payload, Headers headers) {
         SaveTransactionCommandModel saveTransactionCommandModel = null;
 
         try {
@@ -105,6 +123,57 @@ public class OnTransactionSaveRequestListener extends BaseConsumerAwareEventList
             }
 
         }
+
+    }
+
+    @SneakyThrows
+    public void onReceivedStatusUpdate(byte[] payload, Headers headers) {
+        ProcessCitizenUpdateEventCommandModel processCitizenUpdateEventCommandModel = null;
+
+        try {
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Processing new request on inbound queue");
+            }
+
+            processCitizenUpdateEventCommandModel = processCitizenUpdateEventCommandModelModelFactory
+                    .createModel(Pair.of(payload, headers));
+            ProcessCitizenUpdateEventCommand command = beanFactory.getBean(
+                    ProcessCitizenUpdateEventCommand.class, processCitizenUpdateEventCommandModel);
+
+            if (!command.execute()) {
+                logger.debug("Failed to execute ProcessCitizenUpdateEventCommand");
+            } else {
+                logger.debug("ProcessCitizenUpdateEventCommand successfully executed for inbound message");
+            }
+
+        } catch (Exception e) {
+
+            String payloadString = "null";
+            String error = "Unexpected error during transaction processing";
+
+            try {
+                payloadString = new String(payload, StandardCharsets.UTF_8);
+            } catch (Exception e2) {
+                if (logger.isErrorEnabled()) {
+                    logger.error("Something gone wrong converting the payload into String", e2);
+                }
+            }
+
+            if (processCitizenUpdateEventCommandModel != null && processCitizenUpdateEventCommandModel.getPayload() != null) {
+                payloadString = new String(payload, StandardCharsets.UTF_8);
+                error = String.format("Unexpected error during transaction processing: %s, %s",
+                        payloadString, e.getMessage());
+            } else if (payload != null) {
+                error = String.format("Something gone wrong during the evaluation of the payload: %s, %s",
+                        payloadString, e.getMessage());
+                if (logger.isErrorEnabled()) {
+                    logger.error(error, e);
+                }
+            }
+
+        }
+
     }
 
 }
