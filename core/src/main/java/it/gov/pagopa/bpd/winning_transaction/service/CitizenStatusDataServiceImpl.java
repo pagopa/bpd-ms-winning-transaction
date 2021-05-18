@@ -44,7 +44,6 @@ public class CitizenStatusDataServiceImpl implements CitizenStatusDataService {
                 citizenStatusDataDAO.findById(citizenStatusData.getFiscalCode());
 
         if (savedCitizenStatusDataOpt.isPresent() &&
-            savedCitizenStatusDataOpt.get().getEnabled().equals(citizenStatusData.getEnabled()) &&
             savedCitizenStatusDataOpt.get().getUpdateTimestamp().compareTo(
                     citizenStatusData.getUpdateTimestamp()) >= 0) {
             log.warn("Encountered an update event that is outdated");

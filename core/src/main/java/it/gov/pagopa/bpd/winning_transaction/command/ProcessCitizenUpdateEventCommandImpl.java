@@ -3,17 +3,12 @@ package it.gov.pagopa.bpd.winning_transaction.command;
 import eu.sia.meda.core.command.BaseCommand;
 import it.gov.pagopa.bpd.winning_transaction.command.model.InboundCitizenStatusData;
 import it.gov.pagopa.bpd.winning_transaction.command.model.ProcessCitizenUpdateEventCommandModel;
-import it.gov.pagopa.bpd.winning_transaction.command.model.SaveTransactionCommandModel;
-import it.gov.pagopa.bpd.winning_transaction.command.model.Transaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.CitizenStatusData;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.mapper.CitizenStatusDataMapper;
-import it.gov.pagopa.bpd.winning_transaction.mapper.TransactionMapper;
 import it.gov.pagopa.bpd.winning_transaction.service.CitizenStatusDataService;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.header.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -21,8 +16,6 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.*;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -73,7 +66,7 @@ public class ProcessCitizenUpdateEventCommandImpl extends BaseCommand<Boolean> i
             validateRequest(inboundCitizenStatusData);
 
             CitizenStatusData citizenStatusData = citizenStatusDataMapper.map(inboundCitizenStatusData);
-            Boolean statusUpdated = statusDataService.checkAndCreate(citizenStatusData);
+            boolean statusUpdated = statusDataService.checkAndCreate(citizenStatusData);
 
             if (statusUpdated && !inboundCitizenStatusData.getEnabled()) {
                 winningTransactionService.deleteByFiscalCodeIfNotUpdated(

@@ -27,6 +27,7 @@ import java.time.OffsetDateTime;
 @TestPropertySource(
         locations = "classpath:config/transactionRequestListener.properties",
         properties = {
+                "listener.OnTransactionSaveRequestListener.enableCitizenValidation=false",
                 "listeners.eventConfigurations.items.OnTransactionSaveRequestListener.bootstrapServers=${spring.embedded.kafka.brokers}"
         })
 public class OnTransactionSaveRequestListenerTest extends BaseEventListenerTest {
