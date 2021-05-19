@@ -4,12 +4,12 @@
     <parent>
         <artifactId>bpd-ms-winning-transaction-integration</artifactId>
         <groupId>it.gov.pagopa.bpd.ms.winning_transaction</groupId>
-        <version>CEN-157-rc2</version>
+        <version>CEN-156-157-rc1</version>
     </parent>
 
     <groupId>it.gov.pagopa.bpd.ms.winning_transaction.integration</groupId>
     <artifactId>bpd-ms-winning-transaction-integration-event</artifactId>
-    <version>CEN-157-rc2</version>
+    <version>CEN-156-157-rc1</version>
 
     <dependencies>
         <dependency>
