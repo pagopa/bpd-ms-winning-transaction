@@ -50,4 +50,8 @@ public class WinningTransactionMilestoneResource {
 
     @ApiModelProperty(value = "${swagger.winningTransaction.idTrx}", required = true)
     private String idTrx;
+
+    @ApiModelProperty(value = "${swagger.winningTransaction.valid}", required = true)
+    @JsonProperty(required = true)
+    private Boolean valid;
 }

@@ -96,6 +96,7 @@ public class SaveTransactionCommandImplTest extends BaseTest {
                 .bin("000001")
                 .terminalId("0")
                 .fiscalCode("fiscalCode")
+                .valid(true)
                 .build();
     }
 
@@ -119,6 +120,7 @@ public class SaveTransactionCommandImplTest extends BaseTest {
                 .bin("000001")
                 .terminalId("0")
                 .fiscalCode("fiscalCode")
+                .valid(true)
                 .build();
     }
 

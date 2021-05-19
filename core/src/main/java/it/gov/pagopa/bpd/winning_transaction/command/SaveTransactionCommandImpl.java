@@ -40,7 +40,7 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
     private TransactionMapper transactionMapper;
     private WinningTransactionService winningTransactionService;
     private CitizenStatusDataService statusDataService;
-    private LocalDate processDateTime;
+    private final LocalDate processDateTime;
 
     public SaveTransactionCommandImpl(SaveTransactionCommandModel saveTransactionCommandModel) {
         this.saveTransactionCommandModel = saveTransactionCommandModel;
@@ -85,6 +85,14 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
                                 .compareTo(validationDateTime) >= 0) {
                     winningTransaction.setEnabled(false);
                 }
+            }
+
+            if (winningTransaction.getValid() == null) {
+                winningTransactionService.create(winningTransaction);
+
+                return true;
+            } else if (!winningTransaction.getValid() && !winningTransaction.getOperationType().equals("01")) {
+                winningTransaction.setElabRanking(true);
             }
 
             winningTransactionService.create(winningTransaction);

@@ -57,4 +57,8 @@ public class WinningTransactionResource {
     @JsonProperty(required = true)
     private Long awardPeriodId;
 
+    @ApiModelProperty(value = "${swagger.winningTransaction.valid}", required = true)
+    @JsonProperty(required = true)
+    private Boolean valid;
+
 }

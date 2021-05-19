@@ -15,5 +15,6 @@ public interface WinningTransactionMilestone {
     BigDecimal getCashback();
     Long getAwardPeriodId();
     String getIdTrxIssuer();
+    Boolean getValid();
 
 }
