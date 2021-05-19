@@ -22,10 +22,12 @@ public class CitizenStatusData extends BaseEntity implements Serializable {
     @Column(name="fiscal_code_s")
     String fiscalCode;
 
-    @Column(name="enabled_b")
-    Boolean enabled;
-
     @Column(name = "update_timestamp_t")
-    OffsetDateTime updateTimestamp;
+    OffsetDateTime updateDateTime;
+
+    @Override
+    public void setEnabled(final boolean enabled) {
+        super.setEnabled(enabled);
+    }
 
 }

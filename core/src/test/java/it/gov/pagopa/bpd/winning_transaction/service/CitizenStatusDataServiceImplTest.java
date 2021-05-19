@@ -41,16 +41,16 @@ public class CitizenStatusDataServiceImplTest {
         CitizenStatusData citizenStatusData =
                 CitizenStatusData.builder()
                 .fiscalCode("fiscalCode")
-                .enabled(false)
-                .updateTimestamp(OffsetDateTime.parse("2020-04-10T16:22:45.304Z"))
+                .updateDateTime(OffsetDateTime.parse("2020-04-10T16:22:45.304Z"))
                 .build();
+        citizenStatusData.setEnabled(false);
 
         CitizenStatusData persistedCitizenStatusData =
                 CitizenStatusData.builder()
                         .fiscalCode("fiscalCode")
-                        .enabled(false)
-                        .updateTimestamp(OffsetDateTime.parse("2020-04-09T16:22:45.304Z"))
+                        .updateDateTime(OffsetDateTime.parse("2020-04-09T16:22:45.304Z"))
                         .build();
+        persistedCitizenStatusData.setEnabled(false);
 
         BDDMockito.doReturn(Optional.of(persistedCitizenStatusData))
                 .when(citizenStatusDataDAOMock)
@@ -74,16 +74,16 @@ public class CitizenStatusDataServiceImplTest {
         CitizenStatusData citizenStatusData =
                 CitizenStatusData.builder()
                         .fiscalCode("fiscalCode")
-                        .enabled(false)
-                        .updateTimestamp(OffsetDateTime.parse("2020-04-10T16:22:45.304Z"))
+                        .updateDateTime(OffsetDateTime.parse("2020-04-10T16:22:45.304Z"))
                         .build();
+        citizenStatusData.setEnabled(false);
 
         CitizenStatusData persistedCitizenStatusData =
                 CitizenStatusData.builder()
                         .fiscalCode("fiscalCode")
-                        .enabled(true)
-                        .updateTimestamp(OffsetDateTime.parse("2020-04-11T16:22:45.304Z"))
+                        .updateDateTime(OffsetDateTime.parse("2020-04-11T16:22:45.304Z"))
                         .build();
+        persistedCitizenStatusData.setEnabled(true);
 
         BDDMockito.doReturn(Optional.of(persistedCitizenStatusData))
                 .when(citizenStatusDataDAOMock)

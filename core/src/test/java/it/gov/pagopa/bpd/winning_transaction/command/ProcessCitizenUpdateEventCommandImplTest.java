@@ -106,11 +106,12 @@ public class ProcessCitizenUpdateEventCommandImplTest extends BaseTest {
     }
 
     protected CitizenStatusData getSavedModel() {
-        return CitizenStatusData.builder()
-                .enabled(false)
-                .updateTimestamp(OffsetDateTime.parse("2020-04-09T16:22:45.304Z"))
+        CitizenStatusData citizenStatusData = CitizenStatusData.builder()
+                .updateDateTime(OffsetDateTime.parse("2020-04-09T16:22:45.304Z"))
                 .fiscalCode("fiscalCode")
                 .build();
+        citizenStatusData.setEnabled(false);
+        return citizenStatusData;
     }
 
 }

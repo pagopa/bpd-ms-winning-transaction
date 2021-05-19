@@ -62,11 +62,12 @@ public class OnCitizenStatusUpdateRequestListenerTest extends BaseEventListenerT
 
     @Override
     protected Object getRequestObject() {
-        return CitizenStatusData.builder()
-                .fiscalCode("fiscalCode")
-                .enabled(false)
-                .updateTimestamp(OffsetDateTime.parse("2020-04-09T16:22:45.304Z"))
-                .build();
+          CitizenStatusData citizenStatusData = CitizenStatusData.builder()
+                    .fiscalCode("fiscalCode")
+                    .updateDateTime(OffsetDateTime.parse("2020-04-09T16:22:45.304Z"))
+                    .build();
+          citizenStatusData.setEnabled(false);
+          return citizenStatusData;
     }
 
     @Override

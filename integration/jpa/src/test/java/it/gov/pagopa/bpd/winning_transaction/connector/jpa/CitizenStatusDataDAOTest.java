@@ -45,7 +45,7 @@ public class CitizenStatusDataDAOTest extends
 
     @Override
     protected void alterEntityToUpdate(CitizenStatusData entity) {
-        entity.setUpdateTimestamp(OffsetDateTime.now());
+        entity.setUpdateDateTime(OffsetDateTime.now());
     }
 
     @Override

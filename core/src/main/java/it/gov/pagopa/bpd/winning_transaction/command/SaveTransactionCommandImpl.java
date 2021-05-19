@@ -80,8 +80,8 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
                 Optional<CitizenStatusData> citizenStatusDataOptional = statusDataService
                         .findCitizenStatusData(transaction.getFiscalCode());
                 if (citizenStatusDataOptional.isPresent() &&
-                        !citizenStatusDataOptional.get().getEnabled() &&
-                        citizenStatusDataOptional.get().getUpdateTimestamp()
+                        !citizenStatusDataOptional.get().isEnabled() &&
+                        citizenStatusDataOptional.get().getUpdateDateTime()
                                 .compareTo(validationDateTime) >= 0) {
                     winningTransaction.setEnabled(false);
                 }

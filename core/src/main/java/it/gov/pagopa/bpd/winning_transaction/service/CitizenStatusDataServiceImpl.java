@@ -44,18 +44,13 @@ public class CitizenStatusDataServiceImpl implements CitizenStatusDataService {
                 citizenStatusDataDAO.findById(citizenStatusData.getFiscalCode());
 
         if (savedCitizenStatusDataOpt.isPresent() &&
-            savedCitizenStatusDataOpt.get().getUpdateTimestamp().compareTo(
-                    citizenStatusData.getUpdateTimestamp()) >= 0) {
+            savedCitizenStatusDataOpt.get().getUpdateDateTime().compareTo(
+                    citizenStatusData.getUpdateDateTime()) >= 0) {
             log.warn("Encountered an update event that is outdated");
             return false;
         }
 
-        citizenStatusDataDAO.update(CitizenStatusData.builder()
-                .enabled(citizenStatusData.getEnabled())
-                .fiscalCode(citizenStatusData.getFiscalCode())
-                .updateTimestamp(citizenStatusData.getUpdateTimestamp())
-                .build()
-        );
+        citizenStatusDataDAO.update(citizenStatusData);
 
         return true;
     }
