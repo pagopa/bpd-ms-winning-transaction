@@ -75,6 +75,7 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
                     saveTransactionCommandModel.getHeaders().lastHeader("CITIZEN_VALIDATION_DATETIME") : null;
 
             if (validationTimeHeader != null && validationTimeHeader.value() != null) {
+                log.debug("Attempting to find citizen status data");
                 OffsetDateTime validationDateTime = OffsetDateTime.parse(
                         new String(validationTimeHeader.value()));
                 Optional<CitizenStatusData> citizenStatusDataOptional = statusDataService
