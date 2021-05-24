@@ -2,6 +2,7 @@ package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionReplicaDAO;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionTransferDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TrxCountByDay;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionId;
@@ -43,6 +44,9 @@ public class WinningTransactionServiceImplTest {
 
     @MockBean
     private WinningTransactionDAO winningTransactionDAOMock;
+
+    @MockBean
+    private WinningTransactionTransferDAO winningTransactionTransferDAOMock;
 
     @MockBean
     private WinningTransactionReplicaDAO winningTransactionReplicaDAOMock;
@@ -184,6 +188,7 @@ public class WinningTransactionServiceImplTest {
         final String fiscalCode = "fiscalCode";
         winningTransactionService.deleteByFiscalCode(fiscalCode);
         verify(winningTransactionDAOMock, times(1)).deactivateCitizenTransactions(eq(fiscalCode), any());
+        verify(winningTransactionTransferDAOMock, times(1)).deleteByFiscalCode(eq(fiscalCode));
     }
 
 
