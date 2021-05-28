@@ -94,7 +94,7 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
             logger.debug("BpdWinningTransactionControllerImpl.findWinningTransactions");
             logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
-        Pageable pageable = PageRequest.of(currentPage, size, Sort.by(Sort.Order.desc("trxDate")));
+        Pageable pageable = PageRequest.of(currentPage, size, Sort.by(Sort.Order.desc("trxDate"),Sort.Order.desc("insertDate")));
 
         Page<WinningTransactionMilestone> winningTransactionsMilestonePage = winningTransactionService
                 .getWinningTransactionsMilestonePage(hpan, awardPeriodId, fiscalCode, pageable);

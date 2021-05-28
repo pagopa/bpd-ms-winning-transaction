@@ -5,6 +5,7 @@ import it.gov.pagopa.bpd.winning_transaction.resource.resource.WinningTransactio
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 
@@ -18,6 +19,12 @@ public class WinningTransactionMilestoneResourceAssembler {
         if (model != null) {
             resource = WinningTransactionMilestoneResource.builder().build();
             BeanUtils.copyProperties(model, resource);
+
+            if("01".equals(model.getOperationType())
+                    && model.getAmount()!=null
+                    && model.getAmount().compareTo(new BigDecimal(0L))>0){
+                resource.setAmount(model.getAmount().negate());
+            }
 
             StringBuilder idTrxBuilder = new StringBuilder();
             idTrxBuilder.append(model.getIdTrxAcquirer())
