@@ -33,7 +33,7 @@ variables:
 
   isToDeploy: $[and(ne(variables['Build.Reason'], 'PullRequest'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release')))]
   isSIT: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/release/st')]
-  isUAT: $[or(startsWith(variables['Build.SourceBranch'], 'refs/heads/release/uat'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix'))]
+  isUAT: $[startsWith(variables['Build.SourceBranch'], 'refs/heads/release/uat')]
   isPROD: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
 
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/release/st') }}:
@@ -41,7 +41,7 @@ variables:
     containerRegistry: 'cstarregistry.azurecr.io'
     deployment: deployment-sit
     imagePullSecret: 'cstarregistry-auth'
-  ${{ if or(startsWith(variables['Build.SourceBranch'], 'refs/heads/release/uat'), startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix')) }}:
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/release/uat') }}:
     dockerRegistryServiceConnection: 'cstaruatregistry-connection'
     containerRegistry: 'cstaruatregistry.azurecr.io'
     deployment: deployment-uat
