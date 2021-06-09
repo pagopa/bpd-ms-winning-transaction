@@ -36,6 +36,7 @@ logging:
     it.gov.pagopa.bpd.winning_transaction: ${LOG_LEVEL_BPD_WINNING_TRANSACTION:DEBUG}
     com.zaxxer.hikari.HikariConfig: ${LOG_LEVEL_BPD_WINNING_TRANSACTION_DATASOURCE_POOL_CONFIG:OFF}
     com.zaxxer.hikari.pool.HikariPool: ${LOG_LEVEL_BPD_WINNING_TRANSACTION_DATASOURCE_POOL_CONFIG:OFF}
+    org.hibernate: ${LOG_LEVEL_BPD_WINNING_TRANSACTION_HIBERNATE_CONFIG:INFO}
 
 
 
