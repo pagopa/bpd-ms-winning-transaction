@@ -28,6 +28,19 @@ public interface WinningTransactionDAO extends CrudJpaDAO<WinningTransaction, Wi
                                        @Param("updateDate") OffsetDateTime updateDate);
 
     @Modifying
+    @Query("update WinningTransaction wt " +
+            "set wt.enabled = false," +
+            "updateDate = :updateDate, " +
+            "updateUser = :fiscalCode " +
+            " where wt.fiscalCode = :fiscalCode " +
+            " and wt.enabled = true and" +
+            " wt.insertDate <= :checkDate and " +
+            " (wt.updateDate IS NULL OR wt.updateDate <= :checkDate)")
+    void deactivateCitizenTransactionsIfNotUpdated(@Param("fiscalCode") String fiscalCode,
+                                       @Param("checkDate") OffsetDateTime checkDate,
+                                       @Param("updateDate") OffsetDateTime updateDate);
+
+    @Modifying
     @Query("update WinningTransaction " +
             "set enabled = true," +
             "updateDate = :updateDate," +

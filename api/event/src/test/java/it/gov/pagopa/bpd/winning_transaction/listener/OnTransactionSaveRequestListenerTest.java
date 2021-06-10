@@ -6,6 +6,7 @@ import eu.sia.meda.eventlistener.BaseEventListenerTest;
 import it.gov.pagopa.bpd.winning_transaction.command.SaveTransactionCommand;
 import it.gov.pagopa.bpd.winning_transaction.command.model.Transaction;
 import it.gov.pagopa.bpd.winning_transaction.command.model.enums.OperationType;
+import it.gov.pagopa.bpd.winning_transaction.listener.factory.CitizenUpdateEventCommandModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.listener.factory.SaveTransactionCommandModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.service.TransactionErrorPublisherService;
 import org.junit.Assert;
@@ -26,6 +27,7 @@ import java.time.OffsetDateTime;
 @TestPropertySource(
         locations = "classpath:config/transactionRequestListener.properties",
         properties = {
+                "listener.OnTransactionSaveRequestListener.enableCitizenValidation=false",
                 "listeners.eventConfigurations.items.OnTransactionSaveRequestListener.bootstrapServers=${spring.embedded.kafka.brokers}"
         })
 public class OnTransactionSaveRequestListenerTest extends BaseEventListenerTest {
@@ -43,6 +45,9 @@ public class OnTransactionSaveRequestListenerTest extends BaseEventListenerTest 
     @SpyBean
     SaveTransactionCommandModelFactory saveTransactionCommandModelFactorySpy;
 
+    @SpyBean
+    CitizenUpdateEventCommandModelFactory citizenUpdateEventCommandModelFactorySpy;
+
     @MockBean
     BeanFactory beanFactoryMock;
 
@@ -59,6 +64,7 @@ public class OnTransactionSaveRequestListenerTest extends BaseEventListenerTest 
         Mockito.reset(
                 onTransactionProcessRequestListenerSpy,
                 saveTransactionCommandModelFactorySpy,
+                citizenUpdateEventCommandModelFactorySpy,
                 beanFactoryMock,
                 saveTransactionCommandMock,
                 transactionErrorPublisherServiceMock);

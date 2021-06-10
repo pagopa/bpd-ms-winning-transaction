@@ -6,6 +6,7 @@ import it.gov.pagopa.bpd.winning_transaction.command.model.Transaction;
 import it.gov.pagopa.bpd.winning_transaction.command.model.enums.OperationType;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.mapper.TransactionMapper;
+import it.gov.pagopa.bpd.winning_transaction.service.CitizenStatusDataService;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,6 +26,9 @@ public class SaveTransactionCommandImplTest extends BaseTest {
     @Mock
     WinningTransactionService winningTransactionService;
 
+    @Mock
+    CitizenStatusDataService citizenStatusUpdateService;
+
     @Spy
     TransactionMapper transactionMapperSpy;
 
@@ -33,7 +37,7 @@ public class SaveTransactionCommandImplTest extends BaseTest {
 
     @Before
     public void initTest() {
-        Mockito.reset(winningTransactionService, transactionMapperSpy);
+        Mockito.reset(winningTransactionService, citizenStatusUpdateService, transactionMapperSpy);
     }
 
     @Test
@@ -45,6 +49,7 @@ public class SaveTransactionCommandImplTest extends BaseTest {
         BDDMockito.doReturn(winningTransaction).when(winningTransactionService).create(Mockito.eq(winningTransaction));
         SaveTransactionCommandImpl saveTransactionCommand = new SaveTransactionCommandImpl(
                 SaveTransactionCommandModel.builder().payload(transaction).build(),
+                citizenStatusUpdateService,
                 winningTransactionService,
                 transactionMapperSpy);
         Boolean executed = saveTransactionCommand.doExecute();
@@ -62,6 +67,7 @@ public class SaveTransactionCommandImplTest extends BaseTest {
 
         SaveTransactionCommandImpl saveTransactionCommand = new SaveTransactionCommandImpl(
                 SaveTransactionCommandModel.builder().payload(getRequestModel()).build(),
+                citizenStatusUpdateService,
                 winningTransactionService,
                 transactionMapperSpy);
         exceptionRule.expect(AssertionError.class);
@@ -90,6 +96,7 @@ public class SaveTransactionCommandImplTest extends BaseTest {
                 .bin("000001")
                 .terminalId("0")
                 .fiscalCode("fiscalCode")
+                .valid(true)
                 .build();
     }
 
@@ -113,6 +120,7 @@ public class SaveTransactionCommandImplTest extends BaseTest {
                 .bin("000001")
                 .terminalId("0")
                 .fiscalCode("fiscalCode")
+                .valid(true)
                 .build();
     }
 

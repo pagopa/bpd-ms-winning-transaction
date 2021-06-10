@@ -3,11 +3,14 @@ package it.gov.pagopa.bpd.winning_transaction.command;
 import eu.sia.meda.core.command.BaseCommand;
 import it.gov.pagopa.bpd.winning_transaction.command.model.SaveTransactionCommandModel;
 import it.gov.pagopa.bpd.winning_transaction.command.model.Transaction;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.CitizenStatusData;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.mapper.TransactionMapper;
+import it.gov.pagopa.bpd.winning_transaction.service.CitizenStatusDataService;
 import it.gov.pagopa.bpd.winning_transaction.service.WinningTransactionService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.header.Header;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -16,8 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.validation.*;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -37,7 +39,8 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
     private final SaveTransactionCommandModel saveTransactionCommandModel;
     private TransactionMapper transactionMapper;
     private WinningTransactionService winningTransactionService;
-    private LocalDate processDateTime;
+    private CitizenStatusDataService statusDataService;
+    private final LocalDate processDateTime;
 
     public SaveTransactionCommandImpl(SaveTransactionCommandModel saveTransactionCommandModel) {
         this.saveTransactionCommandModel = saveTransactionCommandModel;
@@ -45,9 +48,11 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
     }
 
     public SaveTransactionCommandImpl(SaveTransactionCommandModel saveTransactionCommandModel,
+                                      CitizenStatusDataService citizenStatusDataService,
                                       WinningTransactionService winningTransactionService,
                                       TransactionMapper transactionMapper) {
         this.saveTransactionCommandModel = saveTransactionCommandModel;
+        this.statusDataService = citizenStatusDataService;
         this.processDateTime = LocalDate.now();
         this.winningTransactionService = winningTransactionService;
         this.transactionMapper = transactionMapper;
@@ -65,6 +70,31 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
             validateRequest(transaction);
 
             WinningTransaction winningTransaction = transactionMapper.map(transaction);
+
+            Header validationTimeHeader = saveTransactionCommandModel.getHeaders() != null ?
+                    saveTransactionCommandModel.getHeaders().lastHeader("CITIZEN_VALIDATION_DATETIME") : null;
+
+            if (validationTimeHeader != null && validationTimeHeader.value() != null) {
+                log.debug("Attempting to find citizen status data");
+                OffsetDateTime validationDateTime = OffsetDateTime.parse(
+                        new String(validationTimeHeader.value()));
+                Optional<CitizenStatusData> citizenStatusDataOptional = statusDataService
+                        .findCitizenStatusData(transaction.getFiscalCode());
+                if (citizenStatusDataOptional.isPresent() &&
+                        !citizenStatusDataOptional.get().isEnabled() &&
+                        citizenStatusDataOptional.get().getUpdateDateTime()
+                                .compareTo(validationDateTime) >= 0) {
+                    winningTransaction.setEnabled(false);
+                }
+            }
+
+            if (winningTransaction.getValid() == null) {
+                winningTransactionService.create(winningTransaction);
+
+                return true;
+            } else if (!winningTransaction.getValid() && !winningTransaction.getOperationType().equals("01")) {
+                winningTransaction.setElabRanking(true);
+            }
 
             winningTransactionService.create(winningTransaction);
 
@@ -111,6 +141,11 @@ class SaveTransactionCommandImpl extends BaseCommand<Boolean> implements SaveTra
     @Autowired
     public void setWinningTransactionService(WinningTransactionService winningTransactionService) {
         this.winningTransactionService = winningTransactionService;
+    }
+
+    @Autowired
+    public void setCitizenStatusDataService(CitizenStatusDataService citizenStatusDataService) {
+        this.statusDataService = citizenStatusDataService;
     }
 
 }
