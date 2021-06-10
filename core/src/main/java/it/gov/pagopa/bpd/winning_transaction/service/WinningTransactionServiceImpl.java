@@ -2,6 +2,7 @@ package it.gov.pagopa.bpd.winning_transaction.service;
 
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionReplicaDAO;
+import it.gov.pagopa.bpd.winning_transaction.connector.jpa.WinningTransactionTransferDAO;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.TrxCountByDay;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransactionMilestone;
@@ -13,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -27,13 +29,16 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
 
     private final WinningTransactionDAO winningTransactionDAO;
     private final WinningTransactionReplicaDAO winningTransactionReplicaDAO;
+    private final WinningTransactionTransferDAO winningTransactionTransferDAO;
 
     @Autowired
     public WinningTransactionServiceImpl(
             ObjectProvider<WinningTransactionDAO> winningTransactionDAO,
-            ObjectProvider<WinningTransactionReplicaDAO> winningTransactionReplicaDAO) {
+            ObjectProvider<WinningTransactionReplicaDAO> winningTransactionReplicaDAO,
+            ObjectProvider<WinningTransactionTransferDAO> winningTransactionTransferDAO) {
         this.winningTransactionDAO = winningTransactionDAO.getIfAvailable();
         this.winningTransactionReplicaDAO = winningTransactionReplicaDAO.getIfAvailable();
+        this.winningTransactionTransferDAO = winningTransactionTransferDAO.getIfAvailable();
     }
 
     @Override
@@ -58,7 +63,7 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
         }
 
         List<WinningTransaction> winningTransactions = new ArrayList<>();
-        winningTransactions = hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsByHpan(fiscalCode,awardPeriodId,hpan)
+        winningTransactions = hpan != null ? winningTransactionReplicaDAO.findCitizenTransactionsByHpan(fiscalCode, awardPeriodId, hpan)
                 : winningTransactionReplicaDAO.findCitizenTransactions(fiscalCode, awardPeriodId);
 
         return winningTransactions;
@@ -69,10 +74,10 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
         if (log.isDebugEnabled()) {
             log.debug("WinningTransactionServiceImpl.getWinningTransactionsMilestonePage");
             log.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]," +
-                    " fiscalCode = [" + fiscalCode + "], page = [" + pageable.getPageNumber()+ "], size = [" + pageable.getPageSize() + "]");
+                    " fiscalCode = [" + fiscalCode + "], page = [" + pageable.getPageNumber() + "], size = [" + pageable.getPageSize() + "]");
         }
 
-        return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsMilestoneByHpanPage(fiscalCode,awardPeriodId,hpan, pageable)
+        return hpan != null ? winningTransactionReplicaDAO.findCitizenTransactionsMilestoneByHpanPage(fiscalCode, awardPeriodId, hpan, pageable)
                 : winningTransactionReplicaDAO.findCitizenTransactionsMilestonePage(fiscalCode, awardPeriodId, pageable);
     }
 
@@ -81,17 +86,19 @@ public class WinningTransactionServiceImpl implements WinningTransactionService 
         if (log.isDebugEnabled()) {
             log.debug("WinningTransactionServiceImpl.getWinningTransactionByDateCount");
         }
-        return hpan != null? winningTransactionReplicaDAO.findCitizenTransactionsByDateCountHpan(fiscalCode, awardPeriodId, hpan)
+        return hpan != null ? winningTransactionReplicaDAO.findCitizenTransactionsByDateCountHpan(fiscalCode, awardPeriodId, hpan)
                 : winningTransactionReplicaDAO.findCitizenTransactionsByDateCount(fiscalCode, awardPeriodId);
     }
 
     @Override
+    @Transactional("transactionManagerPrimary")
     public void deleteByFiscalCode(String fiscalCode) {
         if (log.isDebugEnabled()) {
             log.debug("WinningTransactionServiceImpl.deleteByFiscalCode");
             log.debug("fiscalCode = [" + fiscalCode + "]");
         }
         winningTransactionDAO.deactivateCitizenTransactions(fiscalCode, OffsetDateTime.now());
+        winningTransactionTransferDAO.deleteByFiscalCode(fiscalCode);
     }
 
     @Override

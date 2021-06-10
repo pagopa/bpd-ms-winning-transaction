@@ -355,7 +355,7 @@ public class BpdWinningTransactionControllerImplTest {
         String fiscalCode = "DSULTN82H03H904Q";
         String hpan = "hpan";
         Long awardPeriodId = 0L;
-        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.desc("trxDate")));
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Order.desc("trxDate"),Sort.Order.desc("insertDate")));
         String idTrxExpected = "idTrxAcquirer" + "2020-04-09T16:22:45.304Z" + "acquirerCode" + "acquirerId" + "operationType";
 
         BDDMockito.doReturn(new PageImpl<>(Collections.singletonList(newTransactionMilestone)))

@@ -69,7 +69,7 @@ public interface BpdWinningTransactionController {
             @Valid @NotBlank @Size(min = 16, max = 16) @Pattern(regexp = Constants.FISCAL_CODE_REGEX)
                     String fiscalCode,
             @ApiParam(value = "${swagger.winningTransaction.nextCursor}")
-            @RequestParam(name = "nextCursor")
+            @RequestParam(name = "nextCursor", defaultValue = "0")
                     Integer page,
             @ApiParam(value = "${swagger.winningTransaction.limit}")
             @RequestParam(name = "limit", defaultValue = "20")

@@ -5,6 +5,8 @@ import it.gov.pagopa.bpd.winning_transaction.resource.resource.FindWinningTransa
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 /**
  * Mapper between <WinningTransaction> Entity class and <FindWinningTransactionResource> Resource class
  */
@@ -19,6 +21,12 @@ public class FindWinningTransactionResourceAssembler {
             BeanUtils.copyProperties(model, resource, "operationType");
             resource.setCashback(model.getScore());
             resource.setHashPan(model.getHpan());
+
+            if("01".equals(model.getOperationType())
+                    && model.getAmount()!=null
+                    && model.getAmount().compareTo(new BigDecimal(0L))>0){
+                resource.setAmount(model.getAmount().negate());
+            }
         }
 
         return resource;
