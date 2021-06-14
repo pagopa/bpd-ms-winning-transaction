@@ -24,5 +24,7 @@ public interface WinningTransactionService {
 
     void deleteByFiscalCode(String fiscalCode);
 
+    void deleteByFiscalCodeIfNotUpdated(String fiscalCode, OffsetDateTime updateTime);
+
     void reactivateForRollback(String fiscalCode, OffsetDateTime requestTimestamp);
 }
