@@ -27,6 +27,11 @@ public class WinningTransactionMilestoneResourceAssembler {
                         .append(model.getOperationType());
 
             resource.setIdTrx(idTrxBuilder.toString());
+
+            if(model.getHpanMaster()!=null
+                    && !model.getHashPan().equals(model.getHpanMaster())){
+                resource.setHashPan(model.getHpanMaster());
+            }
         }
 
         return resource;

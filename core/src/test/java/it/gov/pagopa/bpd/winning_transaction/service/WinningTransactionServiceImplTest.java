@@ -94,6 +94,7 @@ public class WinningTransactionServiceImplTest {
         Mockito.when(newTransactionMilestone.getAcquirerCode()).thenReturn("acquirerCode");
         Mockito.when(newTransactionMilestone.getAcquirerId()).thenReturn("acquirerId");
         Mockito.when(newTransactionMilestone.getOperationType()).thenReturn("operationType");
+        Mockito.when(newTransactionMilestone.getHpanMaster()).thenReturn("hpanMaster");
 
         Mockito.when(newTrxCountByDay.getCount()).thenReturn(1L);
         Mockito.when(newTrxCountByDay.getTrxDate()).thenReturn(Timestamp.valueOf(offsetDateTime.toLocalDateTime()));
