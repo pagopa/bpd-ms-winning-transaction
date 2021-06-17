@@ -47,7 +47,8 @@ public interface WinningTransactionReplicaDAO extends CrudJpaDAO<WinningTransact
                         "amount as amount, " +
                         "score as cashback, " +
                         "awardPeriodId as awardPeriodId, " +
-                        "idTrxIssuer as idTrxIssuer " +
+                        "idTrxIssuer as idTrxIssuer, " +
+                        "hpanMaster as hpanMaster " +
                     "FROM WinningTransaction w " +
                     "WHERE fiscalCode = :fiscalCode " +
                     "AND awardPeriodId = :awardPeriodId " +
@@ -68,7 +69,8 @@ public interface WinningTransactionReplicaDAO extends CrudJpaDAO<WinningTransact
                         "amount as amount, " +
                         "score as cashback, " +
                         "awardPeriodId as awardPeriodId, " +
-                        "idTrxIssuer as idTrxIssuer " +
+                        "idTrxIssuer as idTrxIssuer, " +
+                        "hpanMaster as hpanMaster " +
                     "FROM WinningTransaction w " +
                     "WHERE fiscalCode = :fiscalCode " +
                     "AND awardPeriodId = :awardPeriodId " +

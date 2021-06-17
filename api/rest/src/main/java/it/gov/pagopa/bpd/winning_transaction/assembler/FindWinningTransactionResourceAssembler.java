@@ -27,6 +27,13 @@ public class FindWinningTransactionResourceAssembler {
                     && model.getAmount().compareTo(new BigDecimal(0L))>0){
                 resource.setAmount(model.getAmount().negate());
             }
+
+            if(model.getHpanMaster()!=null
+                    && !model.getHpan().equals(model.getHpanMaster())){
+                resource.setHashPan(model.getHpanMaster());
+            }else{
+                resource.setHashPan(model.getHpan());
+            }
         }
 
         return resource;

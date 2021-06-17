@@ -88,4 +88,8 @@ public class Transaction {
     @NotBlank
     String fiscalCode;
 
+    String par;
+
+    String hpanMaster;
+
 }
