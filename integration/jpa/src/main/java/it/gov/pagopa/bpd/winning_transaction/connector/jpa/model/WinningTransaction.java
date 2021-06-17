@@ -98,6 +98,9 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @Column(name = "par_s")
     String par;
 
+    @Column(name = "hpan_master_s")
+    String hpanMaster;
+
     @Override
     public WinningTransactionId getId() {
         return WinningTransactionId

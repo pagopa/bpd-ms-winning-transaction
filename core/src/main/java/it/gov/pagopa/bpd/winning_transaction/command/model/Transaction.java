@@ -90,4 +90,6 @@ public class Transaction {
 
     String par;
 
+    String hpanMaster;
+
 }

@@ -26,6 +26,11 @@ public class WinningTransactionResourceAssembler {
             resource.setMcc(model.getMcc());
             resource.setScore(model.getScore());
             resource.setTrxDate(model.getTrxDate());
+
+            if(model.getHpanMaster()!=null
+                    && !model.getHpan().equals(model.getHpanMaster())){
+                resource.setHashPan(model.getHpanMaster());
+            }
         }
 
         return resource;
