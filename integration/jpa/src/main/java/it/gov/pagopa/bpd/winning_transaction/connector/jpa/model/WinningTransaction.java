@@ -95,6 +95,9 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @Column(name="elab_ranking_b", insertable = false, updatable = false, columnDefinition = "boolean default false")
     boolean elabRanking;
 
+    @Column(name = "hpan_master_s")
+    String hpanMaster;
+
     @Override
     public WinningTransactionId getId() {
         return WinningTransactionId

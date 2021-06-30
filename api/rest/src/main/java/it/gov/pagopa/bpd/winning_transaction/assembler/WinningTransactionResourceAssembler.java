@@ -19,6 +19,11 @@ public class WinningTransactionResourceAssembler {
             resource = WinningTransactionResource.builder().build();
             BeanUtils.copyProperties(model, resource, "operationType");
             resource.setOperationType(OperationType.getFromCode(model.getOperationType()));
+
+            if(model.getHpanMaster()!=null
+                    && !model.getHpan().equals(model.getHpanMaster())){
+                resource.setHashPan(model.getHpanMaster());
+            }
         }
 
         return resource;
