@@ -63,16 +63,9 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
             logger.debug("BpdWinningTransactionControllerImpl.createWinningTransaction");
             logger.debug("dto = [" + dto + "]");
         }
-        try {
-            WinningTransaction winningTransaction = winningTransactionFactory.createModel(dto);
-            winningTransaction = winningTransactionService.create(winningTransaction);
-            return winningTransactionResourceAssembler.toResource(winningTransaction);
-        } catch (EntityExistsException e) {
-            if (logger.isErrorEnabled()) {
-                logger.error(e.getMessage(), e);
-            }
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
+        WinningTransaction winningTransaction = winningTransactionFactory.createModel(dto);
+        winningTransaction = winningTransactionService.create(winningTransaction);
+        return winningTransactionResourceAssembler.toResource(winningTransaction);
     }
 
     @Override
@@ -94,7 +87,7 @@ class BpdWinningTransactionControllerImpl extends StatelessController implements
             logger.debug("BpdWinningTransactionControllerImpl.findWinningTransactions");
             logger.debug("hpan = [" + hpan + "], awardPeriodId = [" + awardPeriodId + "]");
         }
-        Pageable pageable = PageRequest.of(currentPage, size, Sort.by(Sort.Order.desc("trxDate"),Sort.Order.desc("insertDate")));
+        Pageable pageable = PageRequest.of(currentPage, size, Sort.by(Sort.Order.desc("trxDate"), Sort.Order.desc("insertDate")));
 
         Page<WinningTransactionMilestone> winningTransactionsMilestonePage = winningTransactionService
                 .getWinningTransactionsMilestonePage(hpan, awardPeriodId, fiscalCode, pageable);

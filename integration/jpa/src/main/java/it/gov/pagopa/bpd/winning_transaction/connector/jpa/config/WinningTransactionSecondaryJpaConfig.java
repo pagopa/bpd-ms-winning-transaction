@@ -70,8 +70,12 @@ public class WinningTransactionSecondaryJpaConfig {
             ObjectProvider<EntityManagerFactoryBuilderCustomizer> customizers) {
         AbstractJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
         adapter.setShowSql(properties.isShowSql());
-        adapter.setDatabase(properties.determineDatabase(dataSource));
-        adapter.setDatabasePlatform(properties.getDatabasePlatform());
+        if (properties.getDatabase() != null) {
+            adapter.setDatabase(properties.getDatabase());
+        }
+        if (properties.getDatabasePlatform() != null) {
+            adapter.setDatabasePlatform(properties.getDatabasePlatform());
+        }
         adapter.setGenerateDdl(properties.isGenerateDdl());
 
         EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilder(
