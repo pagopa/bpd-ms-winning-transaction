@@ -26,9 +26,6 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @Transient
     private boolean isNew = true;
 
-    @Transient
-    private boolean updatable = false;
-
     @Id
     @Column(name = "id_trx_acquirer_s")
     String idTrxAcquirer;
@@ -42,7 +39,7 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     OffsetDateTime trxDate;
 
-    @Column(name="hpan_s")
+    @Column(name = "hpan_s")
     String hpan;
 
     @Id
@@ -52,47 +49,47 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
     @Column(name = "circuit_type_c")
     String circuitType;
 
-    @Column(name="id_trx_issuer_s")
+    @Column(name = "id_trx_issuer_s")
     String idTrxIssuer;
 
-    @Column(name="correlation_id_s")
+    @Column(name = "correlation_id_s")
     String correlationId;
 
-    @Column(name="amount_i")
+    @Column(name = "amount_i")
     BigDecimal amount;
 
-    @Column(name="amount_currency_c")
+    @Column(name = "amount_currency_c")
     String amountCurrency;
 
-    @Column(name="mcc_c")
+    @Column(name = "mcc_c")
     String mcc;
 
-    @Column(name="mcc_descr_s")
+    @Column(name = "mcc_descr_s")
     String mccDescription;
 
     @Column(name = "score_n")
     BigDecimal score;
 
-    @Column(name="award_period_id_n")
+    @Column(name = "award_period_id_n")
     Long awardPeriodId;
 
     @Id
-    @Column(name="acquirer_id_s")
+    @Column(name = "acquirer_id_s")
     String acquirerId;
 
-    @Column(name="merchant_id_s")
+    @Column(name = "merchant_id_s")
     String merchantId;
 
-    @Column(name="bin_s")
+    @Column(name = "bin_s")
     String bin;
 
-    @Column(name="terminal_id_s")
+    @Column(name = "terminal_id_s")
     String terminalId;
 
-    @Column(name="fiscal_code_s")
+    @Column(name = "fiscal_code_s")
     String fiscalCode;
 
-    @Column(name="elab_ranking_b", insertable = false, updatable = false, columnDefinition = "boolean default false")
+    @Column(name = "elab_ranking_b", insertable = false, updatable = false, columnDefinition = "boolean default false")
     boolean elabRanking;
 
     @Override
@@ -109,11 +106,7 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
 
     @Override
     public boolean isNew() {
-        if (!updatable) {
-            return true;
-        } else {
-            return isNew;
-        }
+        return isNew;
     }
 
     @PrePersist
@@ -122,8 +115,5 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
         this.isNew = false;
     }
 
-    public void setUpdatable(boolean updatable) {
-        this.updatable = updatable;
-    }
 }
 
