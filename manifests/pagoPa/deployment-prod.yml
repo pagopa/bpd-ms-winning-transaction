@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bpdmswinningtransaction
+spec:
+  replicas: 12
+  selector:
+    matchLabels:
+      app: bpdmswinningtransaction
+  template:
+    metadata:
+      labels:
+        app: bpdmswinningtransaction
+      annotations:
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: '8080'
+        prometheus.io/scrape: 'true'
+    spec:
+      containers:
+        - name: bpdmswinningtransaction
+          image: cstaruacr.azurecr.io/bpdmswinningtransaction
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: postgres-credentials
+            - secretRef:
+                name: application-insights
+            - secretRef:
+                name: bpdmswinningtransaction
+            - configMapRef:
+                name: eventhub-logging
+            - configMapRef:
+                name: eventhub-common
+            - configMapRef:
+                name: bpdmswinningtransaction
+            - configMapRef:
+                name: jvm
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 20
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 30
+          imagePullPolicy: Always
