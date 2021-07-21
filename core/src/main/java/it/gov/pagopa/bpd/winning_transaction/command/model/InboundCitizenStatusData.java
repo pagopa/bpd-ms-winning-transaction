@@ -32,6 +32,10 @@ public class InboundCitizenStatusData {
     Boolean enabled;
 
     @NotNull
+    @NotBlank
+    String applyTo;
+
+    @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     OffsetDateTime updateDateTime;
 

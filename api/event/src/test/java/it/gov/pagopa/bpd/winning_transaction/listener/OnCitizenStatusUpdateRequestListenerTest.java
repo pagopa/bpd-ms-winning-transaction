@@ -8,6 +8,8 @@ import it.gov.pagopa.bpd.winning_transaction.command.model.InboundCitizenStatusD
 import it.gov.pagopa.bpd.winning_transaction.command.model.Transaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.CitizenStatusData;
 import it.gov.pagopa.bpd.winning_transaction.listener.factory.CitizenUpdateEventCommandModelFactory;
+import it.gov.pagopa.bpd.winning_transaction.listener.factory.CitizenUpdateEventErrorPayloadModelFactory;
+import it.gov.pagopa.bpd.winning_transaction.service.CitizenStatusErrorPublisherService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.BDDMockito;
@@ -42,6 +44,12 @@ public class OnCitizenStatusUpdateRequestListenerTest extends BaseEventListenerT
     @SpyBean
     CitizenUpdateEventCommandModelFactory citizenUpdateEventCommandModelFactorySpy;
 
+    @SpyBean
+    CitizenUpdateEventErrorPayloadModelFactory citizenUpdateEventErrorPayloadModelFactory;
+
+    @MockBean
+    CitizenStatusErrorPublisherService citizenStatusErrorPublisherServiceMock;
+
     @MockBean
     BeanFactory beanFactoryMock;
 
@@ -54,6 +62,8 @@ public class OnCitizenStatusUpdateRequestListenerTest extends BaseEventListenerT
         Mockito.reset(
                 onCitizenStatusUpdateRequestListenerSpy,
                 citizenUpdateEventCommandModelFactorySpy,
+                citizenStatusErrorPublisherServiceMock,
+                citizenUpdateEventErrorPayloadModelFactory,
                 beanFactoryMock,
                 processCitizenUpdateEventCommand);
         Mockito.doReturn(true).when(processCitizenUpdateEventCommand).execute();
@@ -62,9 +72,10 @@ public class OnCitizenStatusUpdateRequestListenerTest extends BaseEventListenerT
 
     @Override
     protected Object getRequestObject() {
-          CitizenStatusData citizenStatusData = CitizenStatusData.builder()
+          InboundCitizenStatusData citizenStatusData = InboundCitizenStatusData.builder()
                     .fiscalCode("fiscalCode")
                     .updateDateTime(OffsetDateTime.parse("2020-04-09T16:22:45.304Z"))
+                    .applyTo("all")
                     .build();
           citizenStatusData.setEnabled(false);
           return citizenStatusData;

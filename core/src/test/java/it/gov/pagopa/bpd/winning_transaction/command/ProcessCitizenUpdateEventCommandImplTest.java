@@ -102,6 +102,7 @@ public class ProcessCitizenUpdateEventCommandImplTest extends BaseTest {
                 .updateDateTime(OffsetDateTime.parse("2020-04-10T16:22:45.304Z"))
                 .enabled(false)
                 .fiscalCode("fiscalCode")
+                .applyTo("all")
                 .build();
     }
 
