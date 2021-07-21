@@ -59,4 +59,5 @@ public class CitizenStatusDataServiceImpl implements CitizenStatusDataService {
     public Optional<CitizenStatusData> findCitizenStatusData(String fiscalCode) {
         return citizenStatusDataDAO.findById(fiscalCode);
     }
+
 }

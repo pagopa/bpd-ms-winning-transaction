@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.*;
 import java.time.LocalDate;
@@ -57,6 +59,8 @@ public class ProcessCitizenUpdateEventCommandImpl extends BaseCommand<Boolean> i
 
     @SneakyThrows
     @Override
+    @Transactional(transactionManager = "transactionManagerPrimary",
+            propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Boolean doExecute() {
 
         InboundCitizenStatusData inboundCitizenStatusData = processCitizenUpdateEventCommandModel.getPayload();
