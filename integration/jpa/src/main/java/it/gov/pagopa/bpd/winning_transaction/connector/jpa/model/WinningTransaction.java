@@ -24,6 +24,7 @@ import java.time.OffsetDateTime;
 public class WinningTransaction extends BaseEntity implements Serializable, Persistable<WinningTransactionId> {
 
     @Transient
+    @Builder.Default
     private boolean isNew = true;
 
     @Id
