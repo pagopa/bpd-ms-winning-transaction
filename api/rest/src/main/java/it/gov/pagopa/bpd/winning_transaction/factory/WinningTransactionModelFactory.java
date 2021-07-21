@@ -14,7 +14,7 @@ public class WinningTransactionModelFactory implements ModelFactory<WinningTrans
     @SneakyThrows
     @Override
     public WinningTransaction createModel(WinningTransactionDTO dto) {
-        WinningTransaction winningTransaction = WinningTransaction.builder().build();
+        WinningTransaction winningTransaction = new WinningTransaction();
         winningTransaction.setAcquirerId(dto.getAcquirerId());
         winningTransaction.setAcquirerCode(dto.getAcquirerCode());
         winningTransaction.setAmount(dto.getAmount());
