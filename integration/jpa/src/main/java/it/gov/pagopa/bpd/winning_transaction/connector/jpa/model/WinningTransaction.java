@@ -25,6 +25,8 @@ public class WinningTransaction extends BaseEntity implements Serializable, Pers
 
     @Transient
     @Builder.Default
+    @Getter(value = AccessLevel.NONE)
+    @Setter(value = AccessLevel.NONE)
     private boolean isNew = true;
 
     @Id
