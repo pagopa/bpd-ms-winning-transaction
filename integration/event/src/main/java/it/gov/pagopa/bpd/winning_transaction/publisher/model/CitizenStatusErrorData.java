@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 
 
 /**
- * Resource model for the data published through {@link it.gov.pagopa.bpd.winning_transaction.publisher.model.CitizenStatusErrorData}
+ * Resource model for the data published through {@link it.gov.pagopa.bpd.winning_transaction.publisher.CitizenStatusErrorPublisherConnector}
  */
 
 
@@ -20,8 +20,6 @@ public class CitizenStatusErrorData {
     String fiscalCode;
 
     Boolean enabled;
-
-    String applyTo;
 
     OffsetDateTime updateDateTime;
 
