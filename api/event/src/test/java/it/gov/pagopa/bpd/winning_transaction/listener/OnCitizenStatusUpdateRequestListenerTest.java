@@ -5,8 +5,6 @@ import eu.sia.meda.event.service.ErrorPublisherService;
 import eu.sia.meda.eventlistener.BaseEventListenerTest;
 import it.gov.pagopa.bpd.winning_transaction.command.ProcessCitizenUpdateEventCommand;
 import it.gov.pagopa.bpd.winning_transaction.command.model.InboundCitizenStatusData;
-import it.gov.pagopa.bpd.winning_transaction.command.model.Transaction;
-import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.CitizenStatusData;
 import it.gov.pagopa.bpd.winning_transaction.listener.factory.CitizenUpdateEventCommandModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.listener.factory.CitizenUpdateEventErrorPayloadModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.service.CitizenStatusErrorPublisherService;
@@ -22,6 +20,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 
 import java.time.OffsetDateTime;
+
+import static it.gov.pagopa.bpd.winning_transaction.listener.constants.CitizenStatusEventConstants.ALL_ORIGIN;
 
 @Import({OnCitizenStatusUpdateRequestListener.class})
 @TestPropertySource(
@@ -75,7 +75,7 @@ public class OnCitizenStatusUpdateRequestListenerTest extends BaseEventListenerT
           InboundCitizenStatusData citizenStatusData = InboundCitizenStatusData.builder()
                     .fiscalCode("fiscalCode")
                     .updateDateTime(OffsetDateTime.parse("2020-04-09T16:22:45.304Z"))
-                    .applyTo("all")
+                    .applyTo(ALL_ORIGIN)
                     .build();
           citizenStatusData.setEnabled(false);
           return citizenStatusData;

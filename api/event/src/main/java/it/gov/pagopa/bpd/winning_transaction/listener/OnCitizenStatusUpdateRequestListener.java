@@ -8,18 +8,18 @@ import it.gov.pagopa.bpd.winning_transaction.command.model.ProcessCitizenUpdateE
 import it.gov.pagopa.bpd.winning_transaction.listener.factory.ModelFactory;
 import it.gov.pagopa.bpd.winning_transaction.publisher.model.CitizenStatusErrorData;
 import it.gov.pagopa.bpd.winning_transaction.service.CitizenStatusErrorPublisherService;
-import it.gov.pagopa.bpd.winning_transaction.service.TransactionErrorPublisherService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.Headers;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+
+import static it.gov.pagopa.bpd.winning_transaction.listener.constants.CitizenStatusEventConstants.ALL_ORIGIN;
+import static it.gov.pagopa.bpd.winning_transaction.listener.constants.CitizenStatusEventConstants.WINNING_TRANSACTION_ORIGIN;
 
 /**
  * Class Extending the {@link BaseEventListener}, manages the inbound requests, and calls on the appropriate
@@ -74,8 +74,8 @@ public class OnCitizenStatusUpdateRequestListener extends BaseConsumerAwareEvent
             ProcessCitizenUpdateEventCommand command = beanFactory.getBean(
                     ProcessCitizenUpdateEventCommand.class, processCitizenUpdateEventCommandModel);
 
-            if (!processCitizenUpdateEventCommandModel.getPayload().getApplyTo().equals("all") &&
-                !processCitizenUpdateEventCommandModel.getPayload().getApplyTo().equals("winning_transaction")) {
+            if (!processCitizenUpdateEventCommandModel.getPayload().getApplyTo().equals(ALL_ORIGIN) &&
+                !processCitizenUpdateEventCommandModel.getPayload().getApplyTo().equals(WINNING_TRANSACTION_ORIGIN)) {
                 logger.debug("Processed request refers to an update event not to be applied in bpd_winning_transaction");
                 return;
             }
@@ -115,7 +115,7 @@ public class OnCitizenStatusUpdateRequestListener extends BaseConsumerAwareEvent
                                         .updateDateTime(inboundCitizenStatusData.getUpdateDateTime())
                                         .enabled(inboundCitizenStatusData.getEnabled())
                                         .exceptionMessage(error)
-                                        .origin("bpd_winning_transaction")
+                                        .origin(WINNING_TRANSACTION_ORIGIN)
                                         .build()), headers, error)) {
                     log.error("Could not publish transaction processing error");
                     throw e;
