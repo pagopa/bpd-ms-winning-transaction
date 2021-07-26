@@ -4,7 +4,6 @@ import it.gov.pagopa.bpd.winning_transaction.command.model.InboundCitizenStatusD
 import it.gov.pagopa.bpd.winning_transaction.command.model.Transaction;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.CitizenStatusData;
 import it.gov.pagopa.bpd.winning_transaction.connector.jpa.model.WinningTransaction;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,7 +24,9 @@ public class CitizenStatusDataMapper {
 
         if (inboundCitizenStatusData != null) {
             citizenStatusData = CitizenStatusData.builder().build();
-            BeanUtils.copyProperties(inboundCitizenStatusData, citizenStatusData);
+            citizenStatusData.setEnabled(inboundCitizenStatusData.getEnabled());
+            citizenStatusData.setFiscalCode(inboundCitizenStatusData.getFiscalCode());
+            citizenStatusData.setUpdateDateTime(inboundCitizenStatusData.getUpdateDateTime());
         }
 
         return citizenStatusData;
