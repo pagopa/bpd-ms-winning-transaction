@@ -304,4 +304,13 @@ public class WinningTransactionServiceImplTest {
                         Mockito.eq(hpan));
     }
 
+    @Test
+    public void deleteByFiscalCodeIfNotUpdated() {
+        final String fiscalCode = "fiscalCode";
+        winningTransactionService.deleteByFiscalCodeIfNotUpdated(fiscalCode, OffsetDateTime.now());
+        verify(winningTransactionDAOMock, times(1))
+                .deactivateCitizenTransactionsIfNotUpdated(eq(fiscalCode), any(), any());
+    }
+
+
 }
