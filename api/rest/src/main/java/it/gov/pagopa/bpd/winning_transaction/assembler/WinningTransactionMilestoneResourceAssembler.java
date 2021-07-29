@@ -18,7 +18,14 @@ public class WinningTransactionMilestoneResourceAssembler {
 
         if (model != null) {
             resource = WinningTransactionMilestoneResource.builder().build();
-            BeanUtils.copyProperties(model, resource);
+            resource.setAwardPeriodId(model.getAwardPeriodId());
+            resource.setCashback(model.getCashback());
+            resource.setCircuitType(model.getCircuitType());
+            resource.setHashPan(model.getHashPan());
+            resource.setIdTrxAcquirer(model.getIdTrxAcquirer());
+            resource.setIdTrxIssuer(model.getIdTrxIssuer());
+            resource.setTrxDate(model.getTrxDate());
+            resource.setAmount(model.getAmount());
 
             if("01".equals(model.getOperationType())
                     && model.getAmount()!=null

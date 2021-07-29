@@ -53,7 +53,6 @@ public class WinningTransactionReplicaDAOTest extends
         entity.setIdTrxAcquirer(id.getIdTrxAcquirer());
         entity.setOperationType(id.getOperationType());
         entity.setAcquirerId(id.getAcquirerId());
-        entity.setUpdatable(true);
     }
 
 
@@ -71,7 +70,6 @@ public class WinningTransactionReplicaDAOTest extends
 
     @Override
     protected void alterEntityToUpdate(WinningTransaction entity) {
-        entity.setUpdatable(true);
         entity.setUpdateUser("userUpdate");
     }
 

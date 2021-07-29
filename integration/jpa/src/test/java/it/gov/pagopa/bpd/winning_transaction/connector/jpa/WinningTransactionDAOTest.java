@@ -53,7 +53,6 @@ public class WinningTransactionDAOTest extends
         entity.setIdTrxAcquirer(id.getIdTrxAcquirer());
         entity.setOperationType(id.getOperationType());
         entity.setAcquirerId(id.getAcquirerId());
-        entity.setUpdatable(true);
     }
 
 
@@ -71,7 +70,6 @@ public class WinningTransactionDAOTest extends
 
     @Override
     protected void alterEntityToUpdate(WinningTransaction entity) {
-        entity.setUpdatable(true);
         entity.setUpdateUser("userUpdate");
     }
 
@@ -100,4 +98,6 @@ public class WinningTransactionDAOTest extends
     protected String getIdName() {
         return "acquirerCode";
     }
+
+
 }

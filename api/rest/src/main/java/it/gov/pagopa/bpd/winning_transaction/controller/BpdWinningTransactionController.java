@@ -31,12 +31,12 @@ import java.util.List;
 public interface BpdWinningTransactionController {
 
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     WinningTransactionResource createWinningTransaction(
             @Valid @RequestBody WinningTransactionDTO winningTransactionDTO);
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     List<FindWinningTransactionResource> findWinningTransactions(
             @ApiParam(value = "${swagger.winningTransaction.hashPan}", required = false)
@@ -53,7 +53,7 @@ public interface BpdWinningTransactionController {
                     String fiscalCode
     );
 
-    @GetMapping(value = "/milestone/page", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/milestone/page", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     WinningTransactionPage findWinningTransactionsMilestonePage(
             @ApiParam(value = "${swagger.winningTransaction.hashPan}")
@@ -76,7 +76,7 @@ public interface BpdWinningTransactionController {
                     Integer size
     );
 
-    @GetMapping(value = "/countbyday", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/countbyday", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     List<TrxCountByDayResource> getCountByDay(
             @ApiParam(value = "${swagger.winningTransaction.hashPan}")
@@ -93,7 +93,7 @@ public interface BpdWinningTransactionController {
                     String fiscalCode
     );
 
-    @DeleteMapping(value = "/{fiscalCode}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(value = "/{fiscalCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteByFiscalCode(
             @ApiParam(value = "${swagger.winningTransaction.fiscalCode}", required = true)
@@ -101,7 +101,7 @@ public interface BpdWinningTransactionController {
             @NotBlank String fiscalCode
     );
 
-    @PutMapping(value = "/rollback/{fiscalCode}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(value = "/rollback/{fiscalCode}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void rollback(
             @ApiParam(required = true)
