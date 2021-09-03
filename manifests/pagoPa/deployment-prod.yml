@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: bpdmswinningtransaction
-          image: cstaruacr.azurecr.io/bpdmswinningtransaction
+          image: cstarpacr.azurecr.io/bpdmswinningtransaction
           ports:
             - containerPort: 8080
           envFrom:
