@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: bpdmswinningtransaction
 spec:
-  replicas: 12
+  replicas: 4
   selector:
     matchLabels:
       app: bpdmswinningtransaction
@@ -36,6 +36,13 @@ spec:
                 name: bpdmswinningtransaction
             - configMapRef:
                 name: jvm
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 200m
+              memory: 600Mi
           livenessProbe:
             httpGet:
               path: /actuator/health
